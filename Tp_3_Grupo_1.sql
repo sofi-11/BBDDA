@@ -24,7 +24,7 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 -- 45739056 Sofia Florencia Gay
 -- 44482420	Valentino Amato
 --44396900 Joaquin Barcella
---
+--44960383 Rafael David Nazareno Ruiz
 
 
 -- Verifica si la base de datos 'AuroraSA' ya existe, si no, la crea.
