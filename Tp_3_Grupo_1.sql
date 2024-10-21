@@ -23,7 +23,7 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 -- Grupo 01
 -- 45739056 Sofia Florencia Gay
 -- 44482420	Valentino Amato
---
+--44396900 Joaquin Barcella
 --
 
 
