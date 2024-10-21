@@ -22,7 +22,7 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 -- Fecha de entrega: 14 de Noviembre de 2024
 -- Grupo 01
 -- 45739056 Sofia Florencia Gay
--- 
+-- 44482420	Valentino Amato
 --
 --
 
