@@ -26,6 +26,8 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 --44396900 Joaquin Barcella
 --44960383 Rafael David Nazareno Ruiz
 
+---------------ENTREGA 3
+
 -- Verifica si la base de datos 'AuroraSA' ya existe, si no, la crea.
 IF NOT EXISTS (
     SELECT name 
@@ -68,7 +70,6 @@ GO
 
 -- Cambia el contexto de la base de datos al esquema 'ddbba'
 
-
 GO
 
 -- Verifica si la tabla 'productosImportados' ya existe, si no, la crea.
@@ -83,7 +84,6 @@ BEGIN
         PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0) -- Precio con restricción que debe ser mayor a 0
     );
 END;
-
 
 GO
 
@@ -150,6 +150,130 @@ END;
 
 GO
 
+----Store procedures para manejar la inserción, modificado, borrado
+
+-----------------------------------------------------------------------------INSERTAR
+
+--productosImportados
+CREATE PROCEDURE ddbba.InsertarProductosImportados
+	@id int,
+    @NombreProducto VARCHAR(100),
+    @Proveedor NVARCHAR(100),
+    @Categoria VARCHAR(100),
+	@CantidadPorUnidad VARCHAR(50),
+	@PrecioUnidad decimal(10,2)
+AS
+BEGIN
+    INSERT INTO ddbba.productosImportados(IdProducto,NombreProducto,Proveedor,Categoria,CantidadPorUnidad,PrecioUnidad)
+    VALUES (@id,@NombreProducto,@Proveedor,@Categoria,@CantidadPorUnidad,@PrecioUnidad);
+END;
+
+--electronicAccesories
+CREATE PROCEDURE ddbba.InsertarElectronicAccesories
+	@Product VARCHAR(100), 
+    @PrecioUnitarioUSD DECIMAL(10,2) 
+AS
+BEGIN
+    INSERT INTO ddbba.electronicAccesories(Product,PrecioUnitarioUSD)
+    VALUES (@Product,@PrecioUnitarioUSD);
+END;
+
+--catalogo
+CREATE PROCEDURE ddbba.InsertarCatalogo
+	@id INT PRIMARY KEY, -- Llave primaria
+    @category VARCHAR(100), -- Categoría del producto
+    @nombre VARCHAR(100), -- Nombre del producto
+    @price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
+    @reference_price DECIMAL(10, 2), -- Precio de referencia
+    @reference_unit VARCHAR(50), -- Unidad de referencia
+    @fecha DATE -- Fecha
+AS
+BEGIN
+    INSERT INTO ddbba.catalogo(id,category,nombre,price,reference_price,reference_unit,fecha)
+    VALUES (@id,@category,@nombre,@price,@reference_price,@reference_unit,@fecha);
+END;
+
+--ventasRegistradas
+CREATE PROCEDURE ddbba.InsertarVentasRegistradas
+		@IDFactura VARCHAR(50), 
+        @TipoFactura VARCHAR(2), 
+        @Ciudad VARCHAR(100), 
+        @TipoCliente VARCHAR(50), 
+        @Genero VARCHAR(10), 
+        @Producto NVARCHAR(100), 
+        @PrecioUnitario DECIMAL(10, 2),
+        @Cantidad INT,
+        @Fecha DATE, 
+        @Hora TIME, 
+        @MedioPago VARCHAR(50), 
+        @Empleado INT, 
+        @IdentificadorPago VARCHAR(100) 
+AS
+BEGIN
+    INSERT INTO ddbba.ventasRegistradas(IDFactura,TipoFactura,Ciudad,TipoCliente,Genero,Producto,PrecioUnitario,Cantidad,Fecha,Hora,MedioPago,Empleado,IdentificadorPago)
+    VALUES (@IDFactura,@TipoFactura,@Ciudad,@TipoCliente,@Genero,@Producto,@PrecioUnitario,@Cantidad,@Fecha,@Hora,@MedioPago,@Empleado,@IdentificadorPago);
+END;
+
+--informacionAdicional
+CREATE PROCEDURE ddbba.InsertarInformacionAdicional
+		@Ciudad VARCHAR(100),
+        @ReemplazarPor VARCHAR(100), 
+        @Direccion VARCHAR(200), 
+        @Horario VARCHAR(50),
+        @Telefono VARCHAR(20) 
+AS
+BEGIN
+    INSERT INTO ddbba.InformacionAdicional(Ciudad,ReemplazarPor,Direccion,Horario,Telefono)
+    VALUES (@Ciudad,@ReemplazarPor,@Direccion,@Horario,@Telefono);
+END;
+
+-----------------------------------------------------------------------------------------------------MODIFICAR
+
+--productosImportados
+
+CREATE PROCEDURE ddbba.ModificarProductosImportados
+    @id int,
+    @NombreProducto VARCHAR(100),
+    @Proveedor NVARCHAR(100),
+    @Categoria VARCHAR(100),
+	@CantidadPorUnidad VARCHAR(50),
+	@PrecioUnidad decimal(10,2)
+AS
+BEGIN
+    UPDATE ddbba.productosImportados
+    SET NombreProducto=@NombreProducto ,
+		Proveedor=@Proveedor ,
+		Categoria=@Categoria ,
+		CantidadPorUnidad=@CantidadPorUnidad,
+		PrecioUnidad=@PrecioUnidad 
+    WHERE IdProducto = @Id;
+    
+    IF @@ROWCOUNT = 0
+    BEGIN
+        RAISERROR('Cliente no encontrado', 16, 1);
+    END
+END;
+
+--electronicAccesories
+
+CREATE PROCEDURE ddbba.ModificarElectronicAccesories
+    @Product VARCHAR(100), 
+    @PrecioUnitarioUSD DECIMAL(10,2) 
+AS
+BEGIN
+    UPDATE ddbba.electronicAccesories
+    SET Product=@Product,
+		PrecioUnitarioUSD=@PrecioUnitarioUSD
+    WHERE --?
+    
+    IF @@ROWCOUNT = 0
+    BEGIN
+        RAISERROR('Cliente no encontrado', 16, 1);
+    END
+END;
+
+--catalogo
+
 
 
 
@@ -164,6 +288,9 @@ BEGIN
     EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
     RECONFIGURE;
 	go
+	EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'AllowInProcess', 1;
+	EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1;
+	go
 
     -- Importar los datos desde el archivo Excel
     INSERT INTO ddbba.productosImportados (NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
@@ -174,6 +301,12 @@ BEGIN
 
     PRINT 'Datos importados exitosamente desde Productos_importados.xlsx';
 END;
+GO
+
+GO
+SELECT * INTO ddbba.productosImportados
+FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+    'Excel 12.0; Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\mio\Productos_importados.xlsx', [Sheet1$]);
 GO
 
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
