@@ -26,6 +26,7 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 --44396900 Joaquin Barcella
 --44960383 Rafael David Nazareno Ruiz
 
+
 -- Verifica si la base de datos 'AuroraSA' ya existe, si no, la crea.
 IF NOT EXISTS (
     SELECT name 
@@ -41,8 +42,6 @@ BEGIN
 END;
 
 GO
-USE AuroraSA;
-GO
 
 -- Cambia la intercalación (collation) de la base de datos a 'Latin1_General_CS_AS' (sensible a mayúsculas y acentos)
 ALTER DATABASE AuroraSA
@@ -52,9 +51,9 @@ GO
 
 -- Verifica si el esquema 'ddbba' ya existe, si no, lo crea.
 IF NOT EXISTS (
-    SELECT name 
-    FROM sys.schemas 
-    WHERE name = N'ddbba')
+    SELECT schema_name 
+    FROM information_schema.schemata 
+    WHERE schema_name = N'ddbba')
 BEGIN
     EXEC('CREATE SCHEMA ddbba');
     PRINT 'Esquema ddbba creado exitosamente.';
@@ -67,7 +66,7 @@ END;
 GO
 
 -- Cambia el contexto de la base de datos al esquema 'ddbba'
-
+USE AuroraSA;
 
 GO
 
@@ -76,14 +75,13 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'productos
 BEGIN
     CREATE TABLE ddbba.productosImportados (
         IdProducto INT PRIMARY KEY, -- Llave primaria
-        NombreProducto NVARCHAR(100) COLLATE Latin1_General_CS_AS, -- Nombre del producto
-        Proveedor NVARCHAR(100) COLLATE Latin1_General_CS_AS, -- Proveedor del producto
-        Categoria VARCHAR(100) COLLATE Latin1_General_CS_AS, -- Categoría del producto
+        NombreProducto NVARCHAR(100), -- Nombre del producto
+        Proveedor NVARCHAR(100), -- Proveedor del producto
+        Categoria VARCHAR(100), -- Categoría del producto
         CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
         PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0) -- Precio con restricción que debe ser mayor a 0
     );
 END;
-
 
 GO
 
@@ -160,17 +158,15 @@ BEGIN
     -- Habilitar la opción de Ad Hoc Distributed Queries (si no está habilitada)
     EXEC sp_configure 'show advanced options', 1;
     RECONFIGURE;
-	go
     EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
     RECONFIGURE;
-	go
 
     -- Importar los datos desde el archivo Excel
     INSERT INTO ddbba.productosImportados (NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
+    SELECT NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad
     FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\mio\Productos_importados.xlsx;HDR=YES',
-        'SELECT * FROM [Listado de Productos$]');
+        'Excel 12.0;Database=C:\ruta\Productos_importados.xlsx;HDR=YES',
+        'SELECT * FROM [Hoja1$]');
 
     PRINT 'Datos importados exitosamente desde Productos_importados.xlsx';
 END;
@@ -238,6 +234,3 @@ BEGIN
     'SELECT * FROM [Sheet1$]');
 END;
 GO
-
-
-exec ddbba.ImportarProductosImportados
