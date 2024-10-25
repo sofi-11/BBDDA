@@ -102,17 +102,18 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'catalogo') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.catalogo (
-        id INT PRIMARY KEY, -- Llave primaria
+        id int PRIMARY KEY, -- Llave primaria
         category VARCHAR(100), -- Categoría del producto
         nombre VARCHAR(100), -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(50), -- Unidad de referencia
-        fecha DATE -- Fecha
+        fecha DATETIME -- Fecha
     );
 END;
-
 GO
+
+drop table ddbba.catalogo
 
 -- Verifica si la tabla 'ventasRegistradas' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ventasRegistradas') AND type in (N'U'))
@@ -180,10 +181,10 @@ END;
 
 --catalogo
 CREATE PROCEDURE ddbba.InsertarCatalogo
-	@id INT PRIMARY KEY, -- Llave primaria
+	@id INT, -- Llave primaria
     @category VARCHAR(100), -- Categoría del producto
     @nombre VARCHAR(100), -- Nombre del producto
-    @price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
+    @price DECIMAL(10, 2), -- Precio del producto, debe ser mayor a 0
     @reference_price DECIMAL(10, 2), -- Precio de referencia
     @reference_unit VARCHAR(50), -- Unidad de referencia
     @fecha DATE -- Fecha
@@ -273,6 +274,113 @@ BEGIN
 END;
 
 --catalogo
+CREATE PROCEDURE ddbba.ModificarCatalogo
+		@id INT , 
+        @category VARCHAR(100), 
+        @nombre VARCHAR(100), 
+        @price DECIMAL(10, 2), 
+        @reference_price DECIMAL(10, 2), 
+        @reference_unit VARCHAR(50), 
+        @fecha DATE 
+AS
+BEGIN
+    UPDATE ddbba.catalogo
+    SET category=@category ,
+		nombre=@nombre,
+		price=@price,
+		reference_price=@reference_price,
+		reference_unit=@reference_unit,
+		fecha=@fecha
+    WHERE id = @id;
+    
+    IF @@ROWCOUNT = 0
+    BEGIN
+        RAISERROR('Cliente no encontrado', 16, 1);
+    END
+END;
+
+--ventasRegistradas
+CREATE PROCEDURE ddbba.ModificarVentasRegistradas
+		@IDFactura VARCHAR(50) , 
+        @TipoFactura VARCHAR(2), 
+        @Ciudad VARCHAR(100), 
+        @TipoCliente VARCHAR(50), 
+		@Genero VARCHAR(10), 
+        @Producto NVARCHAR(100), 
+        @PrecioUnitario DECIMAL(10, 2), 
+        @Cantidad INT, 
+        @Fecha DATE, 
+        @Hora TIME, 
+        @MedioPago VARCHAR(50),
+        @Empleado INT, 
+        @IdentificadorPago VARCHAR(100) 
+AS
+BEGIN
+    UPDATE ddbba.ventasRegistradas
+    SET TipoFactura=@TipoFactura ,
+		Ciudad=@Ciudad,
+		TipoCliente=@TipoCliente,
+		Genero=@Genero,
+		Producto=@Producto,
+		PrecioUnitario=@PrecioUnitario,
+		Cantidad=@Cantidad,
+		Fecha=@Fecha,
+		Hora=@Hora,
+		MedioPago=@MedioPago,
+		Empleado=@Empleado,
+		IdentificadorPago=@IdentificadorPago
+
+    WHERE IDFactura = @IDFactura;
+    
+    IF @@ROWCOUNT = 0
+    BEGIN
+        RAISERROR('Cliente no encontrado', 16, 1);
+    END
+END;
+
+--informacionAdicional
+
+CREATE PROCEDURE ddbba.ModificarInformacionAdicional
+		@Ciudad VARCHAR(100), 
+        @ReemplazarPor VARCHAR(100), 
+        @Direccion VARCHAR(200), 
+        @Horario VARCHAR(50), 
+        @Telefono VARCHAR(20) 
+AS
+BEGIN
+    UPDATE ddbba.InformacionAdicional
+    SET Ciudad=@Ciudad ,
+		ReemplazarPor=@ReemplazarPor,
+		Direccion=@Direccion,
+		Horario=@Horario,
+		Telefono=@Telefono
+    WHERE Ciudad = @Ciudad;
+    
+    IF @@ROWCOUNT = 0
+    BEGIN
+        RAISERROR('Cliente no encontrado', 16, 1);
+    END
+END;
+
+--------------------------------------------------------------------Borrado
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -303,11 +411,7 @@ BEGIN
 END;
 GO
 
-GO
-SELECT * INTO ddbba.productosImportados
-FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-    'Excel 12.0; Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\mio\Productos_importados.xlsx', [Sheet1$]);
-GO
+
 
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
 CREATE PROCEDURE ddbba.ImportarElectronicAccessories
@@ -325,30 +429,34 @@ GO
 
 
 -- Stored procedure para importar datos de 'catalogo.csv'
-CREATE PROCEDURE ImportCatalogo
+CREATE PROCEDURE ddbba.ImportCatalogo
 AS
 BEGIN
     BULK INSERT ddbba.catalogo
-    FROM 'C:\DataFiles\catalogo.csv'
+    FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\catalogo.csv'
     WITH (
         FIELDTERMINATOR = ',', 
-        ROWTERMINATOR = '\n',
-        FIRSTROW = 2
+        ROWTERMINATOR = ',',
+        FIRSTROW = 2,
+		CODEPAGE='1252'
     );
     PRINT 'Datos del catálogo cargados correctamente.';
 END;
 GO
+
+
 
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
 CREATE PROCEDURE ImportVentasRegistradas
 AS
 BEGIN
     BULK INSERT ddbba.ventasRegistradas
-    FROM 'C:\DataFiles\Ventas_registradas.csv'
+    FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Ventas_registradas.csv'
     WITH (
         FIELDTERMINATOR = ',', 
         ROWTERMINATOR = '\n',
-        FIRSTROW = 2
+        FIRSTROW = 2,
+		CODEPAGE= 'ACP'
     );
     PRINT 'Datos de ventas registradas cargados correctamente.';
 END;
