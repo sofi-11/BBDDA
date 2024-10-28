@@ -23,8 +23,8 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 -- Grupo 01
 -- 45739056 Sofia Florencia Gay
 -- 44482420	Valentino Amato
---44396900 Joaquin Barcella
---44960383 Rafael David Nazareno Ruiz
+-- 44396900 Joaquin Barcella
+-- 44960383 Rafael David Nazareno Ruiz
 
 ---------------ENTREGA 3
 
@@ -77,9 +77,9 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'productos
 BEGIN
     CREATE TABLE ddbba.productosImportados (
         IdProducto INT PRIMARY KEY, -- Llave primaria
-        NombreProducto NVARCHAR(100) COLLATE Latin1_General_CS_AS, -- Nombre del producto
-        Proveedor NVARCHAR(100) COLLATE Latin1_General_CS_AS, -- Proveedor del producto
-        Categoria VARCHAR(100) COLLATE Latin1_General_CS_AS, -- Categoría del producto
+        NombreProducto NVARCHAR(100), -- Nombre del producto
+        Proveedor NVARCHAR(100), -- Proveedor del producto
+        Categoria VARCHAR(100), -- Categoría del producto
         CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
         PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0) -- Precio con restricción que debe ser mayor a 0
     );
@@ -181,7 +181,7 @@ END;
 
 --catalogo
 CREATE PROCEDURE ddbba.InsertarCatalogo
-	@id INT, -- Llave primaria
+	@id INT, -- Identificacion, clave primaria
     @category VARCHAR(100), -- Categoría del producto
     @nombre VARCHAR(100), -- Nombre del producto
     @price DECIMAL(10, 2), -- Precio del producto, debe ser mayor a 0
@@ -373,18 +373,6 @@ END;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 -- Stored procedure para importar datos desde 'Productos_importados.xlsx' a la tabla 'productosImportados'
 CREATE PROCEDURE ddbba.ImportarProductosImportados
 AS
@@ -482,3 +470,4 @@ GO
 
 
 exec ddbba.ImportarProductosImportados
+
