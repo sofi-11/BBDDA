@@ -81,7 +81,7 @@ BEGIN
         Proveedor NVARCHAR(100), -- Proveedor del producto
         Categoria VARCHAR(100), -- Categoría del producto
         CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
-        PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0) -- Precio con restricción que debe ser mayor a 0
+        PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0), -- Precio con restricción que debe ser mayor a 0
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
@@ -93,7 +93,7 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ele
 BEGIN
     CREATE TABLE ddbba.electronicAccesories (
         Product VARCHAR(100), -- Nombre del producto
-        PrecioUnitarioUSD DECIMAL(10,2) -- Precio en dólares
+        PrecioUnitarioUSD DECIMAL(10,2), -- Precio en dólares
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
@@ -110,7 +110,7 @@ BEGIN
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(2), -- Unidad de referencia
-        fecha DATETIME -- Fecha
+        fecha DATETIME, -- Fecha
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
@@ -138,7 +138,7 @@ BEGIN
 			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
 			(MedioPago = 'Cash' AND (IdentificadorPago IS NULL OR IdentificadorPago = '')) OR
 			(MedioPago = 'Credit Card' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
-			) -- Identificador de pago
+			), -- Identificador de pago
 			Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
@@ -153,7 +153,7 @@ BEGIN
         ReemplazarPor VARCHAR(100), -- Ciudad por la que reemplazar
         Direccion VARCHAR(200), -- Dirección
         Horario VARCHAR(50), -- Horario de atención
-        Telefono VARCHAR(20) -- Teléfono de contacto
+        Telefono VARCHAR(20), -- Teléfono de contacto
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
@@ -576,51 +576,3 @@ BEGIN
     'SELECT * FROM [Sheet1$]');
 END;
 GO
-
-
-
---- POR FAVOR NO LEAN ESTO
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- Lo leiste
