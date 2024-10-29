@@ -368,14 +368,83 @@ BEGIN
 END;
 
 --------------------------------------------------------------------Borrado
+-- Stored procedure para borrado logico tabla productos importados
+CREATE PROCEDURE ddbba.BorradoLogicoProductosImportados
+AS
+BEGIN
+ ALTER TABLE ddbba.productosImportados
+ ADD activo BIT DEFAULT 1 
+ 
+END	
+go
+-- Stored procedure para borrado logico tabla catalogo
+CREATE PROCEDURE ddbba.BorradoLogicoInformacionAdicional
+AS
+BEGIN
+ ALTER TABLE ddbba.productosImportados
+ ADD activo BIT DEFAULT 1 
+ 
+END	
+go
+
+-- Stored procedure para borrado logico tabla electronic accesories
+CREATE PROCEDURE ddbba.BorradoLogicoElectronicAccesories
+AS
+BEGIN
+ ALTER TABLE ddbba.productosImportados
+ ADD activo BIT DEFAULT 1 
+ 
+END	
+go
+
+-- Stored procedure para borrado logico tabla ventas Registradas
+CREATE PROCEDURE ddbba.BorradoLogicoVentasRegistradas
+AS
+BEGIN
+ ALTER TABLE ddbba.productosImportados
+ ADD activo BIT DEFAULT 1 
+ 
+END	
+go
+-- Stored procedure para borrado fisico tabla Ventas Registradas
+CREATE PROCEDURE ddbba.BorradoFisicoProductosImportados
+AS 
+BEGIN
+TRUNCATE TABLE ddbba.productosImportados
+END
+go
+
+
+-- Stored procedure para borrado físico de la tabla InformacionAdicional
+CREATE PROCEDURE ddbba.BorradoFisicoInformacionAdicional
+AS
+BEGIN
+    TRUNCATE TABLE ddbba.InformacionAdicional;
+END
+GO
+
+
+-- Stored procedure para borrado físico de la tabla ElectronicAccesories
+CREATE PROCEDURE ddbba.BorradoFisicoElectronicAccesories
+AS
+BEGIN
+    TRUNCATE TABLE ddbba.ElectronicAccesories;
+END
+GO
+
+-- Stored procedure para borrado físico de la tabla VentasRegistradas
+CREATE PROCEDURE ddbba.BorradoFisicoVentasRegistradas
+AS
+BEGIN
+    TRUNCATE TABLE ddbba.VentasRegistradas;
+END
+GO
 
 
 
 
 
-
-
-
+-- IMPORTACION
 
 
 -- Stored procedure para importar datos desde 'Productos_importados.xlsx' a la tabla 'productosImportados'
