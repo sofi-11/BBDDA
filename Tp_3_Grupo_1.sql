@@ -82,6 +82,7 @@ BEGIN
         Categoria VARCHAR(100), -- Categoría del producto
         CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
         PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0) -- Precio con restricción que debe ser mayor a 0
+		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
 
@@ -93,6 +94,7 @@ BEGIN
     CREATE TABLE ddbba.electronicAccesories (
         Product VARCHAR(100), -- Nombre del producto
         PrecioUnitarioUSD DECIMAL(10,2) -- Precio en dólares
+		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
 
@@ -109,6 +111,7 @@ BEGIN
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(2), -- Unidad de referencia
         fecha DATETIME -- Fecha
+		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
 GO
@@ -136,6 +139,7 @@ BEGIN
 			(MedioPago = 'Cash' AND (IdentificadorPago IS NULL OR IdentificadorPago = '')) OR
 			(MedioPago = 'Credit Card' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
 			) -- Identificador de pago
+			Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
 
@@ -150,6 +154,7 @@ BEGIN
         Direccion VARCHAR(200), -- Dirección
         Horario VARCHAR(50), -- Horario de atención
         Telefono VARCHAR(20) -- Teléfono de contacto
+		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
 
@@ -387,10 +392,19 @@ GO
 CREATE PROCEDURE ddbba.BorradoLogicoProductosImportados
 AS
 BEGIN
- ALTER TABLE ddbba.productosImportados
- ADD activo BIT DEFAULT 1 
- 
-END	
+    -- Verifica si la columna 'activo' ya existe en la tabla
+    IF NOT EXISTS (
+        SELECT * 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_NAME = 'productosImportados' 
+        AND COLUMN_NAME = 'activo'
+    )
+    BEGIN
+        ALTER TABLE ddbba.productosImportados
+        ADD activo BIT DEFAULT 1;
+    END
+END
+
 
 GO
 -- Stored procedure para borrado logico tabla catalogo
