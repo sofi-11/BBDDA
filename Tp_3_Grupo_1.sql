@@ -523,7 +523,6 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoProductosImportados') 
            AND type = N'P')
 BEGIN
-<<<<<<< HEAD
     PRINT 'El procedure ya existe en el esquema ddbba.'
 END
 ELSE
@@ -540,7 +539,6 @@ BEGIN
 END
 
 
-=======
     -- Verifica si la columna 'activo' ya existe en la tabla
     IF NOT EXISTS (
         SELECT * 
@@ -554,7 +552,6 @@ END
     END
 END
 
->>>>>>> f50baea73ac9fe15429b0d28326d7eaa37a6d184
 
 GO
 -- Stored procedure para borrado logico tabla catalogo
@@ -820,7 +817,6 @@ BEGIN
     'SELECT * FROM [Sheet1$]');
 END;
 GO
-<<<<<<< HEAD
 
 
 
@@ -843,5 +839,3 @@ BEGIN
 END
 
 */
-=======
->>>>>>> f50baea73ac9fe15429b0d28326d7eaa37a6d184
