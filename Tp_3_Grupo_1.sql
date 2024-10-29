@@ -102,12 +102,12 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'catalogo') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.catalogo (
-        id int PRIMARY KEY, -- Llave primaria
+        id int IDENTITY (1,1) PRIMARY KEY, -- Llave primaria autoincremental
         category VARCHAR(100), -- Categoría del producto
         nombre VARCHAR(100), -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
-        reference_unit VARCHAR(50), -- Unidad de referencia
+        reference_unit VARCHAR(2), -- Unidad de referencia
         fecha DATETIME -- Fecha
     );
 END;
@@ -119,19 +119,24 @@ drop table ddbba.catalogo
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ventasRegistradas') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.ventasRegistradas (
-        IDFactura VARCHAR(50) PRIMARY KEY, -- Llave primaria, identificador de factura
-        TipoFactura VARCHAR(2), -- Tipo de factura (Ej: A, B, etc.)
-        Ciudad VARCHAR(100), -- Ciudad de la venta
-        TipoCliente VARCHAR(50), -- Tipo de cliente
-        Genero VARCHAR(10), -- Género del cliente
+        IDFactura VARCHAR(50) PRIMARY KEY CHECK (IDFactura LIKE '[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]'), -- Llave primaria, identificador de factura
+        TipoFactura CHAR(1) CHECK (TipoFactura IN ('A', 'B', 'C')), -- Tipo de factura (Ej: A, B, C)
+        Ciudad VARCHAR(50), -- Ciudad de la venta
+        TipoCliente VARCHAR(30), -- Tipo de cliente
+        Genero VARCHAR(10) CHECK (Genero IN ('Male', 'Female')), -- Género del cliente
         Producto NVARCHAR(100), -- Nombre del producto
         PrecioUnitario DECIMAL(10, 2), -- Precio unitario del producto
         Cantidad INT, -- Cantidad de productos
         Fecha DATE, -- Fecha de la venta
         Hora TIME, -- Hora de la venta
-        MedioPago VARCHAR(50), -- Medio de pago utilizado
+        MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit Card')), -- Medio de pago utilizado
         Empleado INT, -- Identificador del empleado
-        IdentificadorPago VARCHAR(100) -- Identificador de pago
+        IdentificadorPago VARCHAR(25),
+			CHECK (
+			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
+			(MedioPago = 'Cash' AND (IdentificadorPago IS NULL OR IdentificadorPago = '')) OR
+			(MedioPago = 'Credit Card' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
+			) -- Identificador de pago
     );
 END;
 
