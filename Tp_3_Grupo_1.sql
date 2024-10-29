@@ -113,7 +113,6 @@ BEGIN
 END;
 GO
 
-drop table ddbba.catalogo
 
 -- Verifica si la tabla 'ventasRegistradas' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventasRegistradas') AND type in (N'U'))
@@ -174,6 +173,9 @@ BEGIN
     VALUES (@id,@NombreProducto,@Proveedor,@Categoria,@CantidadPorUnidad,@PrecioUnidad);
 END;
 
+
+GO
+
 --electronicAccesories
 CREATE PROCEDURE ddbba.InsertarElectronicAccesories
 	@Product VARCHAR(100), 
@@ -183,6 +185,9 @@ BEGIN
     INSERT INTO ddbba.electronicAccesories(Product,PrecioUnitarioUSD)
     VALUES (@Product,@PrecioUnitarioUSD);
 END;
+
+
+GO
 
 --catalogo
 CREATE PROCEDURE ddbba.InsertarCatalogo
@@ -198,6 +203,8 @@ BEGIN
     INSERT INTO ddbba.catalogo(id,category,nombre,price,reference_price,reference_unit,fecha)
     VALUES (@id,@category,@nombre,@price,@reference_price,@reference_unit,@fecha);
 END;
+
+GO
 
 --ventasRegistradas
 CREATE PROCEDURE ddbba.InsertarVentasRegistradas
@@ -220,6 +227,8 @@ BEGIN
     VALUES (@IDFactura,@TipoFactura,@Ciudad,@TipoCliente,@Genero,@Producto,@PrecioUnitario,@Cantidad,@Fecha,@Hora,@MedioPago,@Empleado,@IdentificadorPago);
 END;
 
+GO
+
 --informacionAdicional
 CREATE PROCEDURE ddbba.InsertarInformacionAdicional
 		@Ciudad VARCHAR(100),
@@ -234,7 +243,7 @@ BEGIN
 END;
 
 -----------------------------------------------------------------------------------------------------MODIFICAR
-
+GO
 --productosImportados
 
 CREATE PROCEDURE ddbba.ModificarProductosImportados
@@ -260,6 +269,7 @@ BEGIN
     END
 END;
 
+GO
 --electronicAccesories
 
 CREATE PROCEDURE ddbba.ModificarElectronicAccesories
@@ -278,6 +288,7 @@ BEGIN
     END
 END;
 
+GO
 --catalogo
 CREATE PROCEDURE ddbba.ModificarCatalogo
 		@id INT , 
@@ -304,6 +315,8 @@ BEGIN
     END
 END;
 
+
+GO
 --ventasRegistradas
 CREATE PROCEDURE ddbba.ModificarVentasRegistradas
 		@IDFactura VARCHAR(50) , 
@@ -343,6 +356,7 @@ BEGIN
     END
 END;
 
+GO
 --informacionAdicional
 
 CREATE PROCEDURE ddbba.ModificarInformacionAdicional
@@ -367,6 +381,7 @@ BEGIN
     END
 END;
 
+GO
 --------------------------------------------------------------------Borrado
 -- Stored procedure para borrado logico tabla productos importados
 CREATE PROCEDURE ddbba.BorradoLogicoProductosImportados
@@ -376,7 +391,8 @@ BEGIN
  ADD activo BIT DEFAULT 1 
  
 END	
-go
+
+GO
 -- Stored procedure para borrado logico tabla catalogo
 CREATE PROCEDURE ddbba.BorradoLogicoInformacionAdicional
 AS
@@ -385,7 +401,8 @@ BEGIN
  ADD activo BIT DEFAULT 1 
  
 END	
-go
+
+GO
 
 -- Stored procedure para borrado logico tabla electronic accesories
 CREATE PROCEDURE ddbba.BorradoLogicoElectronicAccesories
@@ -395,7 +412,8 @@ BEGIN
  ADD activo BIT DEFAULT 1 
  
 END	
-go
+
+GO
 
 -- Stored procedure para borrado logico tabla ventas Registradas
 CREATE PROCEDURE ddbba.BorradoLogicoVentasRegistradas
@@ -405,31 +423,34 @@ BEGIN
  ADD activo BIT DEFAULT 1 
  
 END	
-go
+
+GO
+
 -- Stored procedure para borrado fisico tabla Ventas Registradas
 CREATE PROCEDURE ddbba.BorradoFisicoProductosImportados
 AS 
 BEGIN
 TRUNCATE TABLE ddbba.productosImportados
 END
-go
 
 
+GO
 -- Stored procedure para borrado físico de la tabla InformacionAdicional
 CREATE PROCEDURE ddbba.BorradoFisicoInformacionAdicional
 AS
 BEGIN
     TRUNCATE TABLE ddbba.InformacionAdicional;
 END
+
+
 GO
-
-
 -- Stored procedure para borrado físico de la tabla ElectronicAccesories
 CREATE PROCEDURE ddbba.BorradoFisicoElectronicAccesories
 AS
 BEGIN
     TRUNCATE TABLE ddbba.ElectronicAccesories;
 END
+
 GO
 
 -- Stored procedure para borrado físico de la tabla VentasRegistradas
@@ -543,5 +564,4 @@ END;
 GO
 
 
-exec ddbba.ImportarProductosImportados
 
