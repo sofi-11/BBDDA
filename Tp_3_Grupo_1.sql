@@ -539,20 +539,6 @@ BEGIN
 END
 
 
-    -- Verifica si la columna 'activo' ya existe en la tabla
-    IF NOT EXISTS (
-        SELECT * 
-        FROM INFORMATION_SCHEMA.COLUMNS 
-        WHERE TABLE_NAME = 'productosImportados' 
-        AND COLUMN_NAME = 'activo'
-    )
-    BEGIN
-        ALTER TABLE ddbba.productosImportados
-        ADD activo BIT DEFAULT 1;
-    END
-END
-
-
 GO
 -- Stored procedure para borrado logico tabla catalogo
 
