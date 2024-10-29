@@ -203,7 +203,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.InsertarProductosImportados') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP InsertarProductosImportados ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -233,7 +233,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.InsertarElectronicAccesories') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP InsertarElectronicAccesories ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -258,7 +258,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.InsertarCatalogo') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP InsertarCatalogo ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -286,7 +286,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.InsertarVentasRegistradas') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP InsertarVentasRegistradas ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -315,28 +315,85 @@ END
 
 GO
 
---informacionAdicional
+--Sucursal
 
 IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarInformacionAdicional') 
+           WHERE object_id = OBJECT_ID(N'ddbba.InsertarSucursal') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP InsertarSucursal ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
-    EXEC('CREATE PROCEDURE ddbba.InsertarInformacionAdicional
-		@Ciudad VARCHAR(100),
-        @ReemplazarPor VARCHAR(100), 
+    EXEC('CREATE PROCEDURE ddbba.InsertarSucursal
+		@Ciudad VARCHAR(50),
+        @ReemplazarPor VARCHAR(50), 
         @Direccion VARCHAR(200), 
         @Horario VARCHAR(50),
         @Telefono VARCHAR(20) 
 AS
 BEGIN
-    INSERT INTO ddbba.InformacionAdicional(Ciudad,ReemplazarPor,Direccion,Horario,Telefono)
+    INSERT INTO ddbba.Sucursal(Ciudad,ReemplazarPor,Direccion,Horario,Telefono)
     VALUES (@Ciudad,@ReemplazarPor,@Direccion,@Horario,@Telefono);
 END')
 END
+
+GO
+
+--Empleados
+
+
+IF EXISTS (SELECT * FROM sys.objects 
+           WHERE object_id = OBJECT_ID(N'ddbba.InsertarEmpleado') 
+           AND type = N'P')
+BEGIN
+    PRINT 'El SP InsertarEmpleado ya existe en el esquema ddbba.'
+END
+ELSE
+BEGIN
+    EXEC('CREATE PROCEDURE ddbba.InsertarEmpleado
+        @Legajo INT,
+        @Nombre VARCHAR(30),
+        @Apellido VARCHAR(20),
+        @DNI CHAR(8),
+        @Direccion VARCHAR(150),
+        @EmailPersonal VARCHAR(100),
+        @EmailEmpresa VARCHAR(100),
+        @CUIL VARCHAR(100),
+        @Cargo VARCHAR(30),
+        @Sucursal VARCHAR(30),
+        @Turno VARCHAR(30)
+    AS
+    BEGIN
+        INSERT INTO ddbba.Empleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
+        VALUES (@Legajo, @Nombre, @Apellido, @DNI, @Direccion, @EmailPersonal, @EmailEmpresa, @CUIL, @Cargo, @Sucursal, @Turno);
+    END;')
+END;
+
+GO
+
+
+--Clasificacion Productos
+
+IF EXISTS (SELECT * FROM sys.objects 
+           WHERE object_id = OBJECT_ID(N'ddbba.InsertarClasificacionProducto') 
+           AND type = N'P')
+BEGIN
+    PRINT 'El SP InsertarClasificacionProducto ya existe en el esquema ddbba.'
+END
+ELSE
+BEGIN
+    EXEC('CREATE PROCEDURE ddbba.InsertarClasificacionProducto
+        @LineaDeProducto VARCHAR(30),
+        @Producto VARCHAR(70)
+    AS
+    BEGIN
+        INSERT INTO ddbba.ClasificacionProductos (LineaDeProducto, Producto)
+        VALUES (@LineaDeProducto, @Producto);
+    END;')
+END;
+
+
 
 
 
@@ -348,7 +405,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.ModificarProductosImportados') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP ModificarProductosImportados ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -381,7 +438,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.ModificarElectronicAccesories') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP ModificarElectronicAccesories ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -406,7 +463,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.ModificarCatalogo') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP ModificarCatalogo ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -443,7 +500,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.ModificarVentasRegistradas') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP ModificarVentasRegistradas ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -485,25 +542,25 @@ END
 
 
 GO
---informacionAdicional
+--Sucursal
 
 IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.ModificarInformacionAdicional') 
+           WHERE object_id = OBJECT_ID(N'ddbba.ModificarSucursal') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP ModificarSucursal ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
-    EXEC('CREATE PROCEDURE ddbba.ModificarInformacionAdicional
-		@Ciudad VARCHAR(100), 
-        @ReemplazarPor VARCHAR(100), 
+    EXEC('CREATE PROCEDURE ddbba.ModificarSucursal
+		@Ciudad VARCHAR(50), 
+        @ReemplazarPor VARCHAR(50), 
         @Direccion VARCHAR(200), 
         @Horario VARCHAR(50), 
         @Telefono VARCHAR(20) 
 AS
 BEGIN
-    UPDATE ddbba.InformacionAdicional
+    UPDATE ddbba.Sucursal
     SET Ciudad=@Ciudad ,
 		ReemplazarPor=@ReemplazarPor,
 		Direccion=@Direccion,
@@ -513,9 +570,72 @@ BEGIN
 END;')
 END
 
+--Empleado
 
+IF EXISTS (SELECT * FROM sys.objects 
+           WHERE object_id = OBJECT_ID(N'ddbba.ModificarEmpleadosRegistrados') 
+           AND type = N'P')
+BEGIN
+    PRINT 'El SP ModificarEmpleadosRegistrados ya existe en el esquema ddbba.'
+END
+ELSE
+BEGIN
+    EXEC('CREATE PROCEDURE ddbba.ModificarEmpleadosRegistrados
+        @IDEmpleado INT,
+        @Nombre NVARCHAR(100),
+        @Apellido NVARCHAR(100),
+        @Edad INT,
+        @Genero VARCHAR(10),
+        @Cargo NVARCHAR(100),
+        @Salario DECIMAL(10, 2),
+        @FechaContratacion DATE,
+        @Ciudad NVARCHAR(100),
+        @Departamento NVARCHAR(50)
+AS
+BEGIN
+    UPDATE ddbba.EmpleadosRegistrados
+    SET Nombre = @Nombre,
+        Apellido = @Apellido,
+        Edad = @Edad,
+        Genero = @Genero,
+        Cargo = @Cargo,
+        Salario = @Salario,
+        FechaContratacion = @FechaContratacion,
+        Ciudad = @Ciudad,
+        Departamento = @Departamento
+    WHERE IDEmpleado = @IDEmpleado;
+END;')
+END
 
 GO
+
+--Clasificacion Producto
+
+IF EXISTS (SELECT * FROM sys.objects 
+           WHERE object_id = OBJECT_ID(N'ddbba.ModificarClasificacionProducto') 
+           AND type = N'P')
+BEGIN
+    PRINT 'El SP ModificarClasificacionProducto ya existe en el esquema ddbba.'
+END
+ELSE
+BEGIN
+    EXEC('CREATE PROCEDURE ddbba.ModificarClasificacionProducto
+        @Producto VARCHAR(70),
+        @LineaDeProducto VARCHAR(30) = NULL,
+        @Activo BIT = NULL
+    AS
+    BEGIN
+        UPDATE ddbba.ClasificacionProductos
+        SET LineaDeProducto = ISNULL(@LineaDeProducto, LineaDeProducto),
+            Activo = ISNULL(@Activo, Activo)
+        WHERE Producto = @Producto;
+    END;')
+END;
+
+GO
+
+
+
 --------------------------------------------------------------------Borrado
 -- Stored procedure para borrado logico tabla productos importados
 
@@ -523,7 +643,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoProductosImportados') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP BorradoLogicoProductosImportados ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -546,7 +666,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoSucursal') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP BorradoLogicoSucursal ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -572,7 +692,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoElectronicAccesories') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP BorradoLogicoElectronicAccesories ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -595,7 +715,7 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoVentasRegistradas') 
            AND type = N'P')
 BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
+    PRINT 'El SP BorradoLogicoVentasRegistradas ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
@@ -613,7 +733,48 @@ END
 
 
 GO
+-- Stored procedure para borrado logico tabla Empleados
+IF EXISTS (SELECT * FROM sys.objects 
+           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoEmpleados') 
+           AND type = N'P')
+BEGIN
+    PRINT 'El SP BorradoLogicoEmpleados ya existe en el esquema ddbba.'
+END
+ELSE
+BEGIN
+    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoEmpleados
+	@Legajo INT
+AS
+BEGIN
+		UPDATE ddbba.Empleados
+		set Activo=0
+		where Legajo = @Legajo
+ 
+END	')
 
+END
+
+GO
+
+--Borrado Logico Clasificacion Producto
+
+IF EXISTS (SELECT * FROM sys.objects 
+           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoClasificacionProducto') 
+           AND type = N'P')
+BEGIN
+    PRINT 'El SP BorradoLogicoClasificacionProducto ya existe en el esquema ddbba.'
+END
+ELSE
+BEGIN
+    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoClasificacionProducto
+        @Producto VARCHAR(70)
+    AS
+    BEGIN
+        UPDATE ddbba.ClasificacionProductos
+        SET Activo = 0
+        WHERE Producto = @Producto;
+    END;')
+END;
 
 
 -- IMPORTACION
