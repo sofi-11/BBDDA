@@ -81,8 +81,7 @@ BEGIN
         Proveedor NVARCHAR(100), -- Proveedor del producto
         Categoria VARCHAR(100), -- Categoría del producto
         CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
-        PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0), -- Precio con restricción que debe ser mayor a 0
-		Activo BIT DEFAULT 1 --Campo para borrado logico
+        PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0) -- Precio con restricción que debe ser mayor a 0
     );
 END;
 
@@ -93,8 +92,7 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ele
 BEGIN
     CREATE TABLE ddbba.electronicAccesories (
         Product VARCHAR(100), -- Nombre del producto
-        PrecioUnitarioUSD DECIMAL(10,2), -- Precio en dólares
-		Activo BIT DEFAULT 1 --Campo para borrado logico
+        PrecioUnitarioUSD DECIMAL(10,2) -- Precio en dólares
     );
 END;
 
@@ -110,8 +108,7 @@ BEGIN
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(2), -- Unidad de referencia
-        fecha DATETIME, -- Fecha
-		Activo BIT DEFAULT 1 --Campo para borrado logico
+        fecha DATETIME -- Fecha
     );
 END;
 GO
@@ -138,8 +135,7 @@ BEGIN
 			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
 			(MedioPago = 'Cash' AND (IdentificadorPago IS NULL OR IdentificadorPago = '')) OR
 			(MedioPago = 'Credit Card' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
-			), -- Identificador de pago
-			Activo BIT DEFAULT 1 --Campo para borrado logico
+			) -- Identificador de pago
     );
 END;
 
@@ -153,45 +149,11 @@ BEGIN
         ReemplazarPor VARCHAR(100), -- Ciudad por la que reemplazar
         Direccion VARCHAR(200), -- Dirección
         Horario VARCHAR(50), -- Horario de atención
-        Telefono VARCHAR(20), -- Teléfono de contacto
-		Activo BIT DEFAULT 1 --Campo para borrado logico
+        Telefono VARCHAR(20) -- Teléfono de contacto
     );
 END;
 
 GO
-
--- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.Empleados (
-		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
-		Nombre VARCHAR(30), --Nombre del Empleado
-		Apellido VARCHAR(20), --Apellido del Empleado
-		DNI CHAR(8) CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
-		Direccion VARCHAR(150), --Direccion del Empleado
-        EmailPersonal VARCHAR(100), --Email Personal del Empleado 
-        EmailEmpresa VARCHAR(100), --Email Empresarial del Empleado
-		CUIL VARCHAR (100), --CUIL del Empleado
-		Cargo VARCHAR(30) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
-		Sucursal VARCHAR(30) CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
-		Turno VARCHAR(30) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
-
-GO
--- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.ClasificacionProductos (
-        LineaDeProducto VARCHAR(30) CHECK (LineaDeProducto IN ('Almacen', 'Perfumeria', 'Hogar', 'Frescos', 'Bazar', 'Limpieza', 'Otros', 'Congelados', 'Bebidas', 'Mascota', 'Comida')), -- Categoria a la cual pertenece
-		Producto VARCHAR(70), --Descripcion del producto (Ej. Arroz)
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
-
-GO
-
 
 ----Store procedures para manejar la inserción, modificado, borrado
 
@@ -523,7 +485,6 @@ IF EXISTS (SELECT * FROM sys.objects
            WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoProductosImportados') 
            AND type = N'P')
 BEGIN
-<<<<<<< HEAD
     PRINT 'El procedure ya existe en el esquema ddbba.'
 END
 ELSE
@@ -540,21 +501,6 @@ BEGIN
 END
 
 
-=======
-    -- Verifica si la columna 'activo' ya existe en la tabla
-    IF NOT EXISTS (
-        SELECT * 
-        FROM INFORMATION_SCHEMA.COLUMNS 
-        WHERE TABLE_NAME = 'productosImportados' 
-        AND COLUMN_NAME = 'activo'
-    )
-    BEGIN
-        ALTER TABLE ddbba.productosImportados
-        ADD activo BIT DEFAULT 1;
-    END
-END
-
->>>>>>> f50baea73ac9fe15429b0d28326d7eaa37a6d184
 
 GO
 -- Stored procedure para borrado logico tabla catalogo
@@ -820,7 +766,6 @@ BEGIN
     'SELECT * FROM [Sheet1$]');
 END;
 GO
-<<<<<<< HEAD
 
 
 
@@ -843,5 +788,3 @@ BEGIN
 END
 
 */
-=======
->>>>>>> f50baea73ac9fe15429b0d28326d7eaa37a6d184
