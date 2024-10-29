@@ -73,7 +73,7 @@ GO
 GO
 
 -- Verifica si la tabla 'productosImportados' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'productosImportados') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productosImportados') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.productosImportados (
         IdProducto INT PRIMARY KEY, -- Llave primaria
@@ -88,7 +88,7 @@ END;
 GO
 
 -- Verifica si la tabla 'electronicAccesories' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'electronicAccesories') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.electronicAccesories') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.electronicAccesories (
         Product VARCHAR(100), -- Nombre del producto
@@ -99,7 +99,7 @@ END;
 GO
 
 -- Verifica si la tabla 'catalogo' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'catalogo') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.catalogo') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.catalogo (
         id int IDENTITY (1,1) PRIMARY KEY, -- Llave primaria autoincremental
@@ -116,7 +116,7 @@ GO
 drop table ddbba.catalogo
 
 -- Verifica si la tabla 'ventasRegistradas' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ventasRegistradas') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventasRegistradas') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.ventasRegistradas (
         IDFactura VARCHAR(50) PRIMARY KEY CHECK (IDFactura LIKE '[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]'), -- Llave primaria, identificador de factura
@@ -143,7 +143,7 @@ END;
 GO
 
 -- Verifica si la tabla 'InformacionAdicional' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'InformacionAdicional') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.InformacionAdicional') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.InformacionAdicional (
         Ciudad VARCHAR(100) PRIMARY KEY, -- Llave primaria
