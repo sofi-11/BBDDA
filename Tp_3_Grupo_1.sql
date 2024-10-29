@@ -145,12 +145,12 @@ END;
 
 GO
 
--- Verifica si la tabla 'InformacionAdicional' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.InformacionAdicional') AND type in (N'U'))
+-- Verifica si la tabla 'Sucursal' ya existe, si no, la crea.
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Sucursal') AND type in (N'U'))
 BEGIN
-    CREATE TABLE ddbba.InformacionAdicional (
-        Ciudad VARCHAR(100) PRIMARY KEY, -- Llave primaria
-        ReemplazarPor VARCHAR(100), -- Ciudad por la que reemplazar
+    CREATE TABLE ddbba.Sucursal (
+        Ciudad VARCHAR(50) PRIMARY KEY, -- Llave primaria
+        ReemplazarPor VARCHAR(50), -- Ciudad por la que reemplazar
         Direccion VARCHAR(200), -- Dirección
         Horario VARCHAR(50), -- Horario de atención
         Telefono VARCHAR(20), -- Teléfono de contacto
@@ -543,20 +543,21 @@ GO
 -- Stored procedure para borrado logico tabla catalogo
 
 IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoInformacionAdicional') 
+           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoSucursal') 
            AND type = N'P')
 BEGIN
     PRINT 'El procedure ya existe en el esquema ddbba.'
 END
 ELSE
 BEGIN
-    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoInformacionAdicional
+    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoSucursal
+	@Ciudad varchar(50)
 
 	AS
 	BEGIN
-	 UPDATE ddbba.InformacionAdicional
+	 UPDATE ddbba.Sucursal
 	set Activo=0
-	where IdProducto =@id
+	where Ciudad =@Ciudad
  
 	END	')
 END
@@ -576,6 +577,7 @@ END
 ELSE
 BEGIN
     EXEC('CREATE PROCEDURE ddbba.BorradoLogicoElectronicAccesories
+	@product varchar(100)
 	AS
 	BEGIN
 		UPDATE ddbba.electronicAccesories
@@ -598,11 +600,12 @@ END
 ELSE
 BEGIN
     EXEC('CREATE PROCEDURE ddbba.BorradoLogicoVentasRegistradas
+	@IDFactura varchar(50)
 AS
 BEGIN
 		UPDATE ddbba.ventasRegistradas
 		set Activo=0
-		where Product =@product
+		where IDFactura = @IDFactura
  
 END	')
 END
