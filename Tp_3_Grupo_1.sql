@@ -160,6 +160,39 @@ END;
 
 GO
 
+-- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
+BEGIN
+    CREATE TABLE ddbba.Empleados (
+		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
+		Nombre VARCHAR(30), --Nombre del Empleado
+		Apellido VARCHAR(20), --Apellido del Empleado
+		DNI CHAR(8) CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
+		Direccion VARCHAR(150), --Direccion del Empleado
+        EmailPersonal VARCHAR(100), --Email Personal del Empleado 
+        EmailEmpresa VARCHAR(100), --Email Empresarial del Empleado
+		CUIL VARCHAR (100), --CUIL del Empleado
+		Cargo VARCHAR(30) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
+		Sucursal VARCHAR(30) CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
+		Turno VARCHAR(30) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
+		Activo BIT DEFAULT 1 --Campo para borrado logico
+    );
+END;
+
+GO
+-- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))
+BEGIN
+    CREATE TABLE ddbba.ClasificacionProductos (
+        LineaDeProducto VARCHAR(30) CHECK (LineaDeProducto IN ('Almacen', 'Perfumeria', 'Hogar', 'Frescos', 'Bazar', 'Limpieza', 'Otros', 'Congelados', 'Bebidas', 'Mascota', 'Comida')), -- Categoria a la cual pertenece
+		Producto VARCHAR(70), --Descripcion del producto (Ej. Arroz)
+		Activo BIT DEFAULT 1 --Campo para borrado logico
+    );
+END;
+
+GO
+
+
 ----Store procedures para manejar la inserción, modificado, borrado
 
 -----------------------------------------------------------------------------INSERTAR
