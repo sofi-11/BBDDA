@@ -779,7 +779,7 @@ END;
 
 -- IMPORTACION
 
-/*
+
 -- Stored procedure para importar datos desde 'Productos_importados.xlsx' a la tabla 'productosImportados'
 CREATE PROCEDURE ddbba.ImportarProductosImportados
 AS
