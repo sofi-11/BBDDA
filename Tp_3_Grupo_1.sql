@@ -104,12 +104,12 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.catalogo') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.catalogo (
-        id int IDENTITY (1,1) PRIMARY KEY, -- Llave primaria autoincremental
+        id int PRIMARY KEY, -- Clave primaria 
         category VARCHAR(100), -- Categoría del producto
         nombre VARCHAR(100), -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
-        reference_unit VARCHAR(2), -- Unidad de referencia
+        reference_unit VARCHAR(10), -- Unidad de referencia
         fecha DATETIME, -- Fecha
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
@@ -117,11 +117,12 @@ END;
 GO
 
 
+
 -- Verifica si la tabla 'ventasRegistradas' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventasRegistradas') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.ventasRegistradas (
-        IDFactura VARCHAR(50) PRIMARY KEY CHECK (IDFactura LIKE '[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]'), -- Llave primaria, identificador de factura
+        IDFactura VARCHAR(50) PRIMARY KEY, -- Llave primaria, identificador de factura
         TipoFactura CHAR(1) CHECK (TipoFactura IN ('A', 'B', 'C')), -- Tipo de factura (Ej: A, B, C)
         Ciudad VARCHAR(50), -- Ciudad de la venta
         TipoCliente VARCHAR(30), -- Tipo de cliente
@@ -199,15 +200,7 @@ GO
 
 --productosImportados
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarProductosImportados') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.InsertarProductosImportados
+CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosInsertar
 	@id int,
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
@@ -218,8 +211,7 @@ BEGIN
 	BEGIN
 		INSERT INTO ddbba.productosImportados(IdProducto,NombreProducto,Proveedor,Categoria,CantidadPorUnidad,PrecioUnidad)
     VALUES (@id,@NombreProducto,@Proveedor,@Categoria,@CantidadPorUnidad,@PrecioUnidad);
-	END;')
-END
+	END;
 
 
 
@@ -229,23 +221,14 @@ GO
 --electronicAccesories
 
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarElectronicAccesories') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-EXEC('CREATE PROCEDURE ddbba.InsertarElectronicAccesories
+CREATE OR ALTER PROCEDURE ddbba.ElectronicAccesoriesInsertar
 	@Product VARCHAR(100), 
     @PrecioUnitarioUSD DECIMAL(10,2) 
 AS
 BEGIN
     INSERT INTO ddbba.electronicAccesories(Product,PrecioUnitarioUSD)
     VALUES (@Product,@PrecioUnitarioUSD);
-END;')
-END
+END;
 
 
 
@@ -254,15 +237,7 @@ GO
 
 --catalogo
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarCatalogo') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-   EXEC(' CREATE PROCEDURE ddbba.InsertarCatalogo
+CREATE OR ALTER PROCEDURE ddbba.CatalogoInsertar
 	@id INT, -- Identificacion, clave primaria
     @category VARCHAR(100), -- Categoría del producto
     @nombre VARCHAR(100), -- Nombre del producto
@@ -274,7 +249,6 @@ AS
 BEGIN
     INSERT INTO ddbba.catalogo(id,category,nombre,price,reference_price,reference_unit,fecha)
     VALUES (@id,@category,@nombre,@price,@reference_price,@reference_unit,@fecha);
-END;')
 END
 
 
@@ -282,15 +256,7 @@ GO
 
 --ventasRegistradas
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarVentasRegistradas') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.InsertarVentasRegistradas
+CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasInsertar
 		@IDFactura VARCHAR(50), 
         @TipoFactura VARCHAR(2), 
         @Ciudad VARCHAR(100), 
@@ -308,7 +274,6 @@ AS
 BEGIN
     INSERT INTO ddbba.ventasRegistradas(IDFactura,TipoFactura,Ciudad,TipoCliente,Genero,Producto,PrecioUnitario,Cantidad,Fecha,Hora,MedioPago,Empleado,IdentificadorPago)
     VALUES (@IDFactura,@TipoFactura,@Ciudad,@TipoCliente,@Genero,@Producto,@PrecioUnitario,@Cantidad,@Fecha,@Hora,@MedioPago,@Empleado,@IdentificadorPago);
-END;')
 END
 
 
@@ -317,15 +282,7 @@ GO
 
 --informacionAdicional
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarInformacionAdicional') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.InsertarInformacionAdicional
+CREATE OR ALTER PROCEDURE ddbba.InformacionAdicionalInsertar
 		@Ciudad VARCHAR(100),
         @ReemplazarPor VARCHAR(100), 
         @Direccion VARCHAR(200), 
@@ -335,7 +292,6 @@ AS
 BEGIN
     INSERT INTO ddbba.InformacionAdicional(Ciudad,ReemplazarPor,Direccion,Horario,Telefono)
     VALUES (@Ciudad,@ReemplazarPor,@Direccion,@Horario,@Telefono);
-END')
 END
 
 
@@ -343,16 +299,8 @@ END
 -----------------------------------------------------------------------------------------------------MODIFICAR
 GO
 --productosImportados
-
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.ModificarProductosImportados') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.ModificarProductosImportados
+ 
+CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosModificar
     @id int,
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
@@ -369,23 +317,16 @@ BEGIN
 		PrecioUnidad=@PrecioUnidad 
     WHERE IdProducto = @Id;
     
-END;')
+END
 END
 
 
 
 GO
+
 --electronicAccesories
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.ModificarElectronicAccesories') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.ModificarElectronicAccesories
+CREATE OR ALTER PROCEDURE ddbba.ElectronicAccesoriesModificar
     @Product VARCHAR(100), 
     @PrecioUnitarioUSD DECIMAL(10,2) 
 AS
@@ -394,7 +335,6 @@ BEGIN
     SET PrecioUnitarioUSD=@PrecioUnitarioUSD
     WHERE Product=@Product
     
-END;')
 END
 
 
@@ -402,15 +342,7 @@ END
 GO
 --catalogo
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.ModificarCatalogo') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.ModificarCatalogo
+CREATE OR ALTER PROCEDURE ddbba.CatalogoModificar
 		@id INT , 
         @category VARCHAR(100), 
         @nombre VARCHAR(100), 
@@ -430,7 +362,6 @@ BEGIN
     WHERE id = @id;
     
     
-END;')
 END
 
 
@@ -439,15 +370,7 @@ END
 GO
 --ventasRegistradas
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.ModificarVentasRegistradas') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.ModificarVentasRegistradas
+CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasModificar
 		@IDFactura VARCHAR(50) , 
         @TipoFactura VARCHAR(2), 
         @Ciudad VARCHAR(100), 
@@ -479,7 +402,6 @@ BEGIN
 
     WHERE IDFactura = @IDFactura;
     
-END;')
 END
 
 
@@ -487,15 +409,7 @@ END
 GO
 --informacionAdicional
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.ModificarInformacionAdicional') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.ModificarInformacionAdicional
+CREATE OR ALTER PROCEDURE ddbba.InformacionAdicionalModificar
 		@Ciudad VARCHAR(100), 
         @ReemplazarPor VARCHAR(100), 
         @Direccion VARCHAR(200), 
@@ -510,7 +424,6 @@ BEGIN
 		Horario=@Horario,
 		Telefono=@Telefono
     WHERE Ciudad = @Ciudad;
-END;')
 END
 
 
@@ -519,15 +432,7 @@ GO
 --------------------------------------------------------------------Borrado
 -- Stored procedure para borrado logico tabla productos importados
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoProductosImportados') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoProductosImportados
+CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosBorradoLogico
 	@id int
 	AS
 	BEGIN
@@ -535,22 +440,13 @@ BEGIN
 	set Activo=0
 	where IdProducto =@id
  
-	END	')
-END
+	END
 
 
 GO
 -- Stored procedure para borrado logico tabla catalogo
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoInformacionAdicional') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoInformacionAdicional
+CREATE OR ALTER PROCEDURE ddbba.BorradoLogicoInformacionAdicional
 
 	AS
 	BEGIN
@@ -558,8 +454,7 @@ BEGIN
 	set Activo=0
 	where IdProducto =@id
  
-	END	')
-END
+	END	
 
 
 
@@ -567,67 +462,41 @@ GO
 
 -- Stored procedure para borrado logico tabla electronic accesories
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoElectronicAccesories') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoElectronicAccesories
+CREATE OR ALTER PROCEDURE ddbba.BorradoLogicoElectronicAccesories
 	AS
 	BEGIN
 		UPDATE ddbba.electronicAccesories
 		set Activo=0
 		where Product =@product
-	END	')
-END
+	END
 
 
 
 GO
 
 -- Stored procedure para borrado logico tabla ventas Registradas
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoLogicoVentasRegistradas') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.BorradoLogicoVentasRegistradas
+CREATE OR ALTER PROCEDURE ddbba.BorradoLogicoVentasRegistradas
+@IDFactura varchar(50)
 AS
 BEGIN
 		UPDATE ddbba.ventasRegistradas
 		set Activo=0
-		where Product =@product
+		where IDFactura =@IDFactura
  
-END	')
 END
 
 
 
 GO
 
--- Stored procedure para borrado LOGICO tabla Ventas Registradas
+-- Stored procedure para borrado FISICO productos 
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoFisicoProductosImportados') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.BorradoFisicoProductosImportados
+CREATE OR ALTER PROCEDURE ddbba.BorradoFisicoProductosImportados
 	@id int
 AS 
 BEGIN
 		Delete from ddbba.ventasRegistradas
 		where IDFactura=@id
-END')
 END
 
 
@@ -657,22 +526,12 @@ END
 GO
 -- Stored procedure para borrado físico de la tabla ElectronicAccesories
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoFisicoElectronicAccesories') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    -- Aquí puedes crear el procedure si no existe
-    EXEC('CREATE PROCEDURE ddbba.BorradoFisicoElectronicAccesories
+CREATE OR ALTER PROCEDURE ddbba.BorradoFisicoElectronicAccesories
 	@product varchar(100)
 AS
 BEGIN
     Delete from ddbba.electronicAccesories
 		where Product=@product
-END')
 END
 
 
@@ -681,22 +540,12 @@ GO
 
 -- Stored procedure para borrado físico de la tabla VentasRegistradas
 
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoFisicoVentasRegistradas') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    -- Aquí puedes crear el procedure si no existe
-    EXEC('CREATE PROCEDURE ddbba.BorradoFisicoVentasRegistradas
+CREATE OR ALTER PROCEDURE ddbba.BorradoFisicoVentasRegistradas
 	@id int
 AS
 BEGIN
     Delete from ddbba.ventasRegistradas
 		where IDFactura=@id
-END')
 END
 
 
@@ -708,83 +557,91 @@ GO
 
 -- IMPORTACION
 
-/*
--- Stored procedure para importar datos desde 'Productos_importados.xlsx' a la tabla 'productosImportados'
-CREATE PROCEDURE ddbba.ImportarProductosImportados
-AS
-BEGIN
-    -- Habilitar la opción de Ad Hoc Distributed Queries (si no está habilitada)
-    EXEC sp_configure 'show advanced options', 1;
-    RECONFIGURE;
-	go
-    EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
-    RECONFIGURE;
-	go
-	EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'AllowInProcess', 1;
-	EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1;
-	go
-
-    -- Importar los datos desde el archivo Excel
-    INSERT INTO ddbba.productosImportados (NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
-    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\mio\Productos_importados.xlsx;HDR=YES',
-        'SELECT * FROM [Listado de Productos$]');
-
-    PRINT 'Datos importados exitosamente desde Productos_importados.xlsx';
-END;
-GO
-
-
-
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
 CREATE PROCEDURE ddbba.ImportarElectronicAccessories
 AS
 BEGIN
     INSERT INTO ddbba.electronicAccesories (Product, PrecioUnitarioUSD)
-    SELECT Product, PrecioUnitarioUSD
+    SELECT Product, [Precio Unitario en dolares]
     FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-        'Excel 12.0;Database=C:\ruta\Electronic accessories.xlsx;HDR=YES',
-        'SELECT * FROM [Hoja1$]');
+        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Electronic accessories.xlsx;HDR=YES',
+        'SELECT * FROM [Sheet1$]');
 
     PRINT 'Datos importados exitosamente desde Electronic accessories.xlsx';
 END;
 GO
+exec ddbba.ImportarElectronicAccessories
+drop procedure ddbba.ImportarElectronicAccessories
 
 
 -- Stored procedure para importar datos de 'catalogo.csv'
-CREATE PROCEDURE ddbba.ImportCatalogo
+
+
+
+CREATE PROCEDURE ddbba.CatalogoImportar
 AS
 BEGIN
-    BULK INSERT ddbba.catalogo
+    -- Crear una tabla temporal para la importación
+    CREATE TABLE #TempCatalogo (
+        id INT,
+        category VARCHAR(100),
+        nombre VARCHAR(100),
+        price nvarchar(10),
+        reference_price DECIMAL(10,2),
+        reference_unit VARCHAR(10),
+        fecha DATETIME
+    );
+
+    -- Realizar BULK INSERT en la tabla temporal
+    BULK INSERT #TempCatalogo
     FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\catalogo.csv'
     WITH (
         FIELDTERMINATOR = ',', 
-        ROWTERMINATOR = ',',
+        ROWTERMINATOR = '0x0D0A',
         FIRSTROW = 2,
-		CODEPAGE='1252'
+        CODEPAGE = '1252'
     );
+
+    -- Transferir los datos de la tabla temporal a la tabla definitiva
+    INSERT INTO ddbba.catalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
+    SELECT id, category, nombre, TRY_CAST(price as decimal(10,2)), reference_price, reference_unit, fecha
+    FROM #TempCatalogo;
+
+    -- Eliminar la tabla temporal
+    DROP TABLE #TempCatalogo;
+
     PRINT 'Datos del catálogo cargados correctamente.';
 END;
-GO
+
+exec ddbba.CatalogoImportar
+drop procedure ddbba.CatalogoImportar
 
 
 
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
-CREATE PROCEDURE ImportVentasRegistradas
+CREATE PROCEDURE ddbba.VentasRegistradasImportar
 AS
 BEGIN
     BULK INSERT ddbba.ventasRegistradas
     FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Ventas_registradas.csv'
     WITH (
-        FIELDTERMINATOR = ',', 
-        ROWTERMINATOR = '\n',
+        FIELDTERMINATOR = ';', 
+        ROWTERMINATOR = '0x0D0A',
         FIRSTROW = 2,
 		CODEPAGE= 'ACP'
     );
     PRINT 'Datos de ventas registradas cargados correctamente.';
 END;
 GO
+drop procedure ddbba.VentasRegistradasImportar
+exec ddbba.VentasRegistradasImportar
+
+
+
+
+
+
+
 
 CREATE PROCEDURE ddbba.ImportarInformacionAdicional
 AS
@@ -805,9 +662,9 @@ END;
 GO
 
 
+*/
 
-
-CREATE PROCEDURE ddbba.ImportarProductosImportados
+CREATE PROCEDURE ddbba.ProductosImportadosImportar
 AS
 BEGIN
     -- Configuración de propiedades de OLEDB
@@ -815,13 +672,16 @@ BEGIN
     EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1;
 
     -- Importar los datos desde el archivo Excel
-    INSERT INTO ddbba.productosImportados (NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
+    INSERT INTO ddbba.productosImportados (IdProducto,NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
+    SELECT IdProducto,NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
     FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-        'Excel 12.0;Database=Productos_importados.xlsx;HDR=YES',
+        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Productos_importados.xlsx;HDR=YES',
         'SELECT * FROM [Listado de Productos$]');
 
     PRINT 'Datos importados exitosamente desde Productos_importados.xlsx';
 END
 
-*/
+exec ddbba.ImportarProductosImportados
+drop procedure ddbba.ImportarProductosImportados
+
+select * from ddbba.productosImportados
