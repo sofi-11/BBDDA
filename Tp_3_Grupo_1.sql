@@ -132,18 +132,17 @@ BEGIN
         Cantidad INT, -- Cantidad de productos
         Fecha DATE, -- Fecha de la venta
         Hora TIME, -- Hora de la venta
-        MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit Card')), -- Medio de pago utilizado
+        MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit card')), -- Medio de pago utilizado
         Empleado INT, -- Identificador del empleado
         IdentificadorPago VARCHAR(25),
-			CHECK (
+			/*CHECK (
 			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
-			(MedioPago = 'Cash' AND (IdentificadorPago IS NULL OR IdentificadorPago = '')) OR
+			(MedioPago = 'Cash' AND (IdentificadorPago IS NULL OR IdentificadorPago = '--')) OR
 			(MedioPago = 'Credit Card' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
-			), -- Identificador de pago
+			), -- Identificador de pago*/
 			Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
-
 GO
 
 -- Verifica si la tabla 'InformacionAdicional' ya existe, si no, la crea.
@@ -558,60 +557,89 @@ GO
 -- IMPORTACION
 
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
-CREATE PROCEDURE ddbba.ImportarElectronicAccessories
+
+
+CREATE PROCEDURE ddbba.ImportarElectronicAccessories 
 AS
 BEGIN
-    INSERT INTO ddbba.electronicAccesories (Product, PrecioUnitarioUSD)
+    -- Crear tabla temporal
+    CREATE TABLE #TempElectronicAccessories (
+        Product varchar(100),
+        [Precio Unitario en dolares] decimal(10, 2)
+    );
+
+    -- Cargar los datos del archivo Excel en la tabla temporal
+    INSERT INTO #TempElectronicAccessories (Product, [Precio Unitario en dolares])
     SELECT Product, [Precio Unitario en dolares]
     FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
         'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Electronic accessories.xlsx;HDR=YES',
         'SELECT * FROM [Sheet1$]');
 
+    -- Insertar los datos de la tabla temporal en la tabla de destino
+    INSERT INTO ddbba.electronicAccesories (Product, PrecioUnitarioUSD)
+    SELECT t.Product, t.[Precio Unitario en dolares]
+    FROM #TempElectronicAccessories t
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM ddbba.electronicAccesories e
+        WHERE e.Product = t.Product collate Modern_Spanish_CI_AS
+    );
+
+    -- Eliminar la tabla temporal
+    DROP TABLE #TempElectronicAccessories;
+
     PRINT 'Datos importados exitosamente desde Electronic accessories.xlsx';
 END;
 GO
+
 exec ddbba.ImportarElectronicAccessories
 drop procedure ddbba.ImportarElectronicAccessories
+use AuroraSA
 
 
 -- Stored procedure para importar datos de 'catalogo.csv'
 
 
-
 CREATE PROCEDURE ddbba.CatalogoImportar
 AS
 BEGIN
-    -- Crear una tabla temporal para la importación
+    -- Crear tabla temporal para almacenar datos del archivo CSV
     CREATE TABLE #TempCatalogo (
         id INT,
         category VARCHAR(100),
         nombre VARCHAR(100),
-        price nvarchar(10),
-        reference_price DECIMAL(10,2),
+        price DECIMAL(10, 2),
+        reference_price DECIMAL(10, 2),
         reference_unit VARCHAR(10),
         fecha DATETIME
     );
 
-    -- Realizar BULK INSERT en la tabla temporal
-    BULK INSERT #TempCatalogo
-    FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\catalogo.csv'
-    WITH (
-        FIELDTERMINATOR = ',', 
-        ROWTERMINATOR = '0x0D0A',
-        FIRSTROW = 2,
-        CODEPAGE = '1252'
-    );
+    -- Cargar los datos del archivo CSV en la tabla temporal
+    INSERT INTO #TempCatalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
+    SELECT id, category, name, price, reference_price, reference_unit, date
+    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+    'Text;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\;HDR=YES',
+    'SELECT * FROM [catalogo.csv]');
 
-    -- Transferir los datos de la tabla temporal a la tabla definitiva
+    -- Insertar en la tabla de destino solo los registros que no existen
     INSERT INTO ddbba.catalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
-    SELECT id, category, nombre, TRY_CAST(price as decimal(10,2)), reference_price, reference_unit, fecha
-    FROM #TempCatalogo;
+    SELECT t.id, t.category, t.nombre, t.price, t.reference_price, t.reference_unit, t.fecha
+    FROM #TempCatalogo t
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM ddbba.catalogo c
+        WHERE c.id = t.id
+    );
 
     -- Eliminar la tabla temporal
     DROP TABLE #TempCatalogo;
 
-    PRINT 'Datos del catálogo cargados correctamente.';
+    PRINT 'Datos importados exitosamente desde catalogo.csv';
 END;
+GO
+
+select* from ddbba.catalogo
+
 
 exec ddbba.CatalogoImportar
 drop procedure ddbba.CatalogoImportar
@@ -633,12 +661,79 @@ BEGIN
     PRINT 'Datos de ventas registradas cargados correctamente.';
 END;
 GO
-drop procedure ddbba.VentasRegistradasImportar
+
 exec ddbba.VentasRegistradasImportar
 
 
+CREATE PROCEDURE ddbba.VentasRegistradasImportar
+AS
+BEGIN
+    -- 1. Crear la tabla temporal
+    CREATE TABLE #TempVentas (
+        IDFactura VARCHAR(50),
+        TipoFactura CHAR(1),
+        Ciudad VARCHAR(50),
+        TipoCliente VARCHAR(30),
+        Genero VARCHAR(10),
+        Producto NVARCHAR(100),
+        PrecioUnitario DECIMAL(10, 2),
+        Cantidad INT,
+        Fecha NVARCHAR(50),
+        Hora TIME,
+        MedioPago VARCHAR(20),
+        Empleado INT,
+        IdentificadorPago VARCHAR(25)
+    );
 
+    -- 2. Cargar los datos del CSV a la tabla temporal
+    BULK INSERT #TempVentas
+    FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Ventas_registradas.csv'
+    WITH (
+        FIELDTERMINATOR = ';',   -- Especifica el punto y coma como delimitador
+        ROWTERMINATOR = '\n',    -- Especifica el salto de línea como terminador de fila
+        FIRSTROW = 2             -- Omite la primera fila si es encabezado
+    );
 
+    -- 3. Insertar los datos de la tabla temporal a la tabla final
+    INSERT INTO ddbba.ventasRegistradas (
+        IDFactura, 
+        TipoFactura, 
+        Ciudad, 
+        TipoCliente, 
+        Genero, 
+        Producto, 
+        PrecioUnitario, 
+        Cantidad, 
+        Fecha, 
+        Hora, 
+        MedioPago, 
+        Empleado, 
+        IdentificadorPago
+    )
+    SELECT 
+        IDFactura, 
+        TipoFactura, 
+        Ciudad, 
+        TipoCliente, 
+        Genero, 
+        Producto, 
+        PrecioUnitario, 
+        Cantidad, 
+        CONVERT(DATE, Fecha, 101), 
+        Hora, 
+        MedioPago, 
+        Empleado, 
+        IdentificadorPago
+    FROM #TempVentas AS tv
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM ddbba.ventasRegistradas AS vr 
+        WHERE vr.IDFactura = tv.IDFactura collate Modern_Spanish_CI_AS
+    );
+
+    -- 4. Eliminar la tabla temporal
+    DROP TABLE #TempVentas;
+END;
 
 
 
