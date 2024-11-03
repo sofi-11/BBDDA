@@ -165,20 +165,20 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Emp
 BEGIN
     CREATE TABLE ddbba.Empleados (
 		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
-		Nombre VARCHAR(30), --Nombre del Empleado
-		Apellido VARCHAR(20), --Apellido del Empleado
-		DNI CHAR(8) CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
-		Direccion VARCHAR(150), --Direccion del Empleado
-        EmailPersonal VARCHAR(100), --Email Personal del Empleado 
-        EmailEmpresa VARCHAR(100), --Email Empresarial del Empleado
+		Nombre nVARCHAR(50), --Nombre del Empleado
+		Apellido nVARCHAR(50), --Apellido del Empleado
+		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
+		Direccion nVARCHAR(150), --Direccion del Empleado
+        EmailPersonal nVARCHAR(100), --Email Personal del Empleado 
+        EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
 		CUIL VARCHAR (100), --CUIL del Empleado
-		Cargo VARCHAR(30) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
-		Sucursal VARCHAR(30) CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
-		Turno VARCHAR(30) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
+		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
+		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
+		Turno VARCHAR(50),-- CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
-
+--drop table ddbba.Empleados
 GO
 -- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))
@@ -594,7 +594,6 @@ GO
 
 exec ddbba.ImportarElectronicAccessories
 drop procedure ddbba.ImportarElectronicAccessories
-use AuroraSA
 
 
 -- Stored procedure para importar datos de 'catalogo.csv'
@@ -645,22 +644,7 @@ exec ddbba.CatalogoImportar
 drop procedure ddbba.CatalogoImportar
 
 
-
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
-CREATE PROCEDURE ddbba.VentasRegistradasImportar
-AS
-BEGIN
-    BULK INSERT ddbba.ventasRegistradas
-    FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Ventas_registradas.csv'
-    WITH (
-        FIELDTERMINATOR = ';', 
-        ROWTERMINATOR = '0x0D0A',
-        FIRSTROW = 2,
-		CODEPAGE= 'ACP'
-    );
-    PRINT 'Datos de ventas registradas cargados correctamente.';
-END;
-GO
 
 exec ddbba.VentasRegistradasImportar
 
@@ -736,48 +720,123 @@ BEGIN
 END;
 
 
+--IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA 
 
+exec ddbba.ImportarEmpleadosDesdeExcel
 
-CREATE PROCEDURE ddbba.ImportarInformacionAdicional
+drop procedure ddbba.ImportarEmpleadosDesdeExcel
+CREATE PROCEDURE ddbba.ImportarEmpleadosDesdeExcel
 AS
 BEGIN
-    -- Habilita consultas distribuidas ad hoc (si no está habilitada)
-    EXEC sp_configure 'show advanced options', 1;
-    RECONFIGURE;
-    EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
-    RECONFIGURE;
+    -- 1. Crear la tabla temporal con la estructura que coincide con la hoja de Excel
+    CREATE TABLE #TempEmpleados (
+        Legajo varchar(10),            -- Numero unico que representa a cada Empleado
+        Nombre nVARCHAR(50),    -- Nombre del Empleado
+        Apellido nVARCHAR(50),  -- Apellido del Empleado
+        DNI CHAR(9),          -- DNI del Empleado
+        Direccion nVARCHAR(150),-- Direccion del Empleado
+        EmailPersonal nVARCHAR(100), -- Email Personal del Empleado
+        EmailEmpresa nVARCHAR(100),  -- Email Empresarial del Empleado
+        CUIL VARCHAR(100),     -- CUIL del Empleado
+        Cargo VARCHAR(50),     -- Cargo del Empleado
+        Sucursal VARCHAR(50),   -- Sucursal del Empleado
+        Turno VARCHAR(50)      -- Turno del Empleado
+    );
 
-    -- Importa datos desde el archivo Excel
-    INSERT INTO ddbba.InformacionAdicional (Ciudad, ReemplazarPor, Direccion, Horario, Telefono)
-    SELECT *
-    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-    'Excel 12.0;Database=C:\Ruta\al\archivo\Informacion_complementaria.xlsx;HDR=YES',
-    'SELECT * FROM [Sheet1$]');
+    -- 2. Cargar los datos de la hoja de Excel a la tabla temporal usando OPENROWSET
+    INSERT INTO #TempEmpleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
+    SELECT 
+        [Legajo/ID],
+        Nombre, 
+        Apellido, 
+        CAST(DNI AS INT), 
+        Direccion, 
+        [email personal], 
+        [email empresa], 
+        CUIL, 
+        Cargo, 
+        Sucursal, 
+        Turno
+		FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Informacion_complementaria.xlsx;HDR=YES',
+        'SELECT * FROM [Empleados$]');
+
+    -- 3. Insertar los datos en la tabla final ddbba.Empleados si el Legajo no existe
+    INSERT INTO ddbba.Empleados (
+        Legajo, 
+        Nombre, 
+        Apellido, 
+        DNI, 
+        Direccion, 
+        EmailPersonal, 
+        EmailEmpresa, 
+        CUIL, 
+        Cargo, 
+        Sucursal, 
+        Turno
+    )
+    SELECT 
+        cast(Legajo as int), 
+        Nombre, 
+        Apellido, 
+        DNI, 
+        Direccion, 
+        EmailPersonal, 
+        EmailEmpresa, 
+        CUIL, 
+        Cargo, 
+        Sucursal, 
+        Turno
+    FROM #TempEmpleados AS te
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM ddbba.Empleados AS e 
+        WHERE e.Legajo = te.Legajo
+    )
+	AND te.Legajo IS NOT NULL;
+
+    -- 4. Eliminar la tabla temporal
+    DROP TABLE #TempEmpleados;
 END;
-GO
 
 
 */
 
+exec ddbba.ProductosImportadosImportar
+drop procedure ddbba.ProductosImportadosImportar
+
 CREATE PROCEDURE ddbba.ProductosImportadosImportar
 AS
 BEGIN
-    -- Configuración de propiedades de OLEDB
-    EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'AllowInProcess', 1;
-    EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1;
+    -- Paso 1: Crear la tabla temporal
+    CREATE TABLE #TempProductos (
+        IdProducto VARCHAR(10),  -- Se utiliza VARCHAR para la importación
+        NombreProducto NVARCHAR(100),
+        Proveedor NVARCHAR(100),
+        Categoria VARCHAR(100),
+        CantidadPorUnidad VARCHAR(50),
+        PrecioUnidad DECIMAL(10, 2)
+    );
 
-    -- Importar los datos desde el archivo Excel
-    INSERT INTO ddbba.productosImportados (IdProducto,NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT IdProducto,NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
-    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+    -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal
+    INSERT INTO #TempProductos (IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
+    SELECT IdProducto, NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
+    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0', 
         'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Productos_importados.xlsx;HDR=YES',
-        'SELECT * FROM [Listado de Productos$]');
+        'SELECT * FROM [Listado de Productos$]'); 
 
-    PRINT 'Datos importados exitosamente desde Productos_importados.xlsx';
-END
+    -- Paso 3: Insertar datos en la tabla final, asegurando que no existan duplicados y que IdProducto no sea NULL
+    INSERT INTO ddbba.productosImportados(IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
+    SELECT CAST(tp.IdProducto AS INT), tp.NombreProducto, tp.Proveedor, tp.Categoria, tp.CantidadPorUnidad, tp.PrecioUnidad
+    FROM #TempProductos AS tp
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM ddbba.productosImportados AS p 
+        WHERE p.IdProducto = CAST(tp.IdProducto AS INT)
+    )
+	DROP TABLE #TempProductos;
+END;
 
-exec ddbba.ImportarProductosImportados
-drop procedure ddbba.ImportarProductosImportados
 
 select * from ddbba.productosImportados
 
