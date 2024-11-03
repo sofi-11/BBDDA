@@ -125,7 +125,7 @@ id,category,name,price,reference_price,reference_unit,date
 124,verdura,Pimiento verde freír,0.2,1.79,kg,2020-07-21 12:06:00
 125,verdura,Calabacín blanco,0.63,1.79,kg,2020-07-21 12:06:00
 126,verdura,Pimiento verde,0.55,2.29,kg,2020-07-21 12:06:00
-127,verdura,"Pimientos tricolor rojo, amarillo y verde",1.79,2.98,kg,2020-07-21 12:06:00
+"127,verdura,""Pimientos tricolor rojo, amarillo y verde"",1.79,2.98,kg,2020-07-21 12:06:00"
 128,verdura,Pimientos semipicantes,1.15,4.6,kg,2020-07-21 12:06:00
 129,verdura,Coliflor,2.25,1.99,kg,2020-07-21 12:06:00
 130,verdura,Repollo liso,1.39,1,kg,2020-07-21 12:06:00
@@ -225,7 +225,7 @@ id,category,name,price,reference_price,reference_unit,date
 224,pescado_fresco,Rape abierto en libro sin espina,15.42,9.95,kg,2020-07-21 12:06:00
 225,pescado_fresco,Rape sin piel y sin cabeza,15.42,9.95,kg,2020-07-21 12:06:00
 226,pescado_fresco,Rape sin aletas y sin dientes,15.42,9.95,kg,2020-07-21 12:06:00
-227,pescado_fresco,"Rodaballo con piel, sin aletas y sin agallas",10.55,9.95,kg,2020-07-21 12:06:00
+"227,pescado_fresco,""Rodaballo con piel, sin aletas y sin agallas"",10.55,9.95,kg,2020-07-21 12:06:00"
 228,pescado_fresco,Rodaballo a filetes,10.55,9.95,kg,2020-07-21 12:06:00
 229,pescado_fresco,Rodaballo a filetes y sin piel,10.55,9.95,kg,2020-07-21 12:06:00
 230,marisco,Gambón grande congelado,886.05,8.95,kg,2020-07-21 12:06:00
@@ -546,7 +546,7 @@ id,category,name,price,reference_price,reference_unit,date
 545,hamburguesas_y_picadas,Burger de pollo con queso,3.08,8.56,kg,2020-07-21 12:06:00
 546,hamburguesas_y_picadas,Mini burgers de pollo,1.5,7.5,kg,2020-07-21 12:06:00
 547,hamburguesas_y_picadas,Mini burgers de vacuno y cerdo,1.55,7.75,kg,2020-07-21 12:06:00
-548,hamburguesas_y_picadas,"Burger de pollo, cerdo y verdura",2.95,8.19,kg,2020-07-21 12:06:00
+"548,hamburguesas_y_picadas,""Burger de pollo, cerdo y verdura"",2.95,8.19,kg,2020-07-21 12:06:00"
 549,hamburguesas_y_picadas,Burger de vacuno y cerdo gruesas,2.6,7.22,kg,2020-07-21 12:06:00
 550,hamburguesas_y_picadas,Burger de pollo rural gruesas,3,8.33,kg,2020-07-21 12:06:00
 551,hamburguesas_y_picadas,Burger de cerdo ibérico gruesas,2.81,7.81,kg,2020-07-21 12:06:00
@@ -599,7 +599,7 @@ id,category,name,price,reference_price,reference_unit,date
 597,empanados_y_elaborados,Croquetas de pollo,3.2,9.55,kg,2020-07-21 12:06:00
 598,empanados_y_elaborados,Callos preparados de ternera Rogusa,2.95,5.9,kg,2020-07-21 12:06:00
 599,empanados_y_elaborados,Oreja de cerdo cocida adobada Rogusa,3.57,7.14,kg,2020-07-21 12:06:00
-600,arreglos,"Arreglo para puchero vacuno, cerdo y pollo",4.6,4.6,kg,2020-07-21 12:06:00
+"600,arreglos,""Arreglo para puchero vacuno, cerdo y pollo"",4.6,4.6,kg,2020-07-21 12:06:00"
 601,arreglos,Arreglo para arroz al horno,4.93,5.8,kg,2020-07-21 12:06:00
 602,arreglos,Pelota de cerdo,1.35,6.28,kg,2020-07-21 12:06:00
 603,arreglos,Hueso garrÃ³n Incarlopsa,0.87,2.99,kg,2020-07-21 12:06:00
@@ -816,7 +816,7 @@ id,category,name,price,reference_price,reference_unit,date
 814,queso_untable_y_fresco,Gorgonzola Hacendado,1.62,9.5,kg,2020-07-21 12:06:00
 815,queso_untable_y_fresco,Crema de queso camembert Hacendado,1.35,9,kg,2020-07-21 12:06:00
 816,queso_untable_y_fresco,Queso mascarpone Hacendado,1.7,6.8,kg,2020-07-21 12:06:00
-817,queso_untable_y_fresco,"Mousse de queso, ajo y finas hierbas Hacendado",0.95,6.33,kg,2020-07-21 12:06:00
+"817,queso_untable_y_fresco,""Mousse de queso, ajo y finas hierbas Hacendado"",0.95,6.33,kg,2020-07-21 12:06:00"
 818,queso_untable_y_fresco,Queso untar con finas hierbas Hacendado blanco pasteurizado,1.25,6.25,kg,2020-07-21 12:06:00
 819,queso_untable_y_fresco,Mousse de queso y nueces Hacendado,0.95,6.33,kg,2020-07-21 12:06:00
 820,queso_untable_y_fresco,Crema de queso sabor suave Hacendado,0.9,7.2,kg,2020-07-21 12:06:00
@@ -985,8 +985,8 @@ id,category,name,price,reference_price,reference_unit,date
 982,pan_de_horno,Barra de pan campesina masa madre,0.55,2.2,kg,2020-07-21 12:06:00
 983,pan_de_horno,Pan 100% de trigo espelta,1.25,4.63,kg,2020-07-21 12:06:00
 984,pan_de_horno,Barra de pan sin sal añadida,0.53,2.52,kg,2020-07-21 12:06:00
-985,pan_de_horno,"Pan de nueces 8,5%",1.5,4.29,kg,2020-07-21 12:06:00
-986,pan_de_horno,"Pan con semillas 4,5%",1.5,4.29,kg,2020-07-21 12:06:00
+"985,pan_de_horno,""Pan de nueces 8,5%"",1.5,4.29,kg,2020-07-21 12:06:00"
+"986,pan_de_horno,""Pan con semillas 4,5%"",1.5,4.29,kg,2020-07-21 12:06:00"
 987,pan_de_horno,2 Baguettes para hornear Hacendado,0.75,2.5,kg,2020-07-21 12:06:00
 988,pan_de_horno,Pan bregado,1.5,3,kg,2020-07-21 12:06:00
 989,pan_de_horno,Pan campeón del mundo,1.89,2.52,kg,2020-07-21 12:06:00
@@ -998,7 +998,7 @@ id,category,name,price,reference_price,reference_unit,date
 995,pan_de_horno,Bocadillo,0.2,1.43,kg,2020-07-21 12:06:00
 996,pan_de_horno,Pan de cristal redondo,0.35,4.49,kg,2020-07-21 12:06:00
 997,pan_de_horno,Panecillo de queso,0.35,4.38,kg,2020-07-21 12:06:00
-998,pan_de_horno,"4 Panes chapata de cristal masa madre, sin aditivos y con aceite de oliva",1,3.51,kg,2020-07-21 12:06:00
+"998,pan_de_horno,""4 Panes chapata de cristal masa madre, sin aditivos y con aceite de oliva"",1,3.51,kg,2020-07-21 12:06:00"
 999,pan_de_horno,Panecillo de 6 cereales,0.25,2.78,kg,2020-07-21 12:06:00
 1000,pan_de_horno,5 Barras de pan 51% integral,1,1.6,kg,2020-07-21 12:06:00
 1001,pan_de_horno,Panecillo 50% harina integral de trigo sin sal añadida,0.2,2.5,kg,2020-07-21 12:06:00
@@ -1015,8 +1015,8 @@ id,category,name,price,reference_price,reference_unit,date
 1012,pan_de_horno,Pan campeón del mundo rebanado,1.89,2.52,kg,2020-07-21 12:06:00
 1013,pan_de_horno,Pan integral 100% rebanado,1.6,4.57,kg,2020-07-21 12:06:00
 1014,pan_de_horno,Pan 100% de trigo espelta rebanado,1.25,4.63,kg,2020-07-21 12:06:00
-1015,pan_de_horno,"Pan de nueces 8,5% rebanado",1.5,4.29,kg,2020-07-21 12:06:00
-1016,pan_de_horno,"Pan con semillas 4,5% rebanado",1.5,4.29,kg,2020-07-21 12:06:00
+"1015,pan_de_horno,""Pan de nueces 8,5% rebanado"",1.5,4.29,kg,2020-07-21 12:06:00"
+"1016,pan_de_horno,""Pan con semillas 4,5% rebanado"",1.5,4.29,kg,2020-07-21 12:06:00"
 1017,pan_de_horno,Barra pan de pueblo rebanada,1.15,1.44,kg,2020-07-21 12:06:00
 1018,pan_de_horno,3 Barras de pan rebanadas,1.1,1.47,kg,2020-07-21 12:06:00
 1019,pan_de_horno,Barra de pan rebanada,0.45,1.8,kg,2020-07-21 12:06:00
@@ -1049,7 +1049,7 @@ id,category,name,price,reference_price,reference_unit,date
 1046,pan_de_molde_y_otras_especialidades,Pan de sándwich cereales La Familia,1.09,3.52,kg,2020-07-21 12:06:00
 1047,pan_de_molde_y_otras_especialidades,Pan de molde con 52% centeno Hacendado,1.39,1.93,kg,2020-07-21 12:06:00
 1048,pan_de_molde_y_otras_especialidades,Pan de molde 12 cereales y semillas Hacendado,1.5,2.21,kg,2020-07-21 12:06:00
-1049,pan_de_molde_y_otras_especialidades,"Hogaza de espelta 38% y centeno 25% con semillas de quinoa 1,9% & chía 1,3%",1.3,3.82,kg,2020-07-21 12:06:00
+"1049,pan_de_molde_y_otras_especialidades,""Hogaza de espelta 38% y centeno 25% con semillas de quinoa 1,9% & chía 1,3%"",1.3,3.82,kg,2020-07-21 12:06:00"
 1050,pan_de_molde_y_otras_especialidades,Pan de molde cereales Hacendado,0.99,2.15,kg,2020-07-21 12:06:00
 1051,pan_de_molde_y_otras_especialidades,Pan integral de centeno Hacendado,1.15,2.3,kg,2020-07-21 12:06:00
 1052,pan_de_molde_y_otras_especialidades,Hogaza 100% natural,1,2.74,kg,2020-07-21 12:06:00
@@ -1267,7 +1267,7 @@ id,category,name,price,reference_price,reference_unit,date
 1264,tartas_y_pasteles,Tarta infantil Frozen congelada,7.5,10,kg,2020-07-21 12:06:00
 1265,tartas_y_pasteles,Tarta infantil Peppa Pig congelada,11,6.47,kg,2020-07-21 12:06:00
 1266,tartas_y_pasteles,Tarta infantil Peppa Pig congelada,7.5,10,kg,2020-07-21 12:06:00
-1267,tartas_y_pasteles,"Macarons de limón, pistacho, café, fresa y chocolate",1.75,31.82,kg,2020-07-21 12:06:00
+"1267,tartas_y_pasteles,""Macarons de limón, pistacho, café, fresa y chocolate"",1.75,31.82,kg,2020-07-21 12:06:00"
 1268,tartas_y_pasteles,Lionesas de nata y trufa Hacendado congeladas,4,11.43,kg,2020-07-21 12:06:00
 1269,tartas_y_pasteles,Surtido de repostería congelada,4,18.6,kg,2020-07-21 12:06:00
 1270,tartas_y_pasteles,Trufas de chocolate congeladas,3.3,16.18,kg,2020-07-21 12:06:00
@@ -1566,28 +1566,28 @@ id,category,name,price,reference_price,reference_unit,date
 1563,cereales,Muesli crujiente con frutos secos Hacendado,1.75,3.5,kg,2020-07-21 12:06:00
 1564,cereales,Muesli crujiente sin azúcares añadidos Hacendado,1.6,3.2,kg,2020-07-21 12:06:00
 1565,cereales,Copos de trigo integral y arroz bañados en chocolate con leche Hacendado,1.79,4.77,kg,2020-07-21 12:06:00
-1566,cereales,"Copos de arroz, trigo integral y cebada con chocolate Hacendado",1.99,4.42,kg,2020-07-21 12:06:00
+"1566,cereales,""Copos de arroz, trigo integral y cebada con chocolate Hacendado"",1.99,4.42,kg,2020-07-21 12:06:00"
 1567,cereales,Muesli crunchy Hacendado,1.25,2.5,kg,2020-07-21 12:06:00
 1568,cereales,Cereales de trigo entero integral Weetabix,2.65,6.16,kg,2020-07-21 12:06:00
 1569,cereales,Muesli crujiente con fruta Hacendado,1.59,3.18,kg,2020-07-21 12:06:00
 1570,cereales,Avena molida Hacendado,1,2,kg,2020-07-21 12:06:00
 1571,cereales,Cereales choco All-Bran Kellogg's,2.59,6.91,kg,2020-07-21 12:06:00
-1572,cereales,"Copos de arroz, trigo integral y cebada con frutos rojos Hacendado",1.5,5,kg,2020-07-21 12:06:00
+"1572,cereales,""Copos de arroz, trigo integral y cebada con frutos rojos Hacendado"",1.5,5,kg,2020-07-21 12:06:00"
 1573,cereales,Salvado de avena Hacendado,1.15,2.3,kg,2020-07-21 12:06:00
-1574,cereales,"Copos de arroz, trigo y cebada integral classic Hacendado",1.59,3.18,kg,2020-07-21 12:06:00
+"1574,cereales,""Copos de arroz, trigo y cebada integral classic Hacendado"",1.59,3.18,kg,2020-07-21 12:06:00"
 1575,cereales,Cereales y semillas granola Hacendado con frutos secos,1.85,4.63,kg,2020-07-21 12:06:00
 1576,cereales,Copos de trigo integral fruta & fibra Hacendado,1.49,3.31,kg,2020-07-21 12:06:00
 1577,cereales,Muesli con frutas Hacendado,1.59,1.59,kg,2020-07-21 12:06:00
 1578,cereales,Muesli 50% frutas y frutos secos Hacendado,1.79,3.58,kg,2020-07-21 12:06:00
 1579,cereales,Salvado de trigo integral Hacendado,0.89,3.56,kg,2020-07-21 12:06:00
-1580,cereales,"Muesli con quinoa, chía y chocolate negro Hacendado",1.8,4.5,kg,2020-07-21 12:06:00
+"1580,cereales,""Muesli con quinoa, chía y chocolate negro Hacendado"",1.8,4.5,kg,2020-07-21 12:06:00"
 1581,cereales,Cereal mix 0% azúcares añadidos Hacendado,2.3,6.13,kg,2020-07-21 12:06:00
 1582,cereales,Barritas de cereales Hacendado chocolate con leche,1.15,9.58,kg,2020-07-21 12:06:00
 1583,cereales,Barritas de cereales Hacendado con chocolate blanco,1.1,9.17,kg,2020-07-21 12:06:00
 1584,cereales,Barritas de cereales muesli Hacendado con chocolate,0.99,7.17,kg,2020-07-21 12:06:00
 1585,cereales,Barritas de sésamo Schock's,0.85,11.33,kg,2020-07-21 12:06:00
 1586,cereales,Barritas de cereales muesli Hacendado frutos secos,0.97,6.47,kg,2020-07-21 12:06:00
-1587,cereales,"Barritas de cereales Hacendado con avena, chocolate negro y naranja",1.15,6.85,kg,2020-07-21 12:06:00
+"1587,cereales,""Barritas de cereales Hacendado con avena, chocolate negro y naranja"",1.15,6.85,kg,2020-07-21 12:06:00"
 1588,cereales,Barritas de cereales Hacendado con arándanos,1.35,11.25,kg,2020-07-21 12:06:00
 1589,cereales,Barrita con proteínas Enervit Sport sabor chocolate,2.2,18.33,kg,2020-07-21 12:06:00
 1590,cereales,Barrita con proteínas Enervit Sport sabor yogur y vainilla,2.95,24.58,kg,2020-07-21 12:06:00
@@ -1630,7 +1630,7 @@ id,category,name,price,reference_price,reference_unit,date
 1627,galletas,Galletas mini de espelta Hacendado 0% azúcares añadidos,1.15,5.75,kg,2020-07-21 12:06:00
 1628,galletas,Galletas tostadas al horno Flora,1.29,2.87,kg,2020-07-21 12:06:00
 1629,galletas,Galletas Digestive fibra 23% Hacendado,1.4,3.5,kg,2020-07-21 12:06:00
-1630,galletas,"Galletas de cereales con miel, avellana y chocolate Belvita",1,4.44,kg,2020-07-21 12:06:00
+"1630,galletas,""Galletas de cereales con miel, avellana y chocolate Belvita"",1,4.44,kg,2020-07-21 12:06:00"
 1631,galletas,Galletas Digestive manzana & avena Hacendado,1.4,3.65,kg,2020-07-21 12:06:00
 1632,galletas,Galletas Cookies Hacendado,0.85,3.78,kg,2020-07-21 12:06:00
 1633,galletas,Galletas rebuenas Hacendado rellenas de chocolate,0.89,1.78,kg,2020-07-21 12:06:00
@@ -1968,8 +1968,8 @@ id,category,name,price,reference_price,reference_unit,date
 1962,chocolate,Monedas de chocolate con leche,0.8,11.43,kg,2020-07-21 12:06:00
 1963,chocolate,Huevos de chocolate Hacendado dibujo,1.45,24.17,kg,2020-07-21 12:06:00
 1964,chocolate,Mini huevos de chocolate con leche Schoko-Bons rellenos de leche y avellanas,3,15,kg,2020-07-21 12:06:00
-1965,chocolate,"Bolas de cereal Hacendado bañadas de chocolate negro, con leche y blanco",1.75,8.75,kg,2020-07-21 12:06:00
-1966,chocolate,"Barritas de barquillo Hacendado rellenas con leche, avellanas y cacao",1,7.69,kg,2020-07-21 12:06:00
+"1965,chocolate,""Bolas de cereal Hacendado bañadas de chocolate negro, con leche y blanco"",1.75,8.75,kg,2020-07-21 12:06:00"
+"1966,chocolate,""Barritas de barquillo Hacendado rellenas con leche, avellanas y cacao"",1,7.69,kg,2020-07-21 12:06:00"
 1967,chocolate,Barritas de barquillo Kinder Bueno white bañadas de chocolate blanco,2.25,19.23,kg,2020-07-21 12:06:00
 1968,chocolate,Perlas de chocolate negro Hacendado rellenas de preparado de frutas,2,13.33,kg,2020-07-21 12:06:00
 1969,chocolate,Huevo de chocolate Hacendado,1,20,kg,2020-07-21 12:06:00
@@ -1978,7 +1978,7 @@ id,category,name,price,reference_price,reference_unit,date
 1972,chocolate,Bombitas choco Hacendado palomitas bañadas al cacao,0.95,9.5,kg,2020-07-21 12:06:00
 1973,chocolate,Barritas de chocolate blanco Nestlé con galleta rellena de caramelo y cereales,0.85,9.44,kg,2020-07-21 12:06:00
 1974,chocolate,Barritas chocolate con leche Nestlé con galleta rellena de caramelo y cereales,0.85,9.44,kg,2020-07-21 12:06:00
-1975,chocolate,"Surtido bombones Senzza de chocolate con avellana, fondant, praliné y almendra",3.75,7.98,kg,2020-07-21 12:06:00
+"1975,chocolate,""Surtido bombones Senzza de chocolate con avellana, fondant, praliné y almendra"",3.75,7.98,kg,2020-07-21 12:06:00"
 1976,chocolate,Bombones cereza al licor La Boutique del Praliné con chocolate negro extrafino,1.53,10.55,kg,2020-07-21 12:06:00
 1977,chocolate,Surtido bombones Caja Roja Nestlé,8.95,22.38,kg,2020-07-21 12:06:00
 1978,chocolate,Surtido bombones Caja Roja Nestlé,4.95,24.75,kg,2020-07-21 12:06:00
@@ -2061,7 +2061,7 @@ id,category,name,price,reference_price,reference_unit,date
 2056,tomate_y_otros_sabores,Zumo de tomate picante Big Tom,1.65,6.6,L,2020-07-21 12:06:00
 2057,tomate_y_otros_sabores,Zumo de manzana Hacendado,0.59,0.59,L,2020-07-21 12:06:00
 2058,tomate_y_otros_sabores,Zumo de manzana Hacendado,1.05,0.88,L,2020-07-21 12:06:00
-2059,tomate_y_otros_sabores,"Néctar de maracuyá Hacendado fruta de la pasión, mango, uva y manzana",0.7,0.7,L,2020-07-21 12:06:00
+"2059,tomate_y_otros_sabores,""Néctar de maracuyá Hacendado fruta de la pasión, mango, uva y manzana"",0.7,0.7,L,2020-07-21 12:06:00"
 2060,tomate_y_otros_sabores,Néctar de mango Hacendado sin azúcares añadidos,0.76,0.76,L,2020-07-21 12:06:00
 2061,tomate_y_otros_sabores,Néctar de pomelo Hacendado sin azúcares añadidos,1,1,L,2020-07-21 12:06:00
 2062,tomate_y_otros_sabores,Néctar guayaba Hacendado sin azúcares añadidos,0.9,0.9,L,2020-07-21 12:06:00
@@ -2084,7 +2084,7 @@ id,category,name,price,reference_price,reference_unit,date
 2079,fruta_variada,Fruta + leche naranja y mango Hacendado sin azúcares añadidos,1.1,1.11,L,2020-07-21 12:06:00
 2080,fruta_variada,Bebida Bahamas Hacendado,0.95,0.48,L,2020-07-21 12:06:00
 2081,fruta_variada,Néctar tropical Hacendado sin azúcares añadidos,0.57,0.57,L,2020-07-21 12:06:00
-2082,fruta_variada,"Bebida de zumo de naranja, mango y zanahoria La Verja sin azúcares añadidos",1,0.67,L,2020-07-21 12:06:00
+"2082,fruta_variada,""Bebida de zumo de naranja, mango y zanahoria La Verja sin azúcares añadidos"",1,0.67,L,2020-07-21 12:06:00"
 2083,fruta_variada,Néctar 5 frutas Hacendado sin azúcares añadidos,1.25,1.04,L,2020-07-21 12:06:00
 2084,fruta_variada,Bebida de arándanos y frutas rojas Hacendado sin azúcares añadidos,1.4,1.4,L,2020-07-21 12:06:00
 2085,fruta_variada,Zumo tropical Hacendado,0.9,0.9,L,2020-07-21 12:06:00
@@ -2135,7 +2135,7 @@ id,category,name,price,reference_price,reference_unit,date
 2130,yogures_naturales_y_sabores,Yogur natural azucarado Hacendado,1.44,0.96,kg,2020-07-21 12:06:00
 2131,yogures_naturales_y_sabores,Yogur natural azucarado Danone,1.99,2.07,kg,2020-07-21 12:06:00
 2132,yogures_naturales_y_sabores,Yogur natural azucarado Nutricia,1.4,2.8,kg,2020-07-21 12:06:00
-2133,yogures_naturales_y_sabores,"Yogur sin lactosa Hacendado cremoso, natural y azucarado",1.3,2.6,kg,2020-07-21 12:06:00
+"2133,yogures_naturales_y_sabores,""Yogur sin lactosa Hacendado cremoso, natural y azucarado"",1.3,2.6,kg,2020-07-21 12:06:00"
 2134,yogures_naturales_y_sabores,Yogur cremoso natural azucarado Hacendado,0.89,1.78,kg,2020-07-21 12:06:00
 2135,yogures_naturales_y_sabores,Yogur natural edulcorado Densia 0% materia grasa,1.69,3.52,kg,2020-07-21 12:06:00
 2136,yogures_naturales_y_sabores,Yogur sin lactosa Hacendado natural azucarado,1.2,2.4,kg,2020-07-21 12:06:00
@@ -2274,16 +2274,16 @@ id,category,name,price,reference_price,reference_unit,date
 2268,gelatina_y_otros_postres,Gelatina de yogur lima limón Hacendado 0% materia grasa 0% azúcares añadidos,0.7,1.4,kg,2020-07-21 12:06:00
 2269,gelatina_y_otros_postres,Gelatina sabor fresa Hacendado,0.85,1.42,kg,2020-07-21 12:06:00
 2270,gelatina_y_otros_postres,Gelatina 0% azúcar sabor fresa Hacendado,0.98,1.63,kg,2020-07-21 12:06:00
-2271,gelatina_y_otros_postres,"Gelatina sabores limón, multifrutas y naranja Hacendado",0.85,1.42,kg,2020-07-21 12:06:00
+"2271,gelatina_y_otros_postres,""Gelatina sabores limón, multifrutas y naranja Hacendado"",0.85,1.42,kg,2020-07-21 12:06:00"
 2272,gelatina_y_otros_postres,Gelatina + proteínas Hacendado sabor a frutos silvestres,1.05,2.63,kg,2020-07-21 12:06:00
-2273,gelatina_y_otros_postres,"Gelatina 0% azúcar sabores fresa, multifrutas y limón Hacendado",0.98,1.63,kg,2020-07-21 12:06:00
+"2273,gelatina_y_otros_postres,""Gelatina 0% azúcar sabores fresa, multifrutas y limón Hacendado"",0.98,1.63,kg,2020-07-21 12:06:00"
 2274,gelatina_y_otros_postres,Gelatina de yogur fresa Hacendado 0% materia grasa 0% azúcares añadidos,0.7,1.4,kg,2020-07-21 12:06:00
 2275,gelatina_y_otros_postres,Copa crema de chocolate y nata Hacendado,0.85,1.85,kg,2020-07-21 12:06:00
 2276,gelatina_y_otros_postres,Arroz con leche Hacendado,0.97,2.11,kg,2020-07-21 12:06:00
 2277,gelatina_y_otros_postres,Yogur sabor vainilla YogoMix Hacendado con disquitos chocolateados,0.87,2.9,kg,2020-07-21 12:06:00
 2278,gelatina_y_otros_postres,Mousse de chocolate Hacendado,0.71,2.84,kg,2020-07-21 12:06:00
 2279,gelatina_y_otros_postres,Tiramisú Hacendado,1.1,6.11,kg,2020-07-21 12:06:00
-2280,gelatina_y_otros_postres,"Yogur azucarado YogoMix Hacendado variado de copos maíz, bolitas y disquitos chocolateados",2.52,2.8,kg,2020-07-21 12:06:00
+"2280,gelatina_y_otros_postres,""Yogur azucarado YogoMix Hacendado variado de copos maíz, bolitas y disquitos chocolateados"",2.52,2.8,kg,2020-07-21 12:06:00"
 2281,gelatina_y_otros_postres,Yogur azucarado YogoMix Hacendado con bolitas chocolateadas,0.87,2.9,kg,2020-07-21 12:06:00
 2282,gelatina_y_otros_postres,Panna Cotta con caramelo Hacendado,1.15,2.88,kg,2020-07-21 12:06:00
 2283,gelatina_y_otros_postres,Cuajada Hacendado,0.95,1.9,kg,2020-07-21 12:06:00
@@ -2298,8 +2298,8 @@ id,category,name,price,reference_price,reference_unit,date
 2292,gelatina_y_otros_postres,Pudding Hacendado,1.9,3.49,kg,2020-07-21 12:06:00
 2293,gelatina_y_otros_postres,Tocino de cielo Hacendado,1.08,5.4,kg,2020-07-21 12:06:00
 2294,gelatina_y_otros_postres,La cuajada de leche de oveja Goshua,1.99,7.11,kg,2020-07-21 12:06:00
-2295,aceite_vinagre_y_sal,"Aceite de oliva 0,4º Hacendado",10.6,2.12,L,2020-07-21 12:06:00
-2296,aceite_vinagre_y_sal,"Aceite de oliva 0,4º Hacendado",2.4,2.4,L,2020-07-21 12:06:00
+"2295,aceite_vinagre_y_sal,""Aceite de oliva 0,4º Hacendado"",10.6,2.12,L,2020-07-21 12:06:00"
+"2296,aceite_vinagre_y_sal,""Aceite de oliva 0,4º Hacendado"",2.4,2.4,L,2020-07-21 12:06:00"
 2297,aceite_vinagre_y_sal,Aceite de oliva virgen extra Hacendado,9.5,3.17,L,2020-07-21 12:06:00
 2298,aceite_vinagre_y_sal,Aceite de oliva virgen extra Hacendado,3.5,3.5,L,2020-07-21 12:06:00
 2299,aceite_vinagre_y_sal,Aceite de oliva virgen extra Hacendado Gran Selección,3.69,4.92,L,2020-07-21 12:06:00
@@ -2311,10 +2311,10 @@ id,category,name,price,reference_price,reference_unit,date
 2305,aceite_vinagre_y_sal,Aceite de oliva virgen extra Hacendado,2.15,10.75,L,2020-07-21 12:06:00
 2306,aceite_vinagre_y_sal,Aceite de oliva virgen Casalbert,11.95,2.39,L,2020-07-21 12:06:00
 2307,aceite_vinagre_y_sal,Aceite de oliva virgen extra Casa Juncal,3.95,7.9,L,2020-07-21 12:06:00
-2308,aceite_vinagre_y_sal,"Aceite de girasol refinado 0,2º Hacendado",4.79,0.96,L,2020-07-21 12:06:00
-2309,aceite_vinagre_y_sal,"Aceite de girasol refinado 0,2º Hacendado",0.99,0.99,L,2020-07-21 12:06:00
-2310,aceite_vinagre_y_sal,"Aceite de semillas refinado 0,2º Hacendado",7.15,1.43,L,2020-07-21 12:06:00
-2311,aceite_vinagre_y_sal,"Aceite de semillas refinado 0,2º Hacendado",1.53,1.53,L,2020-07-21 12:06:00
+"2308,aceite_vinagre_y_sal,""Aceite de girasol refinado 0,2º Hacendado"",4.79,0.96,L,2020-07-21 12:06:00"
+"2309,aceite_vinagre_y_sal,""Aceite de girasol refinado 0,2º Hacendado"",0.99,0.99,L,2020-07-21 12:06:00"
+"2310,aceite_vinagre_y_sal,""Aceite de semillas refinado 0,2º Hacendado"",7.15,1.43,L,2020-07-21 12:06:00"
+"2311,aceite_vinagre_y_sal,""Aceite de semillas refinado 0,2º Hacendado"",1.53,1.53,L,2020-07-21 12:06:00"
 2312,aceite_vinagre_y_sal,Aceite de aguacate Ethnos,5,20,L,2020-07-21 12:06:00
 2313,aceite_vinagre_y_sal,Aceite de coco virgen Hacendado,4.5,10,L,2020-07-21 12:06:00
 2314,aceite_vinagre_y_sal,Vinagre de vino blanco Hacendado,0.49,0.49,L,2020-07-21 12:06:00
@@ -2326,7 +2326,7 @@ id,category,name,price,reference_price,reference_unit,date
 2320,aceite_vinagre_y_sal,Bebida aromatizada a base de vino para cocinar Abuela Carola,1.99,2.65,L,2020-07-21 12:06:00
 2321,aceite_vinagre_y_sal,Vinagre de vino tinto Hacendado,0.57,0.57,L,2020-07-21 12:06:00
 2322,aceite_vinagre_y_sal,Reducción de vinagre Pedro Ximénez Hacendado,2,6.67,kg,2020-07-21 12:06:00
-2323,aceite_vinagre_y_sal,"Aceite de oliva, vinagre y sal Merry",1.32,13.2,L,2020-07-21 12:06:00
+"2323,aceite_vinagre_y_sal,""Aceite de oliva, vinagre y sal Merry"",1.32,13.2,L,2020-07-21 12:06:00"
 2324,aceite_vinagre_y_sal,Crema de vinagre balsámico de manzana Hacendado,2.15,8.6,kg,2020-07-21 12:06:00
 2325,aceite_vinagre_y_sal,Sal fina Hacendado,0.23,0.23,kg,2020-07-21 12:06:00
 2326,aceite_vinagre_y_sal,Sal fina de mesa Hacendado,0.38,1.52,kg,2020-07-21 12:06:00
@@ -2443,7 +2443,7 @@ id,category,name,price,reference_price,reference_unit,date
 2441,otras_salsas,Salsa chimichurri Hacendado,1.25,5,L,2020-07-21 12:06:00
 2442,otras_salsas,Salsa pesto alla genovese Hacendado,1.5,7.5,kg,2020-07-21 12:06:00
 2443,otras_salsas,Salsa boloñesa Hacendado,1.15,3.83,kg,2020-07-21 12:06:00
-2444,otras_salsas,"Salsa de tomate, albahaca y orégano Hacendado",1,3.33,kg,2020-07-21 12:06:00
+"2444,otras_salsas,""Salsa de tomate, albahaca y orégano Hacendado"",1,3.33,kg,2020-07-21 12:06:00"
 2445,otras_salsas,Salsa fresca trufa Hacendado,1.5,10.71,kg,2020-07-21 12:06:00
 2446,otras_salsas,Salsa fresca queso Hacendado,1.29,7.17,kg,2020-07-21 12:06:00
 2447,otras_salsas,Salsa fresca pesto Hacendado,1.5,10,kg,2020-07-21 12:06:00
@@ -2463,7 +2463,7 @@ id,category,name,price,reference_price,reference_unit,date
 2461,otras_salsas,Bechamel Hacendado,1.55,2.58,L,2020-07-21 12:06:00
 2462,otras_salsas,Salsa mexicana Hacendado,1.2,3.81,kg,2020-07-21 12:06:00
 2463,otras_salsas,Salsa césar Hacendado,1.2,3.87,L,2020-07-21 12:06:00
-2464,otras_salsas,"Aliño de aceite, ajo y perejil Hacendado",1.2,8,L,2020-07-21 12:06:00
+"2464,otras_salsas,""Aliño de aceite, ajo y perejil Hacendado"",1.2,8,L,2020-07-21 12:06:00"
 2465,otras_salsas,Salsa de queso Hacendado,1.25,4.17,kg,2020-07-21 12:06:00
 2466,otras_salsas,Salsa miel y mostaza Hacendado,1.2,4,L,2020-07-21 12:06:00
 2467,otras_salsas,Salsa yogur Hacendado,1.2,3.87,L,2020-07-21 12:06:00
@@ -2546,7 +2546,7 @@ id,category,name,price,reference_price,reference_unit,date
 2544,pasta_y_fideos,Girasoles frescos con quesos Hacendado,1.59,6.36,kg,2020-07-21 12:06:00
 2545,pasta_y_fideos,Tortellini con ricotta y espinacas Pagani,0.99,3.96,kg,2020-07-21 12:06:00
 2546,pasta_y_fideos,Medialunas frescas parmigiano reggiano y trufa Bel Canto,2.5,10,kg,2020-07-21 12:06:00
-2547,pasta_y_fideos,"Redondos frescos berenjena, tomate y mozzarella Bel Canto",1.98,7.92,kg,2020-07-21 12:06:00
+"2547,pasta_y_fideos,""Redondos frescos berenjena, tomate y mozzarella Bel Canto"",1.98,7.92,kg,2020-07-21 12:06:00"
 2548,pasta_y_fideos,Medialunas frescas calabaza y crema de quesos Bel Canto,2.5,10,kg,2020-07-21 12:06:00
 2549,pasta_y_fideos,Gran tortelloni fresco albahaca Hacendado,1.59,6.36,kg,2020-07-21 12:06:00
 2550,pasta_y_fideos,Gnocchi frescos al pesto Hacendado,1.75,4.38,kg,2020-07-21 12:06:00
@@ -2758,7 +2758,7 @@ id,category,name,price,reference_price,reference_unit,date
 2756,conservas_de_verdura_y_frutas,Dulce de boniato Hida,2.7,3.29,kg,2020-07-21 12:06:00
 2757,conservas_de_verdura_y_frutas,Mandarina en almíbar ligero Hacendado,1.2,6.86,kg,2020-07-21 12:06:00
 2758,conservas_de_verdura_y_frutas,Dulce de frutas El membrillero,1.55,3.88,kg,2020-07-21 12:06:00
-2759,conservas_de_verdura_y_frutas,"Pera, melocotón,uva, albaricoque, y piña en zumo de uva Hacendado",2.5,5.21,kg,2020-07-21 12:06:00
+"2759,conservas_de_verdura_y_frutas,""Pera, melocotón,uva, albaricoque, y piña en zumo de uva Hacendado"",2.5,5.21,kg,2020-07-21 12:06:00"
 2760,sopa_y_caldo,Sopa de pollo Gallina Blanca con fideos finos,0.55,7.75,kg,2020-07-21 12:06:00
 2761,sopa_y_caldo,Sopa de ave Gallina Blanca con fideos,0.55,7.24,kg,2020-07-21 12:06:00
 2762,sopa_y_caldo,Sopa de pollo Hacendado con fideos finos,0.75,5.28,kg,2020-07-21 12:06:00
@@ -3042,9 +3042,9 @@ id,category,name,price,reference_price,reference_unit,date
 3039,pizzas,Masa fresca pizza de cereales y semillas Hacendado,2.38,4.58,kg,2020-07-21 12:06:00
 3040,pizzas,Rosca jamón serrano y queso emmental Hacendado,2.8,6.67,kg,2020-07-21 12:06:00
 3041,pizzas,Quiche verduras Hacendado con calabacín y queso de cabra,1.99,5.1,kg,2020-07-21 12:06:00
-3042,pizzas,"Rosca lomo, bacón y queso emmental Hacendado",2.8,6.22,kg,2020-07-21 12:06:00
+"3042,pizzas,""Rosca lomo, bacón y queso emmental Hacendado"",2.8,6.22,kg,2020-07-21 12:06:00"
 3043,pizzas,Quiche york y bacón Hacendado,1.99,5.24,kg,2020-07-21 12:06:00
-3044,pizzas,"Focaccia con queso, romero y tomillo Hacendado",1.5,5,kg,2020-07-21 12:06:00
+"3044,pizzas,""Focaccia con queso, romero y tomillo Hacendado"",1.5,5,kg,2020-07-21 12:06:00"
 3045,platos_preparados_calientes,Lasaña boloñesa familiar Hacendado,3.85,5.5,kg,2020-07-21 12:06:00
 3046,platos_preparados_calientes,Lasaña boloñesa Hacendado,2.4,6.86,kg,2020-07-21 12:06:00
 3047,platos_preparados_calientes,Lasaña de espinacas y requesón Hacendado,2.8,8,kg,2020-07-21 12:06:00
@@ -3062,12 +3062,12 @@ id,category,name,price,reference_price,reference_unit,date
 3059,platos_preparados_calientes,Pollo asado troceado Platos Tradicionales,4.65,4.65,kg,2020-07-21 12:06:00
 3060,platos_preparados_calientes,Codillo de cerdo asado Hacendado,6.2,6.2,kg,2020-07-21 12:06:00
 3061,platos_preparados_calientes,Alitas de pollo asadas Hacendado,3.33,6.65,kg,2020-07-21 12:06:00
-3062,platos_preparados_calientes,"Pollo asado Tradigust relleno con jamón, queso y huevo",7.3,7.3,kg,2020-07-21 12:06:00
+"3062,platos_preparados_calientes,""Pollo asado Tradigust relleno con jamón, queso y huevo"",7.3,7.3,kg,2020-07-21 12:06:00"
 3063,platos_preparados_calientes,Muslo de pato en confit Hacendado,4.02,13.4,kg,2020-07-21 12:06:00
 3064,platos_preparados_calientes,Albóndigas guisadas Hacendado,2.8,10.18,kg,2020-07-21 12:06:00
 3065,platos_preparados_calientes,Migas Hacendado,2.1,5.25,kg,2020-07-21 12:06:00
 3066,platos_preparados_calientes,Costillas de cerdo a la barbacoa cortadas Hacendado,4.2,8.4,kg,2020-07-21 12:06:00
-3067,platos_preparados_calientes,"Pollo asado Tradigust relleno con ciruelas, pasas y nueces",7.3,7.3,kg,2020-07-21 12:06:00
+"3067,platos_preparados_calientes,""Pollo asado Tradigust relleno con ciruelas, pasas y nueces"",7.3,7.3,kg,2020-07-21 12:06:00"
 3068,platos_preparados_calientes,Pollo al curry Hacendado con arroz basmati,2.5,8.93,kg,2020-07-21 12:06:00
 3069,platos_preparados_calientes,Pollo con almendras Hacendado y arroz tres delicias,2.75,9.82,kg,2020-07-21 12:06:00
 3070,platos_preparados_calientes,Fideos orientales sabor pollo Yum Yum,0.7,10,kg,2020-07-21 12:06:00
@@ -3139,7 +3139,7 @@ id,category,name,price,reference_price,reference_unit,date
 3136,platos_preparados_frios,Tabulé oriental Hacendado,1.43,3.18,kg,2020-07-21 12:06:00
 3137,platos_preparados_frios,Pastel de atún Hacendado,2.8,10.77,kg,2020-07-21 12:06:00
 3138,platos_preparados_frios,Hummus de aguacate Hacendado,1.7,8.5,kg,2020-07-21 12:06:00
-3139,platos_preparados_frios,"Sándwich pavo, queso y espinacas Hacendado",1.5,8.11,kg,2020-07-21 12:06:00
+"3139,platos_preparados_frios,""Sándwich pavo, queso y espinacas Hacendado"",1.5,8.11,kg,2020-07-21 12:06:00"
 3140,platos_preparados_frios,Sándwich jamón york y queso Hacendado pan sin corteza,1.5,9.38,kg,2020-07-21 12:06:00
 3141,platos_preparados_frios,Sándwiches jamón y queso Hacendado,2,4.17,kg,2020-07-21 12:06:00
 3142,naranja,Zumo de naranja recién exprimido Hacendado,1.25,5,L,2020-07-21 12:06:00
@@ -3170,7 +3170,7 @@ id,category,name,price,reference_price,reference_unit,date
 3167,verdura,Guisante muy tierno Hacendado ultracongelado,0.8,2.67,kg,2020-07-21 12:06:00
 3168,verdura,Espinaca en porciones Hacendado ultracongelada,0.75,1.67,kg,2020-07-21 12:06:00
 3169,verdura,Menestra de verduras con habas baby Hacendado ultracongelada,1.09,1.09,kg,2020-07-21 12:06:00
-3170,verdura,"Relleno fajitas pollo, pimientos y cebolla Hacendado ultracongelado",1.35,4.5,kg,2020-07-21 12:06:00
+"3170,verdura,""Relleno fajitas pollo, pimientos y cebolla Hacendado ultracongelado"",1.35,4.5,kg,2020-07-21 12:06:00"
 3171,verdura,Habitas muy tiernas Hacendado ultracongeladas,2.95,9.83,kg,2020-07-21 12:06:00
 3172,verdura,Haba fina Hacendado ultracongelada,1.1,2.44,kg,2020-07-21 12:06:00
 3173,verdura,Salteado de setas Hacendado ultracongeladas,1.59,3.53,kg,2020-07-21 12:06:00
@@ -3181,7 +3181,7 @@ id,category,name,price,reference_price,reference_unit,date
 3178,verdura,Parrillada de verduras Hacendado ultracongeladas,1.2,3,kg,2020-07-21 12:06:00
 3179,verdura,Espárrago verde troceado Hacendado ultracongelado,1.9,6.33,kg,2020-07-21 12:06:00
 3180,verdura,Salteado de verduras asadas Hacendado ultracongeladas,1.5,3.75,kg,2020-07-21 12:06:00
-3181,verdura,"Salteado de gambas, ajetes y espárragos verdes Hacendado ultracongelado",2.46,5.47,kg,2020-07-21 12:06:00
+"3181,verdura,""Salteado de gambas, ajetes y espárragos verdes Hacendado ultracongelado"",2.46,5.47,kg,2020-07-21 12:06:00"
 3182,verdura,Brócoli Hacendado,1.49,1.49,kg,2020-07-21 12:06:00
 3183,verdura,Salteado de pollo Hacendado ultracongelado,1.8,4,kg,2020-07-21 12:06:00
 3184,verdura,Menestra especial de verdura Hacendado ultracongelada,1.99,1.99,kg,2020-07-21 12:06:00
@@ -3198,7 +3198,7 @@ id,category,name,price,reference_price,reference_unit,date
 3195,verdura,Alcachofa corazones Hacendado ultracongelada,2.7,6,kg,2020-07-21 12:06:00
 3196,verdura,Rollitos primavera ultracongelados,1.5,5,kg,2020-07-21 12:06:00
 3197,verdura,Croquetas de espinacas Hacendado ultracongeladas,1.5,4.29,kg,2020-07-21 12:06:00
-3198,verdura,"Coliflor, brócoli y zanahoria Hacendado ultracongelada",1.85,1.85,kg,2020-07-21 12:06:00
+"3198,verdura,""Coliflor, brócoli y zanahoria Hacendado ultracongelada"",1.85,1.85,kg,2020-07-21 12:06:00"
 3199,verdura,Coles de Bruselas Hacendado ultracongeladas,0.79,1.76,kg,2020-07-21 12:06:00
 3200,verdura,Coliflor Hacendado ultracongelada,1.29,1.29,kg,2020-07-21 12:06:00
 3201,verdura,Perejil troceado Hacendado ultracongelado,1.09,14.53,kg,2020-07-21 12:06:00
@@ -3443,7 +3443,7 @@ id,category,name,price,reference_price,reference_unit,date
 3440,helados,Helado mini chocolate Hacendado,2.35,4.9,L,2020-07-21 12:06:00
 3441,helados,Helado cucurucho vainilla caramelo con nueces pecán Hacendado,1.7,3.86,L,2020-07-21 12:06:00
 3442,helados,Helado negro Hacendado,2.4,3.33,L,2020-07-21 12:06:00
-3443,helados,"Helado espiral vainilla, naranja y fresa",1.75,3.33,L,2020-07-21 12:06:00
+"3443,helados,""Helado espiral vainilla, naranja y fresa"",1.75,3.33,L,2020-07-21 12:06:00"
 3444,helados,Helado mini galletas cacao Hacendado,2.35,4.9,L,2020-07-21 12:06:00
 3445,helados,Helado cremoso de limón Hacendado sin azúcares añadidos,1.7,4.25,L,2020-07-21 12:06:00
 3446,helados,Medios cocos helados Hacendado,2.05,5.86,L,2020-07-21 12:06:00
@@ -3470,7 +3470,7 @@ id,category,name,price,reference_price,reference_unit,date
 3467,helados,Helado frutas Hacendado,2,6.67,L,2020-07-21 12:06:00
 3468,helados,Granizado de horchata Hacendado,2.3,1.92,L,2020-07-21 12:06:00
 3469,helados,Granizado agua de cebada Hacendado,2.2,1.83,L,2020-07-21 12:06:00
-3470,helados,"Mini helado de sorbete Hipnotic Hacendado naranja, limón, piña y fresa",2.3,3.54,L,2020-07-21 12:06:00
+"3470,helados,""Mini helado de sorbete Hipnotic Hacendado naranja, limón, piña y fresa"",2.3,3.54,L,2020-07-21 12:06:00"
 3471,helados,Helado de chocolate Hacendado,2.25,2.25,L,2020-07-21 12:06:00
 3472,helados,Helado de vainilla Hacendado,1.35,1.35,L,2020-07-21 12:06:00
 3473,helados,Helado de leche merengada Hacendado,1.95,1.95,L,2020-07-21 12:06:00
@@ -3495,8 +3495,8 @@ id,category,name,price,reference_price,reference_unit,date
 3491,helados,Helado vegetal de soja sabor mango con frambuesa,3.9,3.9,L,2020-07-21 12:06:00
 3492,helados,Helado vegetal de avena sabor vainilla,3.95,3.95,L,2020-07-21 12:06:00
 3493,helados,Helado polvito Hacendado sabor a galleta y merengue,2.55,2.55,L,2020-07-21 12:06:00
-3494,helados,"Helado 3 sabores Hacendado chocolate, vainilla y fresa",1.35,1.35,L,2020-07-21 12:06:00
-3495,helados,"Barra de helado sabor vainilla, chocolate y nata Hacendado",0.99,0.99,L,2020-07-21 12:06:00
+"3494,helados,""Helado 3 sabores Hacendado chocolate, vainilla y fresa"",1.35,1.35,L,2020-07-21 12:06:00"
+"3495,helados,""Barra de helado sabor vainilla, chocolate y nata Hacendado"",0.99,0.99,L,2020-07-21 12:06:00"
 3496,helados,Barra de helado turrón Hacendado,1.99,1.99,L,2020-07-21 12:06:00
 3497,helados,Tarta helada nata y chocolate Hacendado,1.75,1.46,L,2020-07-21 12:06:00
 3498,helados,Obleas para helados Hacendado,0.4,7.02,kg,2020-07-21 12:06:00
@@ -3829,8 +3829,8 @@ id,category,name,price,reference_price,reference_unit,date
 3827,cerveza,Cerveza Shandy sabor limón Steinburg,0.32,0.97,L,2020-07-21 12:06:00
 3828,cerveza,Cerveza Shandy sabor limón Steinburg,2.04,1.03,L,2020-07-21 12:06:00
 3829,cerveza,Cerveza Shandy sabor limón Steinburg,0.34,1.03,L,2020-07-21 12:06:00
-3830,cerveza,"Cerveza Radler Steinburg 0,0% sin alcohol",2.4,1.21,L,2020-07-21 12:06:00
-3831,cerveza,"Cerveza Radler Steinburg 0,0% sin alcohol",0.4,1.21,L,2020-07-21 12:06:00
+"3830,cerveza,""Cerveza Radler Steinburg 0,0% sin alcohol"",2.4,1.21,L,2020-07-21 12:06:00"
+"3831,cerveza,""Cerveza Radler Steinburg 0,0% sin alcohol"",0.4,1.21,L,2020-07-21 12:06:00"
 3832,cerveza,Cerveza con sabor a tequila 1897,3,1.52,L,2020-07-21 12:06:00
 3833,cerveza,Cerveza con sabor a tequila 1897,0.5,1.52,L,2020-07-21 12:06:00
 3834,cerveza,Cerveza con sabor a tequila 1897,4.5,2.27,L,2020-07-21 12:06:00
@@ -3841,26 +3841,26 @@ id,category,name,price,reference_price,reference_unit,date
 3839,cerveza,Bebida cider con gas Wild panther sabor a mora,0.9,2.73,L,2020-07-21 12:06:00
 3840,cerveza,Bebida cider con gas Wild panther sabor a mango y maracuyá,9.6,2.42,L,2020-07-21 12:06:00
 3841,cerveza,Bebida cider con gas Wild panther sabor a mango y maracuyá,0.9,2.73,L,2020-07-21 12:06:00
-3842,cerveza_sin_alcohol,"Cerveza 0,0% sin alcohol San Miguel",2.52,1.68,L,2020-07-21 12:06:00
+"3842,cerveza_sin_alcohol,""Cerveza 0,0% sin alcohol San Miguel"",2.52,1.68,L,2020-07-21 12:06:00"
 3843,cerveza_sin_alcohol,Cerveza sin alcohol Steinburg,0.85,0.85,L,2020-07-21 12:06:00
 3844,cerveza_sin_alcohol,Cerveza sin alcohol Steinburg,1.6,1.07,L,2020-07-21 12:06:00
-3845,cerveza_sin_alcohol,"Cerveza 0,0% sin alcohol Falke",1.7,1.13,L,2020-07-21 12:06:00
-3846,cerveza_sin_alcohol,"Cerveza de trigo 0,0% sin alcohol Holland Bavaria",0.95,2.88,L,2020-07-21 12:06:00
-3847,cerveza_sin_alcohol,"Cerveza 0,0% sin alcohol tostada Mahou",0.9,2.73,L,2020-07-21 12:06:00
+"3845,cerveza_sin_alcohol,""Cerveza 0,0% sin alcohol Falke"",1.7,1.13,L,2020-07-21 12:06:00"
+"3846,cerveza_sin_alcohol,""Cerveza de trigo 0,0% sin alcohol Holland Bavaria"",0.95,2.88,L,2020-07-21 12:06:00"
+"3847,cerveza_sin_alcohol,""Cerveza 0,0% sin alcohol tostada Mahou"",0.9,2.73,L,2020-07-21 12:06:00"
 3848,cerveza_sin_alcohol,Cerveza sin alcohol Steinburg,3.24,0.82,L,2020-07-21 12:06:00
 3849,cerveza_sin_alcohol,Cerveza sin alcohol Steinburg,0.27,0.82,L,2020-07-21 12:06:00
-3850,cerveza_sin_alcohol,"Cerveza 0,0% sin alcohol San Miguel",4.32,1.64,L,2020-07-21 12:06:00
-3851,cerveza_sin_alcohol,"Cerveza 0,0% sin alcohol San Miguel",0.56,1.7,L,2020-07-21 12:06:00
-3852,cerveza_sin_alcohol,"Cerveza 0,0% sin alcohol Falke",3.96,1,L,2020-07-21 12:06:00
-3853,cerveza_sin_alcohol,"Cerveza 0,0% sin alcohol Falke",0.33,1,L,2020-07-21 12:06:00
-3854,cerveza_sin_alcohol,"Cerveza sin gluten Steinburg 0,0% sin alcohol",2.1,1.06,L,2020-07-21 12:06:00
-3855,cerveza_sin_alcohol,"Cerveza sin gluten Steinburg 0,0% sin alcohol",0.35,1.06,L,2020-07-21 12:06:00
+"3850,cerveza_sin_alcohol,""Cerveza 0,0% sin alcohol San Miguel"",4.32,1.64,L,2020-07-21 12:06:00"
+"3851,cerveza_sin_alcohol,""Cerveza 0,0% sin alcohol San Miguel"",0.56,1.7,L,2020-07-21 12:06:00"
+"3852,cerveza_sin_alcohol,""Cerveza 0,0% sin alcohol Falke"",3.96,1,L,2020-07-21 12:06:00"
+"3853,cerveza_sin_alcohol,""Cerveza 0,0% sin alcohol Falke"",0.33,1,L,2020-07-21 12:06:00"
+"3854,cerveza_sin_alcohol,""Cerveza sin gluten Steinburg 0,0% sin alcohol"",2.1,1.06,L,2020-07-21 12:06:00"
+"3855,cerveza_sin_alcohol,""Cerveza sin gluten Steinburg 0,0% sin alcohol"",0.35,1.06,L,2020-07-21 12:06:00"
 3856,tinto_de_verano_y_sangria,Sangría Casón Histórico,1.2,0.8,L,2020-07-21 12:06:00
 3857,tinto_de_verano_y_sangria,Tinto de verano limón Sandevid,1.4,0.93,L,2020-07-21 12:06:00
 3858,tinto_de_verano_y_sangria,Tinto de verano zero limón Casón Histórico,1,0.5,L,2020-07-21 12:06:00
 3859,tinto_de_verano_y_sangria,Sangría Don Simón,1.75,1.17,L,2020-07-21 12:06:00
 3860,tinto_de_verano_y_sangria,Tinto de verano clásico Sandevid,1.4,0.93,L,2020-07-21 12:06:00
-3861,tinto_de_verano_y_sangria,"Tinto de verano 0,0% sin alcohol limón Don Simón",1,0.67,L,2020-07-21 12:06:00
+"3861,tinto_de_verano_y_sangria,""Tinto de verano 0,0% sin alcohol limón Don Simón"",1,0.67,L,2020-07-21 12:06:00"
 3862,tinto_de_verano_y_sangria,Tinto de verano limón Don Simón,1.3,0.87,L,2020-07-21 12:06:00
 3863,tinto_de_verano_y_sangria,Tinto de verano sabor limón Casón Histórico,1.18,0.59,L,2020-07-21 12:06:00
 3864,tinto_de_verano_y_sangria,Tinto de verano clásico Don Simón,1.3,0.87,L,2020-07-21 12:06:00
@@ -4011,7 +4011,7 @@ id,category,name,price,reference_price,reference_unit,date
 4009,sidra_y_cava,Cava semi seco Freixenet,5.4,7.2,L,2020-07-21 12:06:00
 4010,sidra_y_cava,Bebida zumo de frutas con gas Magic sin alcohol,1.55,2.07,L,2020-07-21 12:06:00
 4011,sidra_y_cava,Cava semi seco Señorío De Requena,2.5,3.33,L,2020-07-21 12:06:00
-4012,sidra_y_cava,"Vino espumoso sin alcohol 0,0% Viña secret",3.3,4.4,L,2020-07-21 12:06:00
+"4012,sidra_y_cava,""Vino espumoso sin alcohol 0,0% Viña secret"",3.3,4.4,L,2020-07-21 12:06:00"
 4013,licores,Vermouth bianco Martini,8.99,8.99,L,2020-07-21 12:06:00
 4014,licores,Vermouth rosso Martini,8.99,8.99,L,2020-07-21 12:06:00
 4015,licores,Aperitivo Aperol,11.5,16.43,L,2020-07-21 12:06:00
@@ -4151,7 +4151,7 @@ id,category,name,price,reference_price,reference_unit,date
 4150,cuidado_e_higiene_facial,Crema facial efecto lifting Deliplus,4,8,100 ml,2020-07-21 12:06:00
 4151,cuidado_e_higiene_facial,Hidratante facial BB cream Deliplus tono arena clara FPS 30,3.5,7,100 ml,2020-07-21 12:06:00
 4152,cuidado_e_higiene_facial,Hidratante facial BB cream Deliplus tono tierra tostada FPS 30,3.5,7,100 ml,2020-07-21 12:06:00
-4153,cuidado_e_higiene_facial,"Crema facial día 24K Gold progress Deliplus protectora FPS 10 rostro, cuello y escote",5,10,100 ml,2020-07-21 12:06:00
+"4153,cuidado_e_higiene_facial,""Crema facial día 24K Gold progress Deliplus protectora FPS 10 rostro, cuello y escote"",5,10,100 ml,2020-07-21 12:06:00"
 4154,cuidado_e_higiene_facial,Crema facial antiarrugas Deliplus,4,4,100 ml,2020-07-21 12:06:00
 4155,cuidado_e_higiene_facial,Crema facial antioxidante y regenerante Beauté Mediterranea Dragon's blood,5,10,100 ml,2020-07-21 12:06:00
 4156,cuidado_e_higiene_facial,Crema facial hidratante día Revitalift L'Oréal antiarrugas extra firmeza,9.95,19.9,100 ml,2020-07-21 12:06:00
@@ -4160,7 +4160,7 @@ id,category,name,price,reference_price,reference_unit,date
 4159,cuidado_e_higiene_facial,Crema facial día antiarrugas Q10 plus Nivea,8.2,16.4,100 ml,2020-07-21 12:06:00
 4160,cuidado_e_higiene_facial,Hidratante facial todo en uno BB cream Garnier tono medio FPS 15,8.75,17.5,100 ml,2020-07-21 12:06:00
 4221,higiene_bucal,Dentífrico gel infantil +6 años Deliplus Gorjuss,1,1.33,100 ml,2020-07-21 12:06:00
-4161,cuidado_e_higiene_facial,"Crema facial noche 24K Gold progress Deliplus multirreparadora rostro, cuello y escote",5,10,100 ml,2020-07-21 12:06:00
+"4161,cuidado_e_higiene_facial,""Crema facial noche 24K Gold progress Deliplus multirreparadora rostro, cuello y escote"",5,10,100 ml,2020-07-21 12:06:00"
 4162,cuidado_e_higiene_facial,Fluido hidratante Deliplus pieles grasas,2.8,3.73,100 ml,2020-07-21 12:06:00
 4163,cuidado_e_higiene_facial,Crema facial noche antiarrugas Q10 plus Nivea,8.2,16.4,100 ml,2020-07-21 12:06:00
 4164,cuidado_e_higiene_facial,Hidratante facial matificante té verde Garnier piel mixta,5.4,10.8,100 ml,2020-07-21 12:06:00
@@ -4387,7 +4387,7 @@ id,category,name,price,reference_price,reference_unit,date
 4386,cuidado_corporal,Aceite corporal aloe vera Deliplus,1.65,0.41,100 ml,2020-07-21 12:06:00
 4387,cuidado_corporal,Loción corporal 10% urea pura Deliplus,1.95,0.49,100 ml,2020-07-21 12:06:00
 4388,cuidado_corporal,Crema corporal con aceite de argán Deliplus,2,0.8,100 ml,2020-07-21 12:06:00
-4389,cuidado_corporal,"Loción corporal pieles atópicas Deliplus con omegas 3,6 y 9",2.2,0.55,100 ml,2020-07-21 12:06:00
+"4389,cuidado_corporal,""Loción corporal pieles atópicas Deliplus con omegas 3,6 y 9"",2.2,0.55,100 ml,2020-07-21 12:06:00"
 4390,cuidado_corporal,Gel corporal aloe vera,3.75,0.96,100 ml,2020-07-21 12:06:00
 4391,cuidado_corporal,Loción hidratante bajo ducha Deliplus,2.5,0.63,100 ml,2020-07-21 12:06:00
 4392,cuidado_corporal,Loción corporal reafirmante Q10 Nivea piel normal,5.75,1.44,100 ml,2020-07-21 12:06:00
@@ -4426,7 +4426,7 @@ id,category,name,price,reference_price,reference_unit,date
 4425,cuidado_corporal,Crema de manos aloe vera Deliplus,1,0.8,100 ml,2020-07-21 12:06:00
 4426,cuidado_corporal,Crema de manos Karité Deliplus,1.29,1.03,100 ml,2020-07-21 12:06:00
 4427,cuidado_corporal,Crema de manos concentrada Deliplus,1.25,1.67,100 ml,2020-07-21 12:06:00
-4428,cuidado_corporal,"Crema de manos, cara y cuerpo Nivea Soft hidratante intensiva",1.95,2.6,100 ml,2020-07-21 12:06:00
+"4428,cuidado_corporal,""Crema de manos, cara y cuerpo Nivea Soft hidratante intensiva"",1.95,2.6,100 ml,2020-07-21 12:06:00"
 4429,cuidado_corporal,Crema de manos anti-manchas Deliplus,1.29,1.03,100 ml,2020-07-21 12:06:00
 4430,cuidado_corporal,Crema de manos delhi rose Deliplus,2.3,0.92,100 ml,2020-07-21 12:06:00
 4431,cuidado_corporal,Crema de manos nutritiva Dove intensiva,2,2.67,100 ml,2020-07-21 12:06:00
@@ -4533,7 +4533,7 @@ id,category,name,price,reference_price,reference_unit,date
 4532,depilacion,Bandas de cera especial cara y pequeñas zonas Deliplus piel sensible,1.2,1.2,ud,2020-07-21 12:06:00
 4533,depilacion,Bandas de cera especial piernas Deliplus piel sensible,1.3,0.08,ud,2020-07-21 12:06:00
 4534,depilacion,Crema depilatoria hombre Deliplus,3,1.5,100 ml,2020-07-21 12:06:00
-4535,depilacion,"Bandas de cera especial brazos, ingles y axilas Deliplus piel sensible",1.25,0.1,ud,2020-07-21 12:06:00
+"4535,depilacion,""Bandas de cera especial brazos, ingles y axilas Deliplus piel sensible"",1.25,0.1,ud,2020-07-21 12:06:00"
 4536,depilacion,Crema depilatoria Deliplus piel sensible,2.6,1.3,100 ml,2020-07-21 12:06:00
 4537,depilacion,Crema depilatoria Deliplus piel normal,2.5,1.25,100 ml,2020-07-21 12:06:00
 4538,depilacion,Crema decolorante rostro y cuerpo Deliplus todo tipo de pieles,2.6,1.73,100 ml,2020-07-21 12:06:00
@@ -4604,7 +4604,7 @@ id,category,name,price,reference_price,reference_unit,date
 4603,afeitado_y_cuidado_para_hombre,Recambios maquinilla de afeitar Gillette Fusion proshield,14.95,4.98,ud,2020-07-21 12:06:00
 4604,afeitado_y_cuidado_para_hombre,Recambios maquinilla de afeitar Gillette Mach 3 Start,7.95,1.99,ud,2020-07-21 12:06:00
 4605,afeitado_y_cuidado_para_hombre,Recambios maquinilla de afeitar Hydro 5 sense Wilkinson,8.95,2.98,ud,2020-07-21 12:06:00
-4606,afeitado_y_cuidado_para_hombre,"Crema cara, cuerpo y manos Nivea Men",3.7,2.47,100 ml,2020-07-21 12:06:00
+"4606,afeitado_y_cuidado_para_hombre,""Crema cara, cuerpo y manos Nivea Men"",3.7,2.47,100 ml,2020-07-21 12:06:00"
 4607,afeitado_y_cuidado_para_hombre,Crema facial antiarrugas y antiedad 9.60 hombre,3.95,7.9,100 ml,2020-07-21 12:06:00
 4608,afeitado_y_cuidado_para_hombre,Cuidado hidratante anti-fatiga 24H L'Oréal men expert Hydra energetic,7.95,15.9,100 ml,2020-07-21 12:06:00
 4609,afeitado_y_cuidado_para_hombre,Crema facial hidratante 24H Vído hombre,5.5,11,100 ml,2020-07-21 12:06:00
@@ -5110,14 +5110,14 @@ id,category,name,price,reference_price,reference_unit,date
 5109,coloracion_cabello,Coloración permanente Deliplus 6.1 rubio oscuro ceniza,3.9,3.9,ud,2020-07-21 12:06:00
 5110,coloracion_cabello,Coloración permanente Deliplus 6.4 rubio oscuro cobrizo,3.9,3.9,ud,2020-07-21 12:06:00
 5111,coloracion_cabello,Coloración permanente Deliplus 7 rubio medio,3.9,3.9,ud,2020-07-21 12:06:00
-5112,coloracion_cabello,"Coloración permanente Deliplus 7,5.1 rubio medio ceniza",3.9,3.9,ud,2020-07-21 12:06:00
+"5112,coloracion_cabello,""Coloración permanente Deliplus 7,5.1 rubio medio ceniza"",3.9,3.9,ud,2020-07-21 12:06:00"
 5113,coloracion_cabello,Coloración permanente Deliplus 7.1 rubio medio ceniza,3.9,3.9,ud,2020-07-21 12:06:00
 5114,coloracion_cabello,Coloración permanente Deliplus 7.3 rubio medio dorado,3.9,3.9,ud,2020-07-21 12:06:00
 5115,coloracion_cabello,Coloración permanente Deliplus 7.31 nude beige,3.9,3.9,ud,2020-07-21 12:06:00
 5116,coloracion_cabello,Coloración permanente Deliplus 7.40 rubio cobrizo intenso,3.9,3.9,ud,2020-07-21 12:06:00
 5117,coloracion_cabello,Coloración permanente Deliplus 7.77 rubio marrón intenso,3.9,3.9,ud,2020-07-21 12:06:00
 5118,coloracion_cabello,Coloración permanente Deliplus 8 rubio claro,3.9,3.9,ud,2020-07-21 12:06:00
-5119,coloracion_cabello,"Coloración permanente Deliplus 8,5.1 rubio claro ceniza",3.9,3.9,ud,2020-07-21 12:06:00
+"5119,coloracion_cabello,""Coloración permanente Deliplus 8,5.1 rubio claro ceniza"",3.9,3.9,ud,2020-07-21 12:06:00"
 5120,coloracion_cabello,Coloración permanente Deliplus 8.1 rubio claro ceniza,3.9,3.9,ud,2020-07-21 12:06:00
 5121,coloracion_cabello,Coloración permanente Deliplus 8.3 rubio claro dorado,3.9,3.9,ud,2020-07-21 12:06:00
 5122,coloracion_cabello,Coloración permanente Deliplus 8.31 nude arena,3.9,3.9,ud,2020-07-21 12:06:00
@@ -5136,7 +5136,7 @@ id,category,name,price,reference_price,reference_unit,date
 5135,coloracion_cabello,Coloración permanente Garnier 110 rubio extra claro ceniza,3.65,3.65,ud,2020-07-21 12:06:00
 5136,coloracion_cabello,Coloración permanente sin amoníaco Azalea 6.6 rubio oscuro rojizo,3.5,3.5,ud,2020-07-21 12:06:00
 5137,coloracion_cabello,Coloración permanente sin amoníaco Azalea 7 rubio,3.5,3.5,ud,2020-07-21 12:06:00
-5138,coloracion_cabello,"Coloración permanente sin amoníaco Azalea 8.77 rubio claro, marrón intenso",3.5,3.5,ud,2020-07-21 12:06:00
+"5138,coloracion_cabello,""Coloración permanente sin amoníaco Azalea 8.77 rubio claro, marrón intenso"",3.5,3.5,ud,2020-07-21 12:06:00"
 5139,coloracion_cabello,Coloración permanente sin amoníaco Garnier 9.0 rubio muy claro,6.35,6.35,ud,2020-07-21 12:06:00
 5140,coloracion_cabello,Coloración permanente L'Oréal 6 rubio oscuro,7.95,7.95,ud,2020-07-21 12:06:00
 5141,coloracion_cabello,Coloración permanente L'Oréal 6.1 rubio ceniza oscuro,7.95,7.95,ud,2020-07-21 12:06:00
@@ -5464,7 +5464,7 @@ id,category,name,price,reference_price,reference_unit,date
 5463,fitoterapia,Cápsulas evácuax forte Deliplus,3.95,21.94,100 g,2020-07-21 12:06:00
 5464,fitoterapia,Ampollas ginseng Deliplus jalea real y vitamina C,4.95,4.13,100 ml,2020-07-21 12:06:00
 5465,fitoterapia,Cápsulas valeriana Deliplus,4.15,13.39,100 g,2020-07-21 12:06:00
-5466,fitoterapia,"Cápsulas cabello, uñas Deliplus",3.95,18.81,100 g,2020-07-21 12:06:00
+"5466,fitoterapia,""Cápsulas cabello, uñas Deliplus"",3.95,18.81,100 g,2020-07-21 12:06:00"
 5467,fitoterapia,Ampollas própolis Deliplus jalea real y vitamina C,4.95,4.13,100 ml,2020-07-21 12:06:00
 5468,fitoterapia,Spray oral própolis Deliplus,3.65,18.25,100 ml,2020-07-21 12:06:00
 5469,fitoterapia,Cápsulas vientre plano Deliplus,3.95,23.24,100 g,2020-07-21 12:06:00
@@ -5561,10 +5561,10 @@ id,category,name,price,reference_price,reference_unit,date
 5560,alimentacion_infantil,Papilla fresa y plátano +8 meses Hacendado,0.7,5.83,kg,2020-07-21 12:06:00
 5561,alimentacion_infantil,Papilla fruta variada +6 meses Hacendado,0.7,5.83,kg,2020-07-21 12:06:00
 5562,alimentacion_infantil,Papilla fruta variada +4 meses Hacendado,1.85,3.56,kg,2020-07-21 12:06:00
-5563,alimentacion_infantil,"Papilla plátano, naranja y galleta +4 meses Hacendado",1.5,3.75,kg,2020-07-21 12:06:00
+"5563,alimentacion_infantil,""Papilla plátano, naranja y galleta +4 meses Hacendado"",1.5,3.75,kg,2020-07-21 12:06:00"
 5564,alimentacion_infantil,Papilla manzana y plátano +6 meses Hacendado,0.7,5.83,kg,2020-07-21 12:06:00
 5565,alimentacion_infantil,Papilla cuatro frutas con avena +8 meses Hacendado,1.65,4.13,kg,2020-07-21 12:06:00
-5566,alimentacion_infantil,"Papilla plátano, mandarina y pera +4 meses Hacendado",1.85,3.56,kg,2020-07-21 12:06:00
+"5566,alimentacion_infantil,""Papilla plátano, mandarina y pera +4 meses Hacendado"",1.85,3.56,kg,2020-07-21 12:06:00"
 5567,alimentacion_infantil,Papilla compota de manzana +4 meses Hacendado,0.94,3.62,kg,2020-07-21 12:06:00
 5568,alimentacion_infantil,Papilla cuatro frutas con yogur +6 meses Hacendado,1.65,4.13,kg,2020-07-21 12:06:00
 5569,alimentacion_infantil,Papilla cinco frutas +4 meses Hacendado,1.55,3.88,kg,2020-07-21 12:06:00
@@ -5614,7 +5614,7 @@ id,category,name,price,reference_price,reference_unit,date
 5613,alimentacion_infantil,Papilla líquida leche y cereales Nestlé Pijama +6 meses,2,4,L,2020-07-21 12:06:00
 5614,alimentacion_infantil,Papilla 8 cereales con miel Hero baby +6 meses,2.71,6.61,kg,2020-07-21 12:06:00
 5615,alimentacion_infantil,Papilla instantánea 8 cereales con cacao Nestlé +12 meses,3.59,5.98,kg,2020-07-21 12:06:00
-5616,alimentacion_infantil,"Papilla instantánea 8 cereales, plátano, naranja y galleta Nestlé +6 meses",3.8,5.76,kg,2020-07-21 12:06:00
+"5616,alimentacion_infantil,""Papilla instantánea 8 cereales, plátano, naranja y galleta Nestlé +6 meses"",3.8,5.76,kg,2020-07-21 12:06:00"
 5617,alimentacion_infantil,Papilla 8 cereales Hero baby +6 meses,2.71,6.61,kg,2020-07-21 12:06:00
 5618,alimentacion_infantil,Papilla líquida leche y cereales multifrutas Nestlé +6 meses,2,4,L,2020-07-21 12:06:00
 5619,alimentacion_infantil,Papilla sin gluten crema de arroz Hero baby +4 meses,1.99,9.05,kg,2020-07-21 12:06:00
@@ -5674,7 +5674,7 @@ id,category,name,price,reference_price,reference_unit,date
 5673,higiene_y_cuidado,Agua de colonia bebé Nenuco,3.27,1.36,100 ml,2020-07-21 12:06:00
 5674,higiene_y_cuidado,Gasas para bebé no tejidas Deliplus,1.97,0.02,ud,2020-07-21 12:06:00
 5675,higiene_y_cuidado,Esponja anatómica para bebés Deliplus,0.8,0.8,ud,2020-07-21 12:06:00
-5676,higiene_y_cuidado,"Solución fisiológica salina 0,9 % Deliplus",3.23,21.53,L,2020-07-21 12:06:00
+"5676,higiene_y_cuidado,""Solución fisiológica salina 0,9 % Deliplus"",3.23,21.53,L,2020-07-21 12:06:00"
 5677,higiene_y_cuidado,Polvos de talco bebé Deliplus,1.25,6.25,kg,2020-07-21 12:06:00
 5678,higiene_y_cuidado,Esponja marina infantil Deliplus,3.75,3.75,ud,2020-07-21 12:06:00
 5679,higiene_y_cuidado,Discos absorbentes lactancia Deliplus,5.95,0.1,ud,2020-07-21 12:06:00
@@ -5727,41 +5727,41 @@ id,category,name,price,reference_price,reference_unit,date
 5726,biberon_chupete_y_menaje,Bol bebé con tapa Mickey Deliplus,4,4,ud,2020-07-21 12:06:00
 5727,biberon_chupete_y_menaje,Plato bebé Mickey Deliplus,3,3,ud,2020-07-21 12:06:00
 5728,perro,Paté perro júnior Delikuit con ternera y leche,0.55,3.67,kg,2020-07-21 12:06:00
-5729,perro,"Paté perro junior Delikuit con pollo, pavo y verduras",0.65,2.17,kg,2020-07-21 12:06:00
-5730,perro,"Paté perro adulto Delikuit con ternera, hígado y verduras",0.65,2.17,kg,2020-07-21 12:06:00
-5731,perro,"Paté perro adulto Delikuit con cordero, pollo y verduras",0.65,2.17,kg,2020-07-21 12:06:00
-5732,perro,"Trozos en salsa perro adulto Delikuit con ternera, hígado y verduras",1,0.81,kg,2020-07-21 12:06:00
-5733,perro,"Trozos en salsa perro adulto Delikuit con pollo, pavo y verduras",1,0.81,kg,2020-07-21 12:06:00
+"5729,perro,""Paté perro junior Delikuit con pollo, pavo y verduras"",0.65,2.17,kg,2020-07-21 12:06:00"
+"5730,perro,""Paté perro adulto Delikuit con ternera, hígado y verduras"",0.65,2.17,kg,2020-07-21 12:06:00"
+"5731,perro,""Paté perro adulto Delikuit con cordero, pollo y verduras"",0.65,2.17,kg,2020-07-21 12:06:00"
+"5732,perro,""Trozos en salsa perro adulto Delikuit con ternera, hígado y verduras"",1,0.81,kg,2020-07-21 12:06:00"
+"5733,perro,""Trozos en salsa perro adulto Delikuit con pollo, pavo y verduras"",1,0.81,kg,2020-07-21 12:06:00"
 5734,perro,Paté perro adulto Delikut con cordero y verduras,1.55,1.29,kg,2020-07-21 12:06:00
 5735,perro,Paté perro adulto Delikuit con ternera y pollo,1.55,1.29,kg,2020-07-21 12:06:00
 5736,perro,Salchicha perro adulto Delikuit con pollo y arroz,1.35,1.35,kg,2020-07-21 12:06:00
 5737,perro,Salchicha perro adulto Delikuit con ternera y zanahoria,1.35,1.35,kg,2020-07-21 12:06:00
 5738,perro,Paté perro adulto Delikuit con cordero y verduras,0.55,3.67,kg,2020-07-21 12:06:00
 5739,perro,Paté perro adulto Delikuit con ternera y verduras,0.55,3.67,kg,2020-07-21 12:06:00
-5740,perro,"Trozos en salsa perro adulto Delikuit con cordero, pollo y verduras",0.75,2.5,kg,2020-07-21 12:06:00
-5741,perro,"Trozos en salsa perro adulto Delikuit con ternera, pavo y verduras",0.65,4.33,kg,2020-07-21 12:06:00
-5742,perro,"Trozos en salsa perro adulto Delikuit con ternera, pavo y verduras",0.75,2.5,kg,2020-07-21 12:06:00
-5743,perro,"Trozos en salsa perro adulto Delikuit con cordero, pollo y verduras",0.65,4.33,kg,2020-07-21 12:06:00
+"5740,perro,""Trozos en salsa perro adulto Delikuit con cordero, pollo y verduras"",0.75,2.5,kg,2020-07-21 12:06:00"
+"5741,perro,""Trozos en salsa perro adulto Delikuit con ternera, pavo y verduras"",0.65,4.33,kg,2020-07-21 12:06:00"
+"5742,perro,""Trozos en salsa perro adulto Delikuit con ternera, pavo y verduras"",0.75,2.5,kg,2020-07-21 12:06:00"
+"5743,perro,""Trozos en salsa perro adulto Delikuit con cordero, pollo y verduras"",0.65,4.33,kg,2020-07-21 12:06:00"
 5744,perro,Comida cachorros junior Compy con pollo y arroz,5,1.25,kg,2020-07-21 12:06:00
-5745,perro,"Comida perro adulto Compy con ternera, pollo, verduras y arroz",15.1,0.84,kg,2020-07-21 12:06:00
+"5745,perro,""Comida perro adulto Compy con ternera, pollo, verduras y arroz"",15.1,0.84,kg,2020-07-21 12:06:00"
 5746,perro,Comida perro adulto Compy con pollo y cereales,3.85,0.96,kg,2020-07-21 12:06:00
 5747,perro,Comida perro adulto Compy con pollo y cereales,11.75,0.65,kg,2020-07-21 12:06:00
-5748,perro,"Comida perro adulto Compy con pollo, cordero, verduras y arroz",6.5,1.63,kg,2020-07-21 12:06:00
+"5748,perro,""Comida perro adulto Compy con pollo, cordero, verduras y arroz"",6.5,1.63,kg,2020-07-21 12:06:00"
 5749,perro,Aritos perro adulto Compy,6.2,1.55,kg,2020-07-21 12:06:00
 5750,perro,Comida perro adulto Compy original,9.45,0.53,kg,2020-07-21 12:06:00
-5751,perro,"Comida perro sénior light Compy con pollo, arroz y cebada",5,1.25,kg,2020-07-21 12:06:00
-5752,perro,"Comida perro adulto Compy con cordero, ternera, verduras y arroz",4.95,1.65,kg,2020-07-21 12:06:00
+"5751,perro,""Comida perro sénior light Compy con pollo, arroz y cebada"",5,1.25,kg,2020-07-21 12:06:00"
+"5752,perro,""Comida perro adulto Compy con cordero, ternera, verduras y arroz"",4.95,1.65,kg,2020-07-21 12:06:00"
 5753,perro,Mini aritos perro adulto Compy,3.95,2.63,kg,2020-07-21 12:06:00
 5754,perro,Comida perro júnior Supreme Compy con pollo y arroz,4.15,2.77,kg,2020-07-21 12:06:00
 5755,perro,Comida perro adulto Supreme Compy con pollo y arroz,4.15,2.77,kg,2020-07-21 12:06:00
 5756,perro,Comida perro adulto Supreme Compy con salmón y arroz,24.5,2.45,kg,2020-07-21 12:06:00
 5757,perro,Comida perro adulto Supreme Compy con salmón y arroz,4.6,3.07,kg,2020-07-21 12:06:00
-5758,perro,"Comida perro sénior light Supreme Compy con pollo, cebada y arroz",4.15,2.77,kg,2020-07-21 12:06:00
+"5758,perro,""Comida perro sénior light Supreme Compy con pollo, cebada y arroz"",4.15,2.77,kg,2020-07-21 12:06:00"
 5759,perro,Comida perro júnior Supreme Compy con pollo y arroz,7.45,2.48,kg,2020-07-21 12:06:00
 5760,perro,Comida perro adulto Supreme Compy con pollo y arroz,7.45,2.48,kg,2020-07-21 12:06:00
-5761,perro,"Comida perro adulto Compy con ternera, pollo, verduras y arroz",4.2,1.05,kg,2020-07-21 12:06:00
+"5761,perro,""Comida perro adulto Compy con ternera, pollo, verduras y arroz"",4.2,1.05,kg,2020-07-21 12:06:00"
 5762,perro,Comida perro adulto Supreme Compy con salmón y arroz,8.7,2.9,kg,2020-07-21 12:06:00
-5763,perro,"Comida perro sénior light Supreme Compy con pollo, cebada y arroz",7.45,2.48,kg,2020-07-21 12:06:00
+"5763,perro,""Comida perro sénior light Supreme Compy con pollo, cebada y arroz"",7.45,2.48,kg,2020-07-21 12:06:00"
 5764,perro,Comida perro adulto Supreme Compy con pollo y arroz,19.95,2,kg,2020-07-21 12:06:00
 5765,perro,Comida perro júnior Compy con pollo y arroz,11.95,1.2,kg,2020-07-21 12:06:00
 5766,perro,Ministick dental para perro Compy,1.98,7.92,kg,2020-07-21 12:06:00
@@ -5786,9 +5786,9 @@ id,category,name,price,reference_price,reference_unit,date
 5785,perro,Snack perro barritas Compy con ternera y cordero,1.29,14.66,kg,2020-07-21 12:06:00
 5786,perro,Snack perro barritas Compy con pollo e hígado,1.29,14.66,kg,2020-07-21 12:06:00
 5787,perro,Snack perro salmones tiernos Compy con salmón fresco,1.45,4.14,kg,2020-07-21 12:06:00
-5788,gato,"Bocaditos en salsa gato adulto Delikuit con pollo, pavo y verduras",0.35,0.88,kg,2020-07-21 12:06:00
-5789,gato,"Bocaditos en salsa gato adulto Delikuit con salmón, trucha y verduras",0.35,0.88,kg,2020-07-21 12:06:00
-5790,gato,"Bocaditos en salsa gato adulto Delikuit con buey, hígado y verduras",0.35,0.88,kg,2020-07-21 12:06:00
+"5788,gato,""Bocaditos en salsa gato adulto Delikuit con pollo, pavo y verduras"",0.35,0.88,kg,2020-07-21 12:06:00"
+"5789,gato,""Bocaditos en salsa gato adulto Delikuit con salmón, trucha y verduras"",0.35,0.88,kg,2020-07-21 12:06:00"
+"5790,gato,""Bocaditos en salsa gato adulto Delikuit con buey, hígado y verduras"",0.35,0.88,kg,2020-07-21 12:06:00"
 5791,gato,Paté gato júnior Delikuit con pollo y pavo,0.35,3.5,kg,2020-07-21 12:06:00
 5792,gato,Paté gato adulto Delikuit con trucha y salmón,0.35,3.5,kg,2020-07-21 12:06:00
 5793,gato,Paté gato adulto Delikuit con pollo y pavo,0.35,3.5,kg,2020-07-21 12:06:00
@@ -5813,8 +5813,8 @@ id,category,name,price,reference_price,reference_unit,date
 5812,gato,Comida gatos júnior Compy con arroz y leche,3.38,2.25,kg,2020-07-21 12:06:00
 5813,gato,Comida gato adulto Compy con ternera y verduras,2.35,1.18,kg,2020-07-21 12:06:00
 5814,gato,Comida gato adulto Compy con ternera y verduras,10.25,1.03,kg,2020-07-21 12:06:00
-5815,gato,"Comida gato adulto Compy con salmón, atún y verduras",2.35,1.18,kg,2020-07-21 12:06:00
-5816,gato,"Comida gato adulto Compy con salmón, atún y verduras",10.25,1.03,kg,2020-07-21 12:06:00
+"5815,gato,""Comida gato adulto Compy con salmón, atún y verduras"",2.35,1.18,kg,2020-07-21 12:06:00"
+"5816,gato,""Comida gato adulto Compy con salmón, atún y verduras"",10.25,1.03,kg,2020-07-21 12:06:00"
 5817,gato,Comida gato esterilizado light Compy con aves y cereales,3.5,2.33,kg,2020-07-21 12:06:00
 5818,gato,Croquetas gato crujientes Brekkies delicias,2.1,2.63,kg,2020-07-21 12:06:00
 5819,gato,Croquetas gato crujientes Brekkies delicias,2.1,2.63,kg,2020-07-21 12:06:00
@@ -6277,18 +6277,18 @@ id,category,name,price,reference_price,reference_unit,date
 6276,insecticida_y_ambientador,Absorbeolores en gel para frigorífico Bosque Verde,1.8,4.5,100 g,2020-07-21 12:06:00
 6277,insecticida_y_ambientador,Set antihumedad Bosque Verde con aromas cítricos,3.35,7.44,kg,2020-07-21 12:06:00
 6278,insecticida_y_ambientador,Recambio antihumedad Bosque Verde con aromas cítricos,2.1,4.67,kg,2020-07-21 12:06:00
-6279,menaje_y_conservacion_de_alimentos,"Molde de aluminio cuadrado 2,7L Alibérico",1.8,0.9,ud,2020-07-21 12:06:00
-6280,menaje_y_conservacion_de_alimentos,"Recipiente de plástico rectangular 1,3L Bosque Verde",1.89,0.47,ud,2020-07-21 12:06:00
-6281,menaje_y_conservacion_de_alimentos,"Recipiente de plástico cuadrado alto 1,3L Bosque Verde",1.89,0.38,ud,2020-07-21 12:06:00
-6282,menaje_y_conservacion_de_alimentos,"Recipiente de plástico redondo 0,5L Bosque Verde",1.8,0.6,ud,2020-07-21 12:06:00
-6283,menaje_y_conservacion_de_alimentos,"Recipiente de plástico cuadrado bajo 0,8L Bosque Verde",1.89,0.38,ud,2020-07-21 12:06:00
+"6279,menaje_y_conservacion_de_alimentos,""Molde de aluminio cuadrado 2,7L Alibérico"",1.8,0.9,ud,2020-07-21 12:06:00"
+"6280,menaje_y_conservacion_de_alimentos,""Recipiente de plástico rectangular 1,3L Bosque Verde"",1.89,0.47,ud,2020-07-21 12:06:00"
+"6281,menaje_y_conservacion_de_alimentos,""Recipiente de plástico cuadrado alto 1,3L Bosque Verde"",1.89,0.38,ud,2020-07-21 12:06:00"
+"6282,menaje_y_conservacion_de_alimentos,""Recipiente de plástico redondo 0,5L Bosque Verde"",1.8,0.6,ud,2020-07-21 12:06:00"
+"6283,menaje_y_conservacion_de_alimentos,""Recipiente de plástico cuadrado bajo 0,8L Bosque Verde"",1.89,0.38,ud,2020-07-21 12:06:00"
 6284,menaje_y_conservacion_de_alimentos,Recipiente de plástico redondo 1L Bosque Verde,1.8,0.9,ud,2020-07-21 12:06:00
 6285,menaje_y_conservacion_de_alimentos,Recipiente de plástico redondo 240 ml Bosque Verde,1.75,0.58,ud,2020-07-21 12:06:00
-6286,menaje_y_conservacion_de_alimentos,"Molde de aluminio rectangular 0,5L Alibérico",1.35,0.27,ud,2020-07-21 12:06:00
+"6286,menaje_y_conservacion_de_alimentos,""Molde de aluminio rectangular 0,5L Alibérico"",1.35,0.27,ud,2020-07-21 12:06:00"
 6287,menaje_y_conservacion_de_alimentos,Molde de aluminio redondo 1L Alibérico,1.45,0.48,ud,2020-07-21 12:06:00
 6288,menaje_y_conservacion_de_alimentos,Molde de papel magdalenas nº8 P&H,0.75,0.02,ud,2020-07-21 12:06:00
 6289,menaje_y_conservacion_de_alimentos,Recipiente de plástico redondo 3L Bosque Verde,2.65,1.33,ud,2020-07-21 12:06:00
-6290,menaje_y_conservacion_de_alimentos,"Molde de aluminio rectangular 1,5L Alibérico",2.5,0.83,ud,2020-07-21 12:06:00
+"6290,menaje_y_conservacion_de_alimentos,""Molde de aluminio rectangular 1,5L Alibérico"",2.5,0.83,ud,2020-07-21 12:06:00"
 6291,menaje_y_conservacion_de_alimentos,Molde de aluminio Alibérico,1.35,0.11,ud,2020-07-21 12:06:00
 6292,menaje_y_conservacion_de_alimentos,Molde de papel trufa P&H,0.8,0.01,ud,2020-07-21 12:06:00
 6293,menaje_y_conservacion_de_alimentos,Papel de aluminio Bosque Verde,1.55,0.05,m,2020-07-21 12:06:00
@@ -6338,7 +6338,7 @@ id,category,name,price,reference_price,reference_unit,date
 6337,menaje_y_conservacion_de_alimentos,Vela blanca hogar Roura,1.6,0.4,ud,2020-07-21 12:06:00
 6338,menaje_y_conservacion_de_alimentos,Encendedor cocina largo Clipper,2.57,2.57,ud,2020-07-21 12:06:00
 6339,menaje_y_conservacion_de_alimentos,Bebida zumo de frutas con gas Magic sin alcohol,1.55,2.07,L,2020-07-21 12:06:00
-6340,menaje_y_conservacion_de_alimentos,"Set papel de regalo dorado, rojo y negro Bosque Verde",4.9,4.9,ud,2020-07-21 12:06:00
+"6340,menaje_y_conservacion_de_alimentos,""Set papel de regalo dorado, rojo y negro Bosque Verde"",4.9,4.9,ud,2020-07-21 12:06:00"
 6341,menaje_y_conservacion_de_alimentos,Papel de regalo infantil Bosque Verde,0.7,0.7,ud,2020-07-21 12:06:00
 6342,menaje_y_conservacion_de_alimentos,Papel de regalo estampado Bosque Verde,0.7,0.7,ud,2020-07-21 12:06:00
 6343,menaje_y_conservacion_de_alimentos,Papel de regalo liso Bosque Verde,1,1,ud,2020-07-21 12:06:00
