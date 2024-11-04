@@ -502,24 +502,6 @@ END
 
 
 GO
--- Stored procedure para borrado físico de la tabla InformacionAdicional
-/*
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.BorradoFisicoInformacionAdicional') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El procedure ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.BorradoFisicoInformacionAdicional
-AS
-BEGIN
-    TRUNCATE TABLE ddbba.InformacionAdicional;
-END')
-END
-*/
-
 
 
 GO
@@ -559,7 +541,7 @@ GO
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
 
 
-CREATE PROCEDURE ddbba.ImportarElectronicAccessories 
+CREATE OR ALTER PROCEDURE ddbba.ImportarElectronicAccessories 
 AS
 BEGIN
     -- Crear tabla temporal
@@ -599,7 +581,7 @@ drop procedure ddbba.ImportarElectronicAccessories
 -- Stored procedure para importar datos de 'catalogo.csv'
 
 
-CREATE PROCEDURE ddbba.CatalogoImportar
+CREATE OR Alter PROCEDURE ddbba.CatalogoImportar
 AS
 BEGIN
     -- Crear tabla temporal para almacenar datos del archivo CSV
@@ -649,7 +631,7 @@ drop procedure ddbba.CatalogoImportar
 exec ddbba.VentasRegistradasImportar
 
 
-CREATE PROCEDURE ddbba.VentasRegistradasImportar
+CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasImportar
 AS
 BEGIN
     -- 1. Crear la tabla temporal
@@ -725,7 +707,8 @@ END;
 exec ddbba.ImportarEmpleadosDesdeExcel
 
 drop procedure ddbba.ImportarEmpleadosDesdeExcel
-CREATE PROCEDURE ddbba.ImportarEmpleadosDesdeExcel
+
+CREATE OR ALTER PROCEDURE ddbba.ImportarEmpleadosDesdeExcel
 AS
 BEGIN
     -- 1. Crear la tabla temporal con la estructura que coincide con la hoja de Excel
@@ -800,12 +783,11 @@ BEGIN
 END;
 
 
-*/
 
 exec ddbba.ProductosImportadosImportar
 drop procedure ddbba.ProductosImportadosImportar
 
-CREATE PROCEDURE ddbba.ProductosImportadosImportar
+CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosImportar
 AS
 BEGIN
     -- Paso 1: Crear la tabla temporal
