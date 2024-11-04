@@ -380,7 +380,6 @@ BEGIN
     WHERE IdProducto = @Id;
     
 END
-END
 
 
 
@@ -508,8 +507,8 @@ CREATE OR ALTER PROCEDURE borrar.ProductosImportadosBorradoLogico
 GO
 -- Stored procedure para borrado logico tabla catalogo
 
-CREATE OR ALTER PROCEDURE borrar.BorradoLogicoInformacionAdicional
-
+/*CREATE OR ALTER PROCEDURE borrar.BorradoLogicoInformacionAdicional
+ @id int
 	AS
 	BEGIN
 	 UPDATE ddbba.InformacionAdicional
@@ -518,13 +517,14 @@ CREATE OR ALTER PROCEDURE borrar.BorradoLogicoInformacionAdicional
  
 	END	
 
-
+	*/
 
 GO
 
 -- Stored procedure para borrado logico tabla electronic accesories
 
 CREATE OR ALTER PROCEDURE borrar.BorradoLogicoElectronicAccesories
+@product varchar(50)
 	AS
 	BEGIN
 		UPDATE ddbba.electronicAccesories
@@ -637,8 +637,8 @@ BEGIN
 END;
 GO
 
-exec importar.ImportarElectronicAccessories
-drop procedure importar.ImportarElectronicAccessories
+/*exec importar.ImportarElectronicAccessories
+drop procedure importar.ImportarElectronicAccessories*/
 
 
 -- Stored procedure para importar datos de 'catalogo.csv'
@@ -682,7 +682,7 @@ BEGIN
 END;
 GO
 
-select* from ddbba.catalogo
+/*select* from ddbba.catalogo
 
 
 exec importar.CatalogoImportar
@@ -691,7 +691,7 @@ drop procedure importar.CatalogoImportar
 
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
 
-exec importar.VentasRegistradasImportar
+exec importar.VentasRegistradasImportar*/
 
 
 CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
@@ -764,12 +764,12 @@ BEGIN
     DROP TABLE #TempVentas;
 END;
 
+go
+/*IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
 
---IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA 
+/*exec importar.ImportarEmpleadosDesdeExcel
 
-exec importar.ImportarEmpleadosDesdeExcel
-
-drop procedure importar.ImportarEmpleadosDesdeExcel
+drop procedure importar.ImportarEmpleadosDesdeExcel*/
 
 CREATE OR ALTER PROCEDURE importar.ImportarEmpleadosDesdeExcel
 AS
@@ -845,10 +845,10 @@ BEGIN
     DROP TABLE #TempEmpleados;
 END;
 
+go
 
-
-exec importar.ProductosImportadosImportar
-drop procedure importar.ProductosImportadosImportar
+/*exec importar.ProductosImportadosImportar
+drop procedure importar.ProductosImportadosImportar*/
 
 CREATE OR ALTER PROCEDURE importar.ProductosImportadosImportar
 AS
@@ -883,6 +883,6 @@ BEGIN
 END;
 
 
-select * from ddbba.productosImportados
+/*select * from ddbba.productosImportados*/
 
 --fin
