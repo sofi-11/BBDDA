@@ -106,7 +106,7 @@ BEGIN
     CREATE TABLE ddbba.catalogo (
         id int PRIMARY KEY, -- Clave primaria 
         category VARCHAR(100), -- Categoría del producto
-        nombre NVARCHAR(100) UNIQUE, -- Nombre del producto
+        nombre VARCHAR(100), -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(10), -- Unidad de referencia
@@ -115,25 +115,6 @@ BEGIN
     );
 END;
 GO
-
--- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.Empleados (
-		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
-		Nombre VARCHAR(30), --Nombre del Empleado
-		Apellido VARCHAR(20), --Apellido del Empleado
-		DNI CHAR(8) CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
-		Direccion VARCHAR(150), --Direccion del Empleado
-        EmailPersonal VARCHAR(100), --Email Personal del Empleado 
-        EmailEmpresa VARCHAR(100), --Email Empresarial del Empleado
-		CUIL VARCHAR (100), --CUIL del Empleado
-		Cargo VARCHAR(30) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
-		Sucursal VARCHAR(30) CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
-		Turno VARCHAR(30) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
 
 
 
@@ -146,18 +127,13 @@ BEGIN
         Ciudad VARCHAR(50), -- Ciudad de la venta
         TipoCliente VARCHAR(30), -- Tipo de cliente
         Genero VARCHAR(10) CHECK (Genero IN ('Male', 'Female')), -- Género del cliente
-        Producto NVARCHAR(100) CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto
+        Producto NVARCHAR(100), -- Nombre del producto
         PrecioUnitario DECIMAL(10, 2), -- Precio unitario del producto
         Cantidad INT, -- Cantidad de productos
         Fecha DATE, -- Fecha de la venta
         Hora TIME, -- Hora de la venta
-<<<<<<< HEAD
-        MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit Card')), -- Medio de pago utilizado
-        Empleado INT CONSTRAINT FK_Empleado_IDEmpleado FOREIGN KEY (Empleado) REFERENCES ddbba.Empleados (Legajo), -- Identificador del empleado
-=======
         MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit card')), -- Medio de pago utilizado
         Empleado INT, -- Identificador del empleado
->>>>>>> 52d93369ba24b3a9685695ef7e57995fa4782dfa
         IdentificadorPago VARCHAR(25),
 			/*CHECK (
 			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
@@ -184,10 +160,6 @@ END;
 
 GO
 
-<<<<<<< HEAD
-
-
-=======
 -- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
 BEGIN
@@ -207,7 +179,6 @@ BEGIN
     );
 END;
 --drop table ddbba.Empleados
->>>>>>> 52d93369ba24b3a9685695ef7e57995fa4782dfa
 GO
 -- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))
@@ -282,32 +253,6 @@ END
 
 GO
 
---Sucursal
-
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarSucursal') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El SP InsertarSucursal ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.InsertarSucursal
-		@Ciudad VARCHAR(50),
-        @ReemplazarPor VARCHAR(50), 
-        @Direccion VARCHAR(200), 
-        @Horario VARCHAR(50),
-        @Telefono VARCHAR(20) 
-AS
-BEGIN
-    INSERT INTO ddbba.Sucursal(Ciudad,ReemplazarPor,Direccion,Horario,Telefono)
-    VALUES (@Ciudad,@ReemplazarPor,@Direccion,@Horario,@Telefono);
-END')
-END
-
-GO
-
-
 --ventasRegistradas
 
 CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasInsertar
@@ -326,7 +271,6 @@ CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasInsertar
         @IdentificadorPago VARCHAR(100) 
 AS
 BEGIN
-
     INSERT INTO ddbba.ventasRegistradas(IDFactura,TipoFactura,Ciudad,TipoCliente,Genero,Producto,PrecioUnitario,Cantidad,Fecha,Hora,MedioPago,Empleado,IdentificadorPago)
     VALUES (@IDFactura,@TipoFactura,@Ciudad,@TipoCliente,@Genero,@Producto,@PrecioUnitario,@Cantidad,@Fecha,@Hora,@MedioPago,@Empleado,@IdentificadorPago);
 END
@@ -335,64 +279,6 @@ END
 
 GO
 
-<<<<<<< HEAD
-
-
---Empleados
-
-
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarEmpleado') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El SP InsertarEmpleado ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.InsertarEmpleado
-        @Legajo INT,
-        @Nombre VARCHAR(30),
-        @Apellido VARCHAR(20),
-        @DNI CHAR(8),
-        @Direccion VARCHAR(150),
-        @EmailPersonal VARCHAR(100),
-        @EmailEmpresa VARCHAR(100),
-        @CUIL VARCHAR(100),
-        @Cargo VARCHAR(30),
-        @Sucursal VARCHAR(30),
-        @Turno VARCHAR(30)
-    AS
-    BEGIN
-        INSERT INTO ddbba.Empleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
-        VALUES (@Legajo, @Nombre, @Apellido, @DNI, @Direccion, @EmailPersonal, @EmailEmpresa, @CUIL, @Cargo, @Sucursal, @Turno);
-    END;')
-END;
-
-GO
-
-
---Clasificacion Productos
-
-IF EXISTS (SELECT * FROM sys.objects 
-           WHERE object_id = OBJECT_ID(N'ddbba.InsertarClasificacionProducto') 
-           AND type = N'P')
-BEGIN
-    PRINT 'El SP InsertarClasificacionProducto ya existe en el esquema ddbba.'
-END
-ELSE
-BEGIN
-    EXEC('CREATE PROCEDURE ddbba.InsertarClasificacionProducto
-        @LineaDeProducto VARCHAR(30),
-        @Producto VARCHAR(70)
-    AS
-    BEGIN
-        INSERT INTO ddbba.ClasificacionProductos (LineaDeProducto, Producto)
-        VALUES (@LineaDeProducto, @Producto);
-    END;')
-END;
-
-
-=======
 --informacionAdicional
 
 CREATE OR ALTER PROCEDURE ddbba.InformacionAdicionalInsertar
@@ -406,7 +292,6 @@ BEGIN
     INSERT INTO ddbba.InformacionAdicional(Ciudad,ReemplazarPor,Direccion,Horario,Telefono)
     VALUES (@Ciudad,@ReemplazarPor,@Direccion,@Horario,@Telefono);
 END
->>>>>>> 52d93369ba24b3a9685695ef7e57995fa4782dfa
 
 
 
