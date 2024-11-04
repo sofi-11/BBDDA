@@ -52,6 +52,7 @@ COLLATE Latin1_General_CS_AS;
 
 GO
 
+----------------------------------------- ESQUEMAS -----------------------------------------------------
 -- Verifica si el esquema 'ddbba' ya existe, si no, lo crea.
 IF NOT EXISTS (
     SELECT name 
@@ -65,12 +66,74 @@ ELSE
 BEGIN
     PRINT 'El esquema ddbba ya existe.';
 END;
-
 GO
 
--- Cambia el contexto de la base de datos al esquema 'ddbba'
 
+-- Verifica si el esquema 'insertar' ya existe, si no, lo crea.
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'insertar')
+BEGIN
+    EXEC('CREATE SCHEMA insertar');
+    PRINT 'Esquema insertar creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema insertar ya existe.';
+END;
 GO
+
+
+-- Verifica si el esquema 'modificar' ya existe, si no, lo crea.
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'modificar')
+BEGIN
+    EXEC('CREATE SCHEMA modificar');
+    PRINT 'Esquema modificar creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema modificar ya existe.';
+END;
+GO
+
+
+-- Verifica si el esquema 'borrar' ya existe, si no, lo crea.
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'borrar')
+BEGIN
+    EXEC('CREATE SCHEMA borrar');
+    PRINT 'Esquema borrar creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema borrar ya existe.';
+END;
+GO
+
+
+-- Verifica si el esquema 'importar' ya existe, si no, lo crea.
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'importar')
+BEGIN
+    EXEC('CREATE SCHEMA importar');
+    PRINT 'Esquema importar creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema importar ya existe.';
+END;
+GO
+
+
+
 
 -- Verifica si la tabla 'productosImportados' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productosImportados') AND type in (N'U'))
@@ -199,7 +262,7 @@ GO
 
 --productosImportados
 
-CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosInsertar
+CREATE OR ALTER PROCEDURE insertar.ProductosImportadosInsertar
 	@id int,
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
@@ -220,7 +283,7 @@ GO
 --electronicAccesories
 
 
-CREATE OR ALTER PROCEDURE ddbba.ElectronicAccesoriesInsertar
+CREATE OR ALTER PROCEDURE insertar.ElectronicAccesoriesInsertar
 	@Product VARCHAR(100), 
     @PrecioUnitarioUSD DECIMAL(10,2) 
 AS
@@ -236,7 +299,7 @@ GO
 
 --catalogo
 
-CREATE OR ALTER PROCEDURE ddbba.CatalogoInsertar
+CREATE OR ALTER PROCEDURE insertar.CatalogoInsertar
 	@id INT, -- Identificacion, clave primaria
     @category VARCHAR(100), -- Categoría del producto
     @nombre VARCHAR(100), -- Nombre del producto
@@ -255,7 +318,7 @@ GO
 
 --ventasRegistradas
 
-CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasInsertar
+CREATE OR ALTER PROCEDURE insertar.VentasRegistradasInsertar
 		@IDFactura VARCHAR(50), 
         @TipoFactura VARCHAR(2), 
         @Ciudad VARCHAR(100), 
@@ -281,7 +344,7 @@ GO
 
 --informacionAdicional
 
-CREATE OR ALTER PROCEDURE ddbba.InformacionAdicionalInsertar
+CREATE OR ALTER PROCEDURE insertar.InformacionAdicionalInsertar
 		@Ciudad VARCHAR(100),
         @ReemplazarPor VARCHAR(100), 
         @Direccion VARCHAR(200), 
@@ -299,7 +362,7 @@ END
 GO
 --productosImportados
  
-CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosModificar
+CREATE OR ALTER PROCEDURE modificar.ProductosImportadosModificar
     @id int,
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
@@ -325,7 +388,7 @@ GO
 
 --electronicAccesories
 
-CREATE OR ALTER PROCEDURE ddbba.ElectronicAccesoriesModificar
+CREATE OR ALTER PROCEDURE modificar.ElectronicAccesoriesModificar
     @Product VARCHAR(100), 
     @PrecioUnitarioUSD DECIMAL(10,2) 
 AS
@@ -341,7 +404,7 @@ END
 GO
 --catalogo
 
-CREATE OR ALTER PROCEDURE ddbba.CatalogoModificar
+CREATE OR ALTER PROCEDURE modificar.CatalogoModificar
 		@id INT , 
         @category VARCHAR(100), 
         @nombre VARCHAR(100), 
@@ -369,7 +432,7 @@ END
 GO
 --ventasRegistradas
 
-CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasModificar
+CREATE OR ALTER PROCEDURE modificar.VentasRegistradasModificar
 		@IDFactura VARCHAR(50) , 
         @TipoFactura VARCHAR(2), 
         @Ciudad VARCHAR(100), 
@@ -408,7 +471,7 @@ END
 GO
 --informacionAdicional
 
-CREATE OR ALTER PROCEDURE ddbba.InformacionAdicionalModificar
+CREATE OR ALTER PROCEDURE modificar.InformacionAdicionalModificar
 		@Ciudad VARCHAR(100), 
         @ReemplazarPor VARCHAR(100), 
         @Direccion VARCHAR(200), 
@@ -431,7 +494,7 @@ GO
 --------------------------------------------------------------------Borrado
 -- Stored procedure para borrado logico tabla productos importados
 
-CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosBorradoLogico
+CREATE OR ALTER PROCEDURE borrar.ProductosImportadosBorradoLogico
 	@id int
 	AS
 	BEGIN
@@ -445,7 +508,7 @@ CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosBorradoLogico
 GO
 -- Stored procedure para borrado logico tabla catalogo
 
-CREATE OR ALTER PROCEDURE ddbba.BorradoLogicoInformacionAdicional
+CREATE OR ALTER PROCEDURE borrar.BorradoLogicoInformacionAdicional
 
 	AS
 	BEGIN
@@ -461,7 +524,7 @@ GO
 
 -- Stored procedure para borrado logico tabla electronic accesories
 
-CREATE OR ALTER PROCEDURE ddbba.BorradoLogicoElectronicAccesories
+CREATE OR ALTER PROCEDURE borrar.BorradoLogicoElectronicAccesories
 	AS
 	BEGIN
 		UPDATE ddbba.electronicAccesories
@@ -474,7 +537,7 @@ CREATE OR ALTER PROCEDURE ddbba.BorradoLogicoElectronicAccesories
 GO
 
 -- Stored procedure para borrado logico tabla ventas Registradas
-CREATE OR ALTER PROCEDURE ddbba.BorradoLogicoVentasRegistradas
+CREATE OR ALTER PROCEDURE borrar.BorradoLogicoVentasRegistradas
 @IDFactura varchar(50)
 AS
 BEGIN
@@ -490,7 +553,7 @@ GO
 
 -- Stored procedure para borrado FISICO productos 
 
-CREATE OR ALTER PROCEDURE ddbba.BorradoFisicoProductosImportados
+CREATE OR ALTER PROCEDURE borrar.BorradoFisicoProductosImportados
 	@id int
 AS 
 BEGIN
@@ -507,7 +570,7 @@ GO
 GO
 -- Stored procedure para borrado físico de la tabla ElectronicAccesories
 
-CREATE OR ALTER PROCEDURE ddbba.BorradoFisicoElectronicAccesories
+CREATE OR ALTER PROCEDURE borrar.BorradoFisicoElectronicAccesories
 	@product varchar(100)
 AS
 BEGIN
@@ -521,7 +584,7 @@ GO
 
 -- Stored procedure para borrado físico de la tabla VentasRegistradas
 
-CREATE OR ALTER PROCEDURE ddbba.BorradoFisicoVentasRegistradas
+CREATE OR ALTER PROCEDURE borrar.BorradoFisicoVentasRegistradas
 	@id int
 AS
 BEGIN
@@ -536,12 +599,12 @@ GO
 
 
 
--- IMPORTACION
+----------------------------------------------------------------- IMPORTACION
 
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
 
 
-CREATE OR ALTER PROCEDURE ddbba.ImportarElectronicAccessories 
+CREATE OR ALTER PROCEDURE importar.ImportarElectronicAccessories 
 AS
 BEGIN
     -- Crear tabla temporal
@@ -574,14 +637,14 @@ BEGIN
 END;
 GO
 
-exec ddbba.ImportarElectronicAccessories
-drop procedure ddbba.ImportarElectronicAccessories
+exec importar.ImportarElectronicAccessories
+drop procedure importar.ImportarElectronicAccessories
 
 
 -- Stored procedure para importar datos de 'catalogo.csv'
 
 
-CREATE OR Alter PROCEDURE ddbba.CatalogoImportar
+CREATE OR Alter PROCEDURE importar.CatalogoImportar
 AS
 BEGIN
     -- Crear tabla temporal para almacenar datos del archivo CSV
@@ -622,16 +685,16 @@ GO
 select* from ddbba.catalogo
 
 
-exec ddbba.CatalogoImportar
-drop procedure ddbba.CatalogoImportar
+exec importar.CatalogoImportar
+drop procedure importar.CatalogoImportar
 
 
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
 
-exec ddbba.VentasRegistradasImportar
+exec importar.VentasRegistradasImportar
 
 
-CREATE OR ALTER PROCEDURE ddbba.VentasRegistradasImportar
+CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
 AS
 BEGIN
     -- 1. Crear la tabla temporal
@@ -704,11 +767,11 @@ END;
 
 --IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA 
 
-exec ddbba.ImportarEmpleadosDesdeExcel
+exec importar.ImportarEmpleadosDesdeExcel
 
-drop procedure ddbba.ImportarEmpleadosDesdeExcel
+drop procedure importar.ImportarEmpleadosDesdeExcel
 
-CREATE OR ALTER PROCEDURE ddbba.ImportarEmpleadosDesdeExcel
+CREATE OR ALTER PROCEDURE importar.ImportarEmpleadosDesdeExcel
 AS
 BEGIN
     -- 1. Crear la tabla temporal con la estructura que coincide con la hoja de Excel
@@ -784,10 +847,10 @@ END;
 
 
 
-exec ddbba.ProductosImportadosImportar
-drop procedure ddbba.ProductosImportadosImportar
+exec importar.ProductosImportadosImportar
+drop procedure importar.ProductosImportadosImportar
 
-CREATE OR ALTER PROCEDURE ddbba.ProductosImportadosImportar
+CREATE OR ALTER PROCEDURE importar.ProductosImportadosImportar
 AS
 BEGIN
     -- Paso 1: Crear la tabla temporal
