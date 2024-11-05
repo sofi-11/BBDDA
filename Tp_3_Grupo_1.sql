@@ -28,6 +28,8 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 --
 ---------------ENTREGA 3
 
+
+
 -- Verifica si la base de datos 'AuroraSA' ya existe, si no, la crea.
 IF NOT EXISTS (
     SELECT name 
@@ -181,14 +183,28 @@ BEGIN
     );
 END;
 
+go
+-- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))
+BEGIN
+    CREATE TABLE ddbba.ClasificacionProductos (
+        LineaDeProducto VARCHAR(30) CHECK (LineaDeProducto IN ('Almacen', 'Perfumeria', 'Hogar', 'Frescos', 'Bazar', 'Limpieza', 'Otros', 'Congelados', 'Bebidas', 'Mascota', 'Comida')), -- Categoria a la cual pertenece
+		Producto VARCHAR(100) unique, --Descripcion del producto (Ej. Arroz)
+		Activo BIT DEFAULT 1 --Campo para borrado logico
+    );
+END;
+
+
+GO
+
 
 -- Verifica si la tabla 'catalogo' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.catalogo') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.catalogo (
         id int PRIMARY KEY, -- Clave primaria 
-        category VARCHAR(100), -- Categoría del producto
-        nombre VARCHAR(100) UNIQUE, -- Nombre del producto
+        category VARCHAR(100),-- constraint fk_clasificacion foreign key (category) references ddbba.ClasificacionProductos(Producto), -- Categoría del producto
+        nombre NVARCHAR(100),-- UNIQUE, -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(10), -- Unidad de referencia
@@ -198,7 +214,7 @@ BEGIN
 END;
 GO
 
-
+drop table ddbba.catalogo
 
 -- Verifica si la tabla 'ventasRegistradas' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventasRegistradas') AND type in (N'U'))
@@ -209,13 +225,13 @@ BEGIN
         Ciudad VARCHAR(50), -- Ciudad de la venta
         TipoCliente VARCHAR(30), -- Tipo de cliente
         Genero VARCHAR(10) CHECK (Genero IN ('Male', 'Female')), -- Género del cliente
-        Producto NVARCHAR(100) CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
+        Producto NVARCHAR(100),-- CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
         PrecioUnitario DECIMAL(10, 2), -- Precio unitario del producto
         Cantidad INT, -- Cantidad de productos
         Fecha DATE, -- Fecha de la venta
         Hora TIME, -- Hora de la venta
         MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit card')), -- Medio de pago utilizado
-        Empleado INT CONSTRAINT FK_Empleado_IDEmpleado FOREIGN KEY (Empleado) REFERENCES ddbba.Empleados (Legajo), -- Identificador del empleado
+        Empleado INT,-- CONSTRAINT FK_Empleado_IDEmpleado FOREIGN KEY (Empleado) REFERENCES ddbba.Empleados (Legajo), -- Identificador del empleado
         IdentificadorPago VARCHAR(25),
 			/*CHECK (
 			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
@@ -245,17 +261,7 @@ GO*/
 
 --drop table ddbba.Empleados
 GO
--- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.ClasificacionProductos (
-        LineaDeProducto VARCHAR(30) CHECK (LineaDeProducto IN ('Almacen', 'Perfumeria', 'Hogar', 'Frescos', 'Bazar', 'Limpieza', 'Otros', 'Congelados', 'Bebidas', 'Mascota', 'Comida')), -- Categoria a la cual pertenece
-		Producto VARCHAR(70), --Descripcion del producto (Ej. Arroz)
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
 
-GO
 
 
 ----Store procedures para manejar la inserción, modificado, borrado
@@ -548,21 +554,7 @@ CREATE OR ALTER PROCEDURE borrar.ProductosImportadosBorradoLogico
 
 
 GO
--- Stored procedure para borrado logico tabla catalogo
 
-CREATE OR ALTER PROCEDURE borrar.BorradoLogicoInformacionAdicional
- @id int
-	AS
-	BEGIN
-	 UPDATE ddbba.InformacionAdicional
-	set Activo=0
-	where IdProducto =@id
- 
-	END	
-
-	
-
-GO
 
 -- Stored procedure para borrado logico tabla electronic accesories
 
@@ -846,7 +838,7 @@ go
 
 --IMPORTAR CLASIFICACION DE PRODUCTOS 
 
-CREATE PROCEDURE importar.ImportarClasificacionProductos
+CREATE OR ALTER PROCEDURE importar.ImportarClasificacionProductos
 AS
 BEGIN
     -- Paso 1: Crear la tabla temporal
@@ -869,22 +861,20 @@ BEGIN
     WHERE NOT EXISTS (
         SELECT 1 
         FROM ddbba.ClasificacionProductos AS cp 
-        WHERE cp.LineaDeProducto = tp.LineaDeProducto
-        AND cp.Producto = tp.Producto
+        WHERE cp.LineaDeProducto = tp.LineaDeProducto collate Modern_Spanish_CI_AS
+        AND cp.Producto = tp.Producto collate Modern_Spanish_CI_AS
     );
 
     -- Limpiar tabla temporal
     DROP TABLE #TempClasificacionProductos;
 END;
 
+GO
 
 
 
 
 
-
-/*exec importar.ProductosImportadosImportar
-drop procedure importar.ProductosImportadosImportar*/
 
 CREATE OR ALTER PROCEDURE importar.ProductosImportadosImportar
 AS
@@ -919,7 +909,19 @@ BEGIN
 END;
 
 
-/*select * from ddbba.productosImportados*/
+go
+exec importar.CatalogoImportar
+go
+exec importar.EmpleadosImportar
+go
+exec importar.ImportarClasificacionProductos
+go
+exec importar.ImportarElectronicAccessories
+go
+exec importar.EmpleadosImportar
+go
+exec importar.ProductosImportadosImportar
+go
+exec importar.VentasRegistradasImportar
 
---fin
---a
+
