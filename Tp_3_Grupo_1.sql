@@ -162,6 +162,25 @@ BEGIN
 END;
 
 GO
+-- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
+BEGIN
+    CREATE TABLE ddbba.Empleados (
+		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
+		Nombre nVARCHAR(50), --Nombre del Empleado
+		Apellido nVARCHAR(50), --Apellido del Empleado
+		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
+		Direccion nVARCHAR(150), --Direccion del Empleado
+        EmailPersonal nVARCHAR(100), --Email Personal del Empleado 
+        EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
+		CUIL VARCHAR (100), --CUIL del Empleado
+		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
+		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
+		Turno VARCHAR(50),-- CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
+		Activo BIT DEFAULT 1 --Campo para borrado logico
+    );
+END;
+
 
 -- Verifica si la tabla 'catalogo' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.catalogo') AND type in (N'U'))
@@ -169,7 +188,7 @@ BEGIN
     CREATE TABLE ddbba.catalogo (
         id int PRIMARY KEY, -- Clave primaria 
         category VARCHAR(100), -- Categoría del producto
-        nombre VARCHAR(100), -- Nombre del producto
+        nombre VARCHAR(100) UNIQUE, -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(10), -- Unidad de referencia
@@ -190,13 +209,13 @@ BEGIN
         Ciudad VARCHAR(50), -- Ciudad de la venta
         TipoCliente VARCHAR(30), -- Tipo de cliente
         Genero VARCHAR(10) CHECK (Genero IN ('Male', 'Female')), -- Género del cliente
-        Producto NVARCHAR(100), -- Nombre del producto
+        Producto NVARCHAR(100) CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
         PrecioUnitario DECIMAL(10, 2), -- Precio unitario del producto
         Cantidad INT, -- Cantidad de productos
         Fecha DATE, -- Fecha de la venta
         Hora TIME, -- Hora de la venta
         MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit card')), -- Medio de pago utilizado
-        Empleado INT, -- Identificador del empleado
+        Empleado INT CONSTRAINT FK_Empleado_IDEmpleado FOREIGN KEY (Empleado) REFERENCES ddbba.Empleados (Legajo), -- Identificador del empleado
         IdentificadorPago VARCHAR(25),
 			/*CHECK (
 			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
@@ -223,24 +242,7 @@ END;
 
 GO*/
 
--- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.Empleados (
-		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
-		Nombre nVARCHAR(50), --Nombre del Empleado
-		Apellido nVARCHAR(50), --Apellido del Empleado
-		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
-		Direccion nVARCHAR(150), --Direccion del Empleado
-        EmailPersonal nVARCHAR(100), --Email Personal del Empleado 
-        EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
-		CUIL VARCHAR (100), --CUIL del Empleado
-		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
-		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
-		Turno VARCHAR(50),-- CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
+
 --drop table ddbba.Empleados
 GO
 -- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
@@ -590,9 +592,9 @@ END
 
 
 
+
+
 GO
-
-
 
 ----------------------------------------------------------------- IMPORTACION
 
