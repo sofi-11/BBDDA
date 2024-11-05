@@ -491,6 +491,47 @@ END
 
 GO
 --------------------------------------------------------------------Borrado
+-- Stored procedure para borrado logico tabla Clasificacion Productos
+CREATE OR ALTER PROCEDURE borrar.BorradoLogicoClasificacionProductos
+    @Producto VARCHAR(70)
+AS
+BEGIN
+    UPDATE ddbb.ClasificacionProductos
+    SET Activo = 0
+    WHERE Producto = @Producto;
+END;
+GO
+
+
+
+
+-- Stored procedure para borrado logico tabla Catalogo
+CREATE OR ALTER PROCEDURE borrar.BorradoLogicoCatalogo
+    @ID INT
+AS
+BEGIN
+    UPDATE ddbb.catalogo
+    SET Activo = 0
+    WHERE id = @ID;
+END;
+GO
+
+
+-- Stored procedure para borrado logico tabla Empleados
+
+CREATE OR ALTER PROCEDURE borrar.BorradoLogicoEmpleados
+    @Legajo INT
+AS
+BEGIN
+    UPDATE ddbb.Empleados
+    SET Activo = 0
+    WHERE Legajo = @Legajo;
+END;
+GO
+
+
+
+
 -- Stored procedure para borrado logico tabla productos importados
 
 CREATE OR ALTER PROCEDURE borrar.ProductosImportadosBorradoLogico
@@ -507,7 +548,7 @@ CREATE OR ALTER PROCEDURE borrar.ProductosImportadosBorradoLogico
 GO
 -- Stored procedure para borrado logico tabla catalogo
 
-/*CREATE OR ALTER PROCEDURE borrar.BorradoLogicoInformacionAdicional
+CREATE OR ALTER PROCEDURE borrar.BorradoLogicoInformacionAdicional
  @id int
 	AS
 	BEGIN
@@ -517,7 +558,7 @@ GO
  
 	END	
 
-	*/
+	
 
 GO
 
@@ -550,52 +591,6 @@ END
 
 
 GO
-
--- Stored procedure para borrado FISICO productos 
-
-CREATE OR ALTER PROCEDURE borrar.BorradoFisicoProductosImportados
-	@id int
-AS 
-BEGIN
-		Delete from ddbba.ventasRegistradas
-		where IDFactura=@id
-END
-
-
-
-
-GO
-
-
-GO
--- Stored procedure para borrado físico de la tabla ElectronicAccesories
-
-CREATE OR ALTER PROCEDURE borrar.BorradoFisicoElectronicAccesories
-	@product varchar(100)
-AS
-BEGIN
-    Delete from ddbba.electronicAccesories
-		where Product=@product
-END
-
-
-
-GO
-
--- Stored procedure para borrado físico de la tabla VentasRegistradas
-
-CREATE OR ALTER PROCEDURE borrar.BorradoFisicoVentasRegistradas
-	@id int
-AS
-BEGIN
-    Delete from ddbba.ventasRegistradas
-		where IDFactura=@id
-END
-
-
-GO
-
-
 
 
 
