@@ -207,7 +207,7 @@ BEGIN
     );
 END;
 GO
-
+/*
 -- Verifica si la tabla 'InformacionAdicional' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.InformacionAdicional') AND type in (N'U'))
 BEGIN
@@ -221,7 +221,7 @@ BEGIN
     );
 END;
 
-GO
+GO*/
 
 -- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
@@ -771,7 +771,7 @@ go
 
 drop procedure importar.ImportarEmpleadosDesdeExcel*/
 
-CREATE OR ALTER PROCEDURE importar.ImportarEmpleadosDesdeExcel
+CREATE OR ALTER PROCEDURE importar.EmpleadosImportar
 AS
 BEGIN
     -- 1. Crear la tabla temporal con la estructura que coincide con la hoja de Excel
@@ -846,6 +846,45 @@ BEGIN
 END;
 
 go
+
+--IMPORTAR CLASIFICACION DE PRODUCTOS 
+
+CREATE PROCEDURE importar.ImportarClasificacionProductos
+AS
+BEGIN
+    -- Paso 1: Crear la tabla temporal
+    CREATE TABLE #TempClasificacionProductos (
+        LineaDeProducto VARCHAR(30),
+        Producto VARCHAR(70)
+    );
+
+    -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal
+    INSERT INTO #TempClasificacionProductos (LineaDeProducto, Producto)
+    SELECT [Línea de producto], Producto
+    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0', 
+        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Informacion_complementaria.xlsx;HDR=YES',
+        'SELECT * FROM [Clasificacion productos$]'); 
+
+    -- Paso 3: Insertar datos en la tabla final, evitando duplicados
+    INSERT INTO ddbba.ClasificacionProductos (LineaDeProducto, Producto)
+    SELECT tp.LineaDeProducto, tp.Producto
+    FROM #TempClasificacionProductos AS tp
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM ddbba.ClasificacionProductos AS cp 
+        WHERE cp.LineaDeProducto = tp.LineaDeProducto
+        AND cp.Producto = tp.Producto
+    );
+
+    -- Limpiar tabla temporal
+    DROP TABLE #TempClasificacionProductos;
+END;
+
+
+
+
+
+
 
 /*exec importar.ProductosImportadosImportar
 drop procedure importar.ProductosImportadosImportar*/
