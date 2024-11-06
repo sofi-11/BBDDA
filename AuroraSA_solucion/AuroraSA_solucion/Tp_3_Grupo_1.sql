@@ -153,6 +153,7 @@ END;
 
 GO
 
+
 -- Verifica si la tabla 'electronicAccesories' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.electronicAccesories') AND type in (N'U'))
 BEGIN
@@ -169,13 +170,13 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Emp
 BEGIN
     CREATE TABLE ddbba.Empleados (
 		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
-		Nombre nVARCHAR(50), --Nombre del Empleado
-		Apellido nVARCHAR(50), --Apellido del Empleado
+		Nombre VARCHAR(50), --Nombre del Empleado
+		Apellido VARCHAR(50), --Apellido del Empleado
 		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
-		Direccion nVARCHAR(150), --Direccion del Empleado
+		Direccion VARCHAR(150), --Direccion del Empleado
         EmailPersonal nVARCHAR(100), --Email Personal del Empleado 
         EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
-		CUIL VARCHAR (100), --CUIL del Empleado
+		CUIL VARCHAR (20), --CUIL del Empleado
 		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
 		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
 		Turno VARCHAR(50),-- CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
@@ -188,7 +189,8 @@ go
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.ClasificacionProductos (
-        LineaDeProducto VARCHAR(30) CHECK (LineaDeProducto IN ('Almacen', 'Perfumeria', 'Hogar', 'Frescos', 'Bazar', 'Limpieza', 'Otros', 'Congelados', 'Bebidas', 'Mascota', 'Comida')), -- Categoria a la cual pertenece
+		IdClasificacion int identity(1,1) primary key,
+        LineaDeProducto VARCHAR(30) CHECK (LineaDeProducto IN ('Electronica','Almacen', 'Perfumeria', 'Hogar', 'Frescos', 'Bazar', 'Limpieza', 'Otros', 'Congelados', 'Bebidas', 'Mascota', 'Comida','Importado')), -- Categoria a la cual pertenece
 		Producto VARCHAR(100) unique, --Descripcion del producto (Ej. Arroz)
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
@@ -204,7 +206,7 @@ BEGIN
     CREATE TABLE ddbba.catalogo (
         id int PRIMARY KEY, -- Clave primaria 
         category VARCHAR(100),-- constraint fk_clasificacion foreign key (category) references ddbba.ClasificacionProductos(Producto), -- Categoría del producto
-        nombre NVARCHAR(100),-- UNIQUE, -- Nombre del producto
+        nombre VARCHAR(100),-- UNIQUE, -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
         reference_unit VARCHAR(10), -- Unidad de referencia
@@ -224,7 +226,7 @@ BEGIN
         Ciudad VARCHAR(50), -- Ciudad de la venta
         TipoCliente VARCHAR(30), -- Tipo de cliente
         Genero VARCHAR(10) CHECK (Genero IN ('Male', 'Female')), -- Género del cliente
-        Producto NVARCHAR(100),-- CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
+        Producto VARCHAR(100),-- CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
         PrecioUnitario DECIMAL(10, 2), -- Precio unitario del producto
         Cantidad INT, -- Cantidad de productos
         Fecha DATE, -- Fecha de la venta
@@ -243,4 +245,70 @@ END;
 GO
 
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.factura') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.factura (
+    idFactura INT PRIMARY KEY,
+    numeroFactura VARCHAR(50) UNIQUE, 
+    tipoFactura VARCHAR(50) CHECK (tipoFactura IN ('A', 'B', 'C')),
+    ciudad VARCHAR(50),
+    tipoDeCliente VARCHAR(50) check (tipoDeCliente in ('Normal','Member')),
+    genero VARCHAR(10) check (genero in ('Male','Female')),
+    fecha DATE,
+    hora TIME,
+    medioDePago VARCHAR(50) check (medioDePago in ('Credit Card','Cash','Ewallet')),
+    empleado VARCHAR(100),
+    identificadorDePago VARCHAR(100),
+    montoTotal DECIMAL(10, 2),
+    puntoDeVenta VARCHAR(50),
+	estado VARCHAR(20)
+);
+END
+
+
+
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productos') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.productos (
+    idProducto int identity(1,1) primary key,
+	nombre varchar(100),
+	precio decimal(10,2),
+	clasificacion varchar(100),
+	CONSTRAINT FK_ClasificacionProducto FOREIGN KEY (clasificacion) 
+    REFERENCES ddbba.ClasificacionProductos(Producto)
+);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cliente') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.cliente (
+    idCliente int identity (1,1) primary key,
+	tipoCliente varchar(20) check (tipoCliente in ('Normal','Member'))
+)
+END
+
+
+
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.sucursal') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.sucursal (
+    idSucursal int identity (1,1) primary key,
+	ciudad varchar(20),
+	direccion varchar(50),
+	horario time,
+	telefono varchar(20)
+)
+END
+
+
+
+
+
+select*from ddbba.ventasRegistradas
+
+select*from ddbba.ClasificacionProductos
+
+select*from ddbba.productos
 
