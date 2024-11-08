@@ -156,8 +156,8 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.pro
 BEGIN
     CREATE TABLE ddbba.productosImportados (
         IdProducto INT PRIMARY KEY, -- Llave primaria
-        NombreProducto NVARCHAR(100), -- Nombre del producto
-        Proveedor NVARCHAR(100), -- Proveedor del producto
+        NombreProducto VARCHAR(100), -- Nombre del producto
+        Proveedor VARCHAR(100), -- Proveedor del producto
         Categoria VARCHAR(100), -- Categoría del producto
         CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
         PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0), -- Precio con restricción que debe ser mayor a 0
@@ -188,8 +188,8 @@ BEGIN
 		Apellido VARCHAR(50), --Apellido del Empleado
 		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
 		Direccion VARCHAR(150), --Direccion del Empleado
-        EmailPersonal nVARCHAR(100), --Email Personal del Empleado 
-        EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
+        EmailPersonal VARCHAR(100), --Email Personal del Empleado 
+        EmailEmpresa VARCHAR(100), --Email Empresarial del Empleado
 		CUIL VARCHAR (20), --CUIL del Empleado
 		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
 		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
