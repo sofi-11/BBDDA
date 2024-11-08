@@ -34,9 +34,9 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 IF NOT EXISTS (
     SELECT name 
     FROM sys.databases 
-    WHERE name = N'Com2900G01')
+    WHERE name = N'AuroraSA')
 BEGIN
-    CREATE DATABASE Com2900G01;
+    CREATE DATABASE AuroraSA;
     PRINT 'Base de datos Com2900G01 creada.';
 END
 ELSE
@@ -45,7 +45,7 @@ BEGIN
 END;
 
 GO
-USE Com2900G01;
+USE AuroraSA;
 GO
 
 -- Cambia la intercalación (collation) de la base de datos a 'Latin1_General_CS_AS' (sensible a mayúsculas y acentos)
@@ -150,7 +150,6 @@ GO
 
 
 
-
 -- Verifica si la tabla 'productosImportados' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productosImportados') AND type in (N'U'))
 BEGIN
@@ -158,8 +157,8 @@ BEGIN
         IdProducto INT PRIMARY KEY, -- Llave primaria
         NombreProducto VARCHAR(100), -- Nombre del producto
         Proveedor VARCHAR(100), -- Proveedor del producto
-        Categoria VARCHAR(100), -- Categoría del producto
-        CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
+        Categoria VARCHAR(50), -- Categoría del producto
+        ModoEmpaquetamiento VARCHAR(50), -- Descripción de la cantidad por unidad
         PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0), -- Precio con restricción que debe ser mayor a 0
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
@@ -183,7 +182,7 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.Empleados (
-		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
+		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado	
 		Nombre VARCHAR(50), --Nombre del Empleado
 		Apellido VARCHAR(50), --Apellido del Empleado
 		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
@@ -193,7 +192,7 @@ BEGIN
 		CUIL VARCHAR (20), --CUIL del Empleado
 		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
 		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
-		Turno VARCHAR(50),-- CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
+		Turno CHAR(50),-- CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
@@ -219,11 +218,11 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cat
 BEGIN
     CREATE TABLE ddbba.catalogo (
         id int PRIMARY KEY, -- Clave primaria 
-        category VARCHAR(100),-- constraint fk_clasificacion foreign key (category) references ddbba.ClasificacionProductos(Producto), -- Categoría del producto
+        category VARCHAR(100) constraint fk_clasificacion foreign key (category) references ddbba.ClasificacionProductos(Producto), -- Categoría del producto
         nombre VARCHAR(100),-- UNIQUE, -- Nombre del producto
         price DECIMAL(10, 2) CHECK (price > 0), -- Precio del producto, debe ser mayor a 0
         reference_price DECIMAL(10, 2), -- Precio de referencia
-        reference_unit VARCHAR(10), -- Unidad de referencia
+        reference_unit char(2), -- Unidad de referencia
         fecha DATETIME, -- Fecha
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
@@ -335,7 +334,7 @@ CREATE TABLE ddbba.detalleVenta (
     detalleID int identity(1,1) primary key,
 	nroFactura int foreign key references ddbba.factura(numeroFactura),
 	producto varchar(100) foreign key references ddbba.productos(nombre),
-	categoria varchar(100) foreign key references ddbba.ClasificacionProductos(producto),
+	categoria varchar(100) constraint fkcategoria foreign key references ddbba.ClasificacionProductos(Producto),
 	cantidad int,
 	monto decimal(10,2)
 )
