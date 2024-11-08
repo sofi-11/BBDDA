@@ -134,6 +134,20 @@ BEGIN
 END;
 GO
 
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'nota')
+BEGIN
+    EXEC('CREATE SCHEMA nota');
+    PRINT 'Esquema nota creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema nota ya existe.';
+END;
+GO
+
 
 
 
@@ -249,7 +263,7 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.fac
 BEGIN
 CREATE TABLE ddbba.factura (
     idFactura INT PRIMARY KEY,
-    numeroFactura VARCHAR(50) UNIQUE, 
+    numeroFactura int UNIQUE, 
     tipoFactura VARCHAR(50) CHECK (tipoFactura IN ('A', 'B', 'C')),
     ciudad VARCHAR(50),
     tipoDeCliente VARCHAR(50) check (tipoDeCliente in ('Normal','Member')),
@@ -268,17 +282,20 @@ END
 
 
 
+
+
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productos') AND type in (N'U'))
 BEGIN
 CREATE TABLE ddbba.productos (
     idProducto int identity(1,1) primary key,
-	nombre varchar(100),
+	nombre varchar(100) unique,
 	precio decimal(10,2),
 	clasificacion varchar(100),
 	CONSTRAINT FK_ClasificacionProducto FOREIGN KEY (clasificacion) 
     REFERENCES ddbba.ClasificacionProductos(Producto)
 );
 END
+
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cliente') AND type in (N'U'))
 BEGIN
@@ -302,7 +319,27 @@ CREATE TABLE ddbba.sucursal (
 )
 END
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.notaDeCredito') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.notaDeCredito (
+    notaID int identity(1,1) primary key,
+	nroFactura int foreign key references ddbba.factura(numeroFactura),
+	fechaEmision date,
+	monto decimal(10,2)
+)
+END
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.detalleVenta') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.detalleVenta (
+    detalleID int identity(1,1) primary key,
+	nroFactura int foreign key references ddbba.factura(numeroFactura),
+	producto varchar(100) foreign key references ddbba.productos(nombre),
+	categoria varchar(100) foreign key references ddbba.ClasificacionProductos(producto),
+	cantidad int,
+	monto decimal(10,2)
+)
+END
 
 
 
