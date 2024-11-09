@@ -100,3 +100,38 @@ BEGIN
         @trimestre = @trimestre, 
         @anio = @anio;
 END;
+
+
+
+
+
+-- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder mostrar--la cantidad de productos vendidos en ese rango, ordenado de mayor a menor.
+
+EXEC VentasPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2019-06-29';
+
+CREATE OR ALTER PROCEDURE VentasPorRangoFechas
+    @fecha_inicio DATE,  -- Fecha de inicio del rango
+    @fecha_fin DATE      -- Fecha de fin del rango
+AS
+BEGIN
+    -- Declaramos una variable para construir la consulta dinámica en formato XML
+    DECLARE @sql NVARCHAR(MAX);
+
+    -- Construimos la consulta dinámica en la variable @sql
+    SET @sql = '
+        SELECT 
+            Producto, 
+            SUM(Cantidad) AS CantidadVendida
+        FROM ddbba.ventasRegistradas
+        WHERE Fecha BETWEEN @fecha_inicio AND @fecha_fin
+        GROUP BY Producto
+        ORDER BY CantidadVendida DESC;
+    ';
+
+    -- Ejecutamos la consulta dinámica con los parámetros de fecha
+    EXEC sp_executesql @sql,
+        N'@fecha_inicio DATE, @fecha_fin DATE',
+        @fecha_inicio = @fecha_inicio, 
+        @fecha_fin = @fecha_fin;
+END;
+
