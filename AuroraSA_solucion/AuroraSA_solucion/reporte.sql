@@ -135,3 +135,49 @@ BEGIN
         @fecha_fin = @fecha_fin;
 END;
 
+
+
+
+
+-- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder 
+--mostrar la cantidad de productos vendidos en ese rango por sucursal, ordenado 
+--de mayor a menor.
+
+EXEC VentasPorSucursalPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2019-06-29';
+
+CREATE OR ALTER PROCEDURE VentasPorSucursalPorRangoFechas
+    @fecha_inicio DATE,  -- Fecha de inicio del rango
+    @fecha_fin DATE      -- Fecha de fin del rango
+AS
+BEGIN
+    -- Declaramos una variable para construir la consulta dinámica en formato XML
+    DECLARE @sql NVARCHAR(MAX);
+
+    -- Construimos la consulta dinámica en la variable @sql
+    SET @sql = '
+        SELECT 
+			v.Producto, 
+			SUM(v.Cantidad) AS CantidadVendida,
+			e.Sucursal
+		FROM ddbba.ventasRegistradas v
+		INNER JOIN ddbba.Empleados e
+			ON e.Legajo = v.Empleado
+		WHERE Fecha BETWEEN @fecha_inicio AND @fecha_fin
+			AND (
+				CASE 
+					WHEN v.Ciudad = ''Yangon'' THEN ''San Justo''
+					WHEN v.Ciudad = ''Naypyitaw'' THEN ''Ramos Mejia''
+					WHEN v.Ciudad = ''Mandalay'' THEN ''Ramos Lomas del Mirador''
+					ELSE v.Ciudad
+				END = e.Sucursal
+			)
+		GROUP BY v.Producto, e.Sucursal
+		ORDER BY CantidadVendida DESC;
+    ';
+
+    -- Ejecutamos la consulta dinámica con los parámetros de fecha
+    EXEC sp_executesql @sql,
+        N'@fecha_inicio DATE, @fecha_fin DATE',
+        @fecha_inicio = @fecha_inicio, 
+        @fecha_fin = @fecha_fin;
+END;
