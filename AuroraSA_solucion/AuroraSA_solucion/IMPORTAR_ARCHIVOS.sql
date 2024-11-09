@@ -6,8 +6,17 @@ USE COM2900G01
 
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
 
+select*from ddbba.electronicAccesories
+exec importar.ElectronicAccessoriesImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
-CREATE OR ALTER PROCEDURE importar.ImportarElectronicAccessories 
+select*from ddbba.electronicAccesories
+
+truncate table ddbba.productos
+select * from ddbba.productos
+
+
+CREATE OR ALTER PROCEDURE importar.ElectronicAccessoriesImportar
+    @ruta NVARCHAR(255)  -- Parámetro de entrada para la ruta del archivo
 AS
 BEGIN
     -- Crear tabla temporal
@@ -16,12 +25,36 @@ BEGIN
         [Precio Unitario en dolares] decimal(10, 2)
     );
 
-    -- Cargar los datos del archivo Excel en la tabla temporal
-    INSERT INTO #TempElectronicAccessories (Product, [Precio Unitario en dolares])
+    -- Concatenar la ruta y el nombre del archivo en una sola variable
+    DECLARE @rutaCompleta NVARCHAR(255);
+    SET @rutaCompleta = @ruta + '\Electronic accessories.xlsx';
+
+    -- Declarar la consulta dinámica para cargar los datos del archivo Excel
+    DECLARE @sql NVARCHAR(MAX);
+    SET @sql = N'
+        INSERT INTO #TempElectronicAccessories (Product, [Precio Unitario en dolares])
+        SELECT Product, [Precio Unitario en dolares]
+        FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'',
+            ''Excel 12.0;Database=' + @rutaCompleta + ';HDR=YES'',
+            ''SELECT * FROM [Sheet1$]'')';
+
+    -- Ejecutar la consulta dinámica
+    EXEC sp_executesql @sql;
+
+	CREATE TABLE #UniqueElectronicAccessories (
+        Product varchar(100),
+        [Precio Unitario en dolares] decimal(10, 2)
+    );
+
+	 INSERT INTO #UniqueElectronicAccessories (Product, [Precio Unitario en dolares])
     SELECT Product, [Precio Unitario en dolares]
-    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Electronic accessories.xlsx;HDR=YES',
-        'SELECT * FROM [Sheet1$]');
+    FROM (
+        SELECT Product, [Precio Unitario en dolares],
+               ROW_NUMBER() OVER (PARTITION BY Product ORDER BY Product) AS row_num
+        FROM #TempElectronicAccessories
+    ) AS temp
+    WHERE row_num = 1; -- Esto selecciona solo la primera aparición de cada producto
+
 
     -- Insertar los datos de la tabla temporal en la tabla de destino
     INSERT INTO ddbba.electronicAccesories (Product, PrecioUnitarioUSD)
@@ -30,15 +63,26 @@ BEGIN
     WHERE NOT EXISTS (
         SELECT 1
         FROM ddbba.electronicAccesories e
-        WHERE e.Product = t.Product collate Modern_Spanish_CI_AS
+        WHERE e.Product = t.Product COLLATE Modern_Spanish_CI_AS
     );
+
+	 INSERT INTO ddbba.productos (nombre, precio, clasificacion)
+    SELECT u.Product, u.[Precio Unitario en dolares], 'Electronica'
+    FROM #UniqueElectronicAccessories u
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM ddbba.productos p
+        WHERE p.nombre = u.Product COLLATE Modern_Spanish_CI_AS
+    );
+
 
     -- Eliminar la tabla temporal
     DROP TABLE #TempElectronicAccessories;
+	DROP TABLE #UniqueElectronicAccessories;
 
-    PRINT 'Datos importados exitosamente desde Electronic accessories.xlsx';
+    PRINT 'Datos importados exitosamente desde el archivo especificado';
 END;
-GO
+
 
 /*exec importar.ImportarElectronicAccessories
 drop procedure importar.ImportarElectronicAccessories*/
@@ -47,7 +91,12 @@ drop procedure importar.ImportarElectronicAccessories*/
 -- Stored procedure para importar datos de 'catalogo.csv'
 
 
-CREATE OR Alter PROCEDURE importar.CatalogoImportar
+exec importar.CatalogoImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+
+
+
+CREATE OR ALTER PROCEDURE importar.CatalogoImportar 
+    @ruta NVARCHAR(255)  -- Parámetro de entrada para la ruta del archivo
 AS
 BEGIN
     -- Crear tabla temporal para almacenar datos del archivo CSV
@@ -61,12 +110,18 @@ BEGIN
         fecha DATETIME
     );
 
-    -- Cargar los datos del archivo CSV en la tabla temporal
-    INSERT INTO #TempCatalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
-    SELECT id, category, name, price, reference_price, reference_unit, date
-    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-    'Text;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\;HDR=YES',
-    'SELECT * FROM [catalogo.csv]');
+
+    -- Declarar la consulta dinámica para cargar los datos del archivo CSV
+    DECLARE @sql NVARCHAR(MAX);
+    SET @sql = N'
+        INSERT INTO #TempCatalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
+        SELECT id, category, name, price, reference_price, reference_unit, date
+        FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'',
+            ''Text;Database=' + @ruta + '\;HDR=YES'',
+            ''SELECT * FROM [catalogo.csv]'')';
+
+    -- Ejecutar la consulta dinámica
+    EXEC sp_executesql @sql;
 
     -- Insertar en la tabla de destino solo los registros que no existen
     INSERT INTO ddbba.catalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
@@ -78,11 +133,31 @@ BEGIN
         WHERE c.id = t.id
     );
 
+    -- Insertar en la tabla productos solo los registros que no existen
+    WITH UniqueProductos AS (
+        SELECT DISTINCT nombre, price, category,
+               ROW_NUMBER() OVER (PARTITION BY nombre ORDER BY id) AS RowNum
+        FROM #TempCatalogo
+    )
+    INSERT INTO ddbba.productos(nombre, precio, clasificacion)
+    SELECT nombre, price, category
+    FROM UniqueProductos
+    WHERE RowNum = 1
+      AND nombre IS NOT NULL
+      AND NOT EXISTS (
+          SELECT 1
+          FROM ddbba.productos p
+          WHERE p.nombre = UniqueProductos.nombre
+      );
+
+
     -- Eliminar la tabla temporal
     DROP TABLE #TempCatalogo;
 
     PRINT 'Datos importados exitosamente desde catalogo.csv';
 END;
+GO
+
 GO
 
 /*select* from ddbba.catalogo
@@ -94,13 +169,16 @@ drop procedure importar.CatalogoImportar
 
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
 
-exec importar.VentasRegistradasImportar*/
+*/
+
+exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 
 CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
+    @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
 AS
 BEGIN
-    -- 1. Crear la tabla temporal
+    -- Crear la tabla temporal
     CREATE TABLE #TempVentas (
         IDFactura VARCHAR(50),
         TipoFactura CHAR(1),
@@ -117,16 +195,25 @@ BEGIN
         IdentificadorPago VARCHAR(25)
     );
 
-    -- 2. Cargar los datos del CSV a la tabla temporal
-    BULK INSERT #TempVentas
-    FROM 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Ventas_registradas.csv'
-    WITH (
-        FIELDTERMINATOR = ';',   -- Especifica el punto y coma como delimitador
-        ROWTERMINATOR = '\n',    -- Especifica el salto de línea como terminador de fila
-        FIRSTROW = 2             -- Omite la primera fila si es encabezado
-    );
+    -- Concatenar la ruta y el nombre del archivo CSV
+    DECLARE @rutaCompleta NVARCHAR(255);
+    SET @rutaCompleta = @ruta + '\Ventas_registradas.csv';
 
-    -- 3. Insertar los datos de la tabla temporal a la tabla final
+    -- Declarar la consulta dinámica para BULK INSERT
+    DECLARE @sql NVARCHAR(MAX);
+    SET @sql = N'
+        BULK INSERT #TempVentas
+        FROM ''' + @rutaCompleta + '''
+        WITH (
+            FIELDTERMINATOR = '';'',   -- Especifica el punto y coma como delimitador
+            ROWTERMINATOR = ''\n'',    -- Especifica el salto de línea como terminador de fila
+            FIRSTROW = 2               -- Omite la primera fila si es encabezado
+        )';
+
+    -- Ejecutar la consulta dinámica
+    EXEC sp_executesql @sql;
+
+    -- Insertar los datos de la tabla temporal en la tabla final, evitando duplicados en IDFactura
     INSERT INTO ddbba.ventasRegistradas (
         IDFactura, 
         TipoFactura, 
@@ -160,39 +247,49 @@ BEGIN
     WHERE NOT EXISTS (
         SELECT 1 
         FROM ddbba.ventasRegistradas AS vr 
-        WHERE vr.IDFactura = tv.IDFactura collate Modern_Spanish_CI_AS
+        WHERE vr.IDFactura = tv.IDFactura COLLATE Modern_Spanish_CI_AS
     );
 
-    -- 4. Eliminar la tabla temporal
+    -- Eliminar la tabla temporal
     DROP TABLE #TempVentas;
+
+    PRINT 'Datos importados exitosamente desde Ventas_registradas.csv';
 END;
+GO
+
 
 go
 /*IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
 
-/*exec importar.ImportarEmpleadosDesdeExcel
+exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
-drop procedure importar.ImportarEmpleadosDesdeExcel*/
 
 CREATE OR ALTER PROCEDURE importar.EmpleadosImportar
+    @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
 AS
 BEGIN
     -- 1. Crear la tabla temporal con la estructura que coincide con la hoja de Excel
     CREATE TABLE #TempEmpleados (
-        Legajo varchar(10),            -- Numero unico que representa a cada Empleado
-        Nombre nVARCHAR(50),    -- Nombre del Empleado
-        Apellido nVARCHAR(50),  -- Apellido del Empleado
+        Legajo VARCHAR(10),            -- Numero unico que representa a cada Empleado
+        Nombre NVARCHAR(50),    -- Nombre del Empleado
+        Apellido NVARCHAR(50),  -- Apellido del Empleado
         DNI CHAR(9),          -- DNI del Empleado
-        Direccion nVARCHAR(150),-- Direccion del Empleado
-        EmailPersonal nVARCHAR(100), -- Email Personal del Empleado
-        EmailEmpresa nVARCHAR(100),  -- Email Empresarial del Empleado
+        Direccion NVARCHAR(150),-- Direccion del Empleado
+        EmailPersonal NVARCHAR(100), -- Email Personal del Empleado
+        EmailEmpresa NVARCHAR(100),  -- Email Empresarial del Empleado
         CUIL VARCHAR(100),     -- CUIL del Empleado
         Cargo VARCHAR(50),     -- Cargo del Empleado
         Sucursal VARCHAR(50),   -- Sucursal del Empleado
         Turno VARCHAR(50)      -- Turno del Empleado
     );
 
+    -- Concatenar la ruta y el nombre del archivo Excel
+    DECLARE @rutaCompleta NVARCHAR(255);
+    SET @rutaCompleta = @ruta + '\Informacion_complementaria.xlsx';
+
     -- 2. Cargar los datos de la hoja de Excel a la tabla temporal usando OPENROWSET
+    DECLARE @sql NVARCHAR(MAX);
+    SET @sql = N'
     INSERT INTO #TempEmpleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
     SELECT 
         [Legajo/ID],
@@ -206,11 +303,14 @@ BEGIN
         Cargo, 
         Sucursal, 
         Turno
-		FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Informacion_complementaria.xlsx;HDR=YES',
-        'SELECT * FROM [Empleados$]');
+    FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'',
+        ''Excel 12.0;Database=' + @rutaCompleta + ';HDR=YES'',
+        ''SELECT * FROM [Empleados$]'')';
+    
+    
+    EXEC sp_executesql @sql;
 
-    -- 3. Insertar los datos en la tabla final ddbba.Empleados si el Legajo no existe
+    -- insertar los datos en la tabla final ddbba.Empleados si el Legajo no existe
     INSERT INTO ddbba.Empleados (
         Legajo, 
         Nombre, 
@@ -225,7 +325,7 @@ BEGIN
         Turno
     )
     SELECT 
-        cast(Legajo as int), 
+        CAST(Legajo AS INT), 
         Nombre, 
         Apellido, 
         DNI, 
@@ -242,17 +342,24 @@ BEGIN
         FROM ddbba.Empleados AS e 
         WHERE e.Legajo = te.Legajo
     )
-	AND te.Legajo IS NOT NULL;
+    AND te.Legajo IS NOT NULL;
 
     -- 4. Eliminar la tabla temporal
     DROP TABLE #TempEmpleados;
+
+    PRINT 'Datos importados exitosamente desde Informacion_complementaria.xlsx';
 END;
+GO
+
 
 go
 
 --IMPORTAR CLASIFICACION DE PRODUCTOS 
 
-CREATE OR ALTER PROCEDURE importar.ImportarClasificacionProductos
+exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+
+CREATE OR ALTER PROCEDURE importar.ClasificacionProductosImportar
+    @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
 AS
 BEGIN
     -- Paso 1: Crear la tabla temporal
@@ -261,12 +368,21 @@ BEGIN
         Producto VARCHAR(70)
     );
 
+    -- Concatenar ruta
+    DECLARE @rutaCompleta NVARCHAR(255);
+    SET @rutaCompleta = @ruta + '\Informacion_complementaria.xlsx';
+
     -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal
+    DECLARE @sql NVARCHAR(MAX);
+    SET @sql = N'
     INSERT INTO #TempClasificacionProductos (LineaDeProducto, Producto)
     SELECT [Línea de producto], Producto
-    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0', 
-        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Informacion_complementaria.xlsx;HDR=YES',
-        'SELECT * FROM [Clasificacion productos$]'); 
+    FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'', 
+        ''Excel 12.0;Database=' + @rutaCompleta + ';HDR=YES'',
+        ''SELECT * FROM [Clasificacion productos$]'')';
+
+    -- Ejecutar la consulta dinámica para cargar los datos
+    EXEC sp_executesql @sql;
 
     -- Paso 3: Insertar datos en la tabla final, evitando duplicados
     INSERT INTO ddbba.ClasificacionProductos (LineaDeProducto, Producto)
@@ -281,16 +397,21 @@ BEGIN
 
     -- Limpiar tabla temporal
     DROP TABLE #TempClasificacionProductos;
+    
+    PRINT 'Datos importados exitosamente desde Informacion_complementaria.xlsx';
 END;
-
 GO
 
 
 
 
 
+--IMPORTAR PRODUCTOS IMPORTADOS
+
+exec importar.productosImportadosImportar @ruta = 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA'
 
 CREATE OR ALTER PROCEDURE importar.ProductosImportadosImportar
+    @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo incluyendo el nombre del archivo
 AS
 BEGIN
     -- Paso 1: Crear la tabla temporal
@@ -303,12 +424,17 @@ BEGIN
         PrecioUnidad DECIMAL(10, 2)
     );
 
-    -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal
-    INSERT INTO #TempProductos (IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT IdProducto, NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
-    FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0', 
-        'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Productos_importados.xlsx;HDR=YES',
-        'SELECT * FROM [Listado de Productos$]'); 
+    -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal usando SQL dinámico
+    DECLARE @sql NVARCHAR(MAX);
+
+    SET @sql = N'
+        INSERT INTO #TempProductos (IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
+        SELECT IdProducto, NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
+        FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'', 
+            ''Excel 12.0;Database=' + @ruta + '\Productos_importados.xlsx;HDR=YES'',
+            ''SELECT * FROM [Listado de Productos$]'');';
+
+    EXEC sp_executesql @sql;
 
     -- Paso 3: Insertar datos en la tabla final, asegurando que no existan duplicados y que IdProducto no sea NULL
     INSERT INTO ddbba.productosImportados(IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
@@ -319,8 +445,23 @@ BEGIN
         FROM ddbba.productosImportados AS p 
         WHERE p.IdProducto = CAST(tp.IdProducto AS INT)
     )
-	DROP TABLE #TempProductos;
+    AND tp.IdProducto IS NOT NULL;  
+
+	INSERT INTO ddbba.productos(nombre,precio,clasificacion)
+	select tp.NombreProducto,tp.PrecioUnidad, 'Importado'
+	from #TempProductos AS tp
+	WHERE NOT EXISTS (
+		SELECT 1
+		FROM ddbba.productos as p
+		WHERE p.nombre = tp.NombreProducto
+	)
+	AND tp.IdProducto IS NOT NULL;  
+
+    -- Limpiar tabla temporal
+    DROP TABLE #TempProductos;
 END;
+
+
 
 
 

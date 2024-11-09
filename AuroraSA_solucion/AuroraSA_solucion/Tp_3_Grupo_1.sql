@@ -258,6 +258,7 @@ BEGIN
 END;
 GO
 
+select * from ddbba.ventasRegistradas
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.factura') AND type in (N'U'))
 BEGIN
@@ -338,6 +339,15 @@ CREATE TABLE ddbba.detalleVenta (
 	categoria varchar(100) foreign key references ddbba.ClasificacionProductos(producto),
 	cantidad int,
 	monto decimal(10,2)
+)
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cotizacionDolar') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.cotizacionDolar (
+	idCotizacion int identity(1,1) primary key,
+    tipo varchar(50),
+	valor decimal(10,2)
 )
 END
 
