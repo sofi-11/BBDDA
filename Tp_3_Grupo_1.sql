@@ -142,10 +142,10 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.pro
 BEGIN
     CREATE TABLE ddbba.productosImportados (
         IdProducto INT PRIMARY KEY, -- Llave primaria
-        NombreProducto NVARCHAR(100), -- Nombre del producto
-        Proveedor NVARCHAR(100), -- Proveedor del producto
+        NombreProducto VARCHAR(100), -- Nombre del producto
+        Proveedor VARCHAR(100), -- Proveedor del producto
         Categoria VARCHAR(100), -- Categoría del producto
-        CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
+        ModoDeEmpaquetamiento VARCHAR(50), -- Descripción de la cantidad por unidad
         PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0), -- Precio con restricción que debe ser mayor a 0
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
@@ -169,12 +169,12 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Emp
 BEGIN
     CREATE TABLE ddbba.Empleados (
 		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
-		Nombre nVARCHAR(50), --Nombre del Empleado
-		Apellido nVARCHAR(50), --Apellido del Empleado
-		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
-		Direccion nVARCHAR(150), --Direccion del Empleado
-        EmailPersonal nVARCHAR(100), --Email Personal del Empleado 
-        EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
+		Nombre VARCHAR(50), --Nombre del Empleado
+		Apellido VARCHAR(50), --Apellido del Empleado
+		DNI CHAR(9) CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
+		Direccion VARCHAR(150), --Direccion del Empleado
+        EmailPersonal VARCHAR(100), --Email Personal del Empleado 
+        EmailEmpresa VARCHAR(100), --Email Empresarial del Empleado
 		CUIL VARCHAR (100), --CUIL del Empleado
 		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
 		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
@@ -275,12 +275,12 @@ CREATE OR ALTER PROCEDURE insertar.ProductosImportadosInsertar
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
     @Categoria VARCHAR(100),
-	@CantidadPorUnidad VARCHAR(50),
+	@ModoDeEmpaquetamiento VARCHAR(50),
 	@PrecioUnidad decimal(10,2)
 	AS
 	BEGIN
-		INSERT INTO ddbba.productosImportados(IdProducto,NombreProducto,Proveedor,Categoria,CantidadPorUnidad,PrecioUnidad)
-    VALUES (@id,@NombreProducto,@Proveedor,@Categoria,@CantidadPorUnidad,@PrecioUnidad);
+		INSERT INTO ddbba.productosImportados(IdProducto,NombreProducto,Proveedor,Categoria,ModoDeEmpaquetamiento,PrecioUnidad)
+    VALUES (@id,@NombreProducto,@Proveedor,@Categoria,@ModoDeEmpaquetamiento,@PrecioUnidad);
 	END;
 
 
@@ -375,7 +375,7 @@ CREATE OR ALTER PROCEDURE modificar.ProductosImportadosModificar
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
     @Categoria VARCHAR(100),
-	@CantidadPorUnidad VARCHAR(50),
+	@ModoDeEmpaquetamiento VARCHAR(50),
 	@PrecioUnidad decimal(10,2)
 AS
 BEGIN
@@ -383,7 +383,7 @@ BEGIN
     SET NombreProducto=@NombreProducto ,
 		Proveedor=@Proveedor ,
 		Categoria=@Categoria ,
-		CantidadPorUnidad=@CantidadPorUnidad,
+		ModoDeEmpaquetamiento=@ModoDeEmpaquetamiento,
 		PrecioUnidad=@PrecioUnidad 
     WHERE IdProducto = @Id;
     
@@ -885,20 +885,20 @@ BEGIN
         NombreProducto NVARCHAR(100),
         Proveedor NVARCHAR(100),
         Categoria VARCHAR(100),
-        CantidadPorUnidad VARCHAR(50),
+        ModoDeEmpaquetamiento VARCHAR(50),
         PrecioUnidad DECIMAL(10, 2)
     );
 
     -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal
-    INSERT INTO #TempProductos (IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT IdProducto, NombreProducto, Proveedor, Categoría, CantidadPorUnidad, PrecioUnidad
+    INSERT INTO #TempProductos (IdProducto, NombreProducto, Proveedor, Categoria, ModoDeEmpaquetamiento, PrecioUnidad)
+    SELECT IdProducto, NombreProducto, Proveedor, Categoría, ModoDeEmpaquetamiento, PrecioUnidad
     FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0', 
         'Excel 12.0;Database=C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA\Productos_importados.xlsx;HDR=YES',
         'SELECT * FROM [Listado de Productos$]'); 
 
     -- Paso 3: Insertar datos en la tabla final, asegurando que no existan duplicados y que IdProducto no sea NULL
-    INSERT INTO ddbba.productosImportados(IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT CAST(tp.IdProducto AS INT), tp.NombreProducto, tp.Proveedor, tp.Categoria, tp.CantidadPorUnidad, tp.PrecioUnidad
+    INSERT INTO ddbba.productosImportados(IdProducto, NombreProducto, Proveedor, Categoria, ModoDeEmpaquetamiento, PrecioUnidad)
+    SELECT CAST(tp.IdProducto AS INT), tp.NombreProducto, tp.Proveedor, tp.Categoria, tp.ModoDeEmpaquetamiento, tp.PrecioUnidad
     FROM #TempProductos AS tp
     WHERE NOT EXISTS (
         SELECT 1 
