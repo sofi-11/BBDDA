@@ -275,7 +275,7 @@ CREATE TABLE ddbba.factura (
     identificadorDePago VARCHAR(100),
     montoTotal DECIMAL(10, 2),
     puntoDeVenta VARCHAR(50),
-	estado VARCHAR(20)
+	estado VARCHAR(20) check (estado in ('pagada','pendiente','anulada','vencida','reembolsada'))
 );
 END
 
@@ -336,6 +336,7 @@ CREATE TABLE ddbba.detalleVenta (
 	producto varchar(100) foreign key references ddbba.productos(nombre),
 	categoria varchar(100) foreign key references ddbba.ClasificacionProductos(producto),
 	cantidad int,
+	precio_unitario decimal (10,2),
 	monto decimal(10,2)
 )
 END
