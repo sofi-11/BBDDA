@@ -273,3 +273,44 @@ BEGIN
     -- Ejecutar la consulta dinámica y devolver el resultado como XML
     EXEC sp_executesql @sql, N'@mes INT, @anio INT', @mes, @anio;
 END;
+
+
+
+
+
+-- Mostrar total acumulado de ventas (o sea tambien mostrar el detalle) para una 
+--fecha y sucursal particulares
+
+EXEC TotalAcumuladoPorFechaYSucursal @fecha = '01-01-2019', @sucursal = 'San Justo';
+
+CREATE OR ALTER PROCEDURE TotalAcumuladoPorFechaYSucursal
+    @fecha DATE,  -- Fecha para el reporte
+    @sucursal VARCHAR(50)  -- Sucursal para el reporte
+AS
+BEGIN
+    -- Crear una consulta para obtener el total acumulado de ventas por fecha y sucursal en formato XML
+    DECLARE @sql NVARCHAR(MAX);
+    
+    SET @sql = '
+    SELECT 
+        v.Producto,
+        SUM(v.Cantidad) AS CantidadVendida,
+        SUM(v.PrecioUnitario * v.Cantidad) AS TotalFacturado,
+        e.Sucursal,
+        v.Fecha
+    FROM 
+        ddbba.ventasRegistradas v
+    INNER JOIN ddbba.Empleados e
+        ON e.Legajo = v.Empleado
+    WHERE 
+        v.Fecha = @fecha AND e.Sucursal = @sucursal
+    GROUP BY 
+        v.Producto, e.Sucursal, v.Fecha
+    ORDER BY 
+        TotalFacturado DESC
+    FOR XML PATH(''ReporteTotalAcumuladoVentas'')';
+
+    -- Ejecutar la consulta dinámica y devolver el resultado como XML
+    EXEC sp_executesql @sql, N'@fecha DATE, @sucursal VARCHAR(50)', @fecha, @sucursal;
+END;
+
