@@ -90,7 +90,8 @@ BEGIN
                 WHEN DATEPART(HOUR, hora) BETWEEN 8 AND 13 THEN ''Mañana''
                 WHEN DATEPART(HOUR, hora) BETWEEN 14 AND 23 THEN ''Tarde''
             END,
-            MONTH(Fecha);
+            MONTH(Fecha)
+		FOR XML PATH(''ReporteFacturacionTrimestral'')
     ';
 
     -- Ejecutamos la consulta dinámica
@@ -125,7 +126,8 @@ BEGIN
         FROM ddbba.ventasRegistradas
         WHERE Fecha BETWEEN @fecha_inicio AND @fecha_fin
         GROUP BY Producto
-        ORDER BY CantidadVendida DESC;
+        ORDER BY CantidadVendida DESC
+		FOR XML PATH(''ReportePorFechas'')
     ';
 
     -- Ejecutamos la consulta dinámica con los parámetros de fecha
@@ -172,7 +174,8 @@ BEGIN
 				END = e.Sucursal
 			)
 		GROUP BY v.Producto, e.Sucursal
-		ORDER BY CantidadVendida DESC;
+		ORDER BY CantidadVendida DESC
+		FOR XML PATH(''ReportePorFechasPorSucursal'');
     ';
 
     -- Ejecutamos la consulta dinámica con los parámetros de fecha
@@ -180,4 +183,93 @@ BEGIN
         N'@fecha_inicio DATE, @fecha_fin DATE',
         @fecha_inicio = @fecha_inicio, 
         @fecha_fin = @fecha_fin;
+END;
+
+
+
+
+-- Mostrar los 5 productos más vendidos en un mes, por semana 
+
+EXEC ProductosMasVendidosPorSemana @mes = 1, @anio = 2019;
+
+CREATE OR ALTER PROCEDURE ProductosMasVendidosPorSemana
+    @mes INT,  -- Mes para el reporte (1 a 12)
+    @anio INT   -- Año para el reporte
+AS
+BEGIN
+    -- Crear una consulta para obtener los 5 productos más vendidos por semana en formato XML
+    DECLARE @sql NVARCHAR(MAX);
+    
+    SET @sql = '
+        WITH ProductosConRanking AS (
+            SELECT 
+                DATEPART(WEEK, Fecha) AS Semana,
+                Producto,
+                SUM(Cantidad) AS CantidadVendida,
+                ROW_NUMBER() OVER (PARTITION BY DATEPART(WEEK, Fecha) ORDER BY SUM(Cantidad) DESC) AS Ranking
+            FROM 
+                ddbba.ventasRegistradas
+            WHERE 
+                MONTH(Fecha) = @mes AND YEAR(Fecha) = @anio
+            GROUP BY 
+                DATEPART(WEEK, Fecha), Producto
+        )
+        SELECT 
+            Semana,
+            Producto,
+            CantidadVendida
+        FROM 
+            ProductosConRanking
+        WHERE 
+            Ranking <= 5
+        ORDER BY 
+            Semana, Ranking
+        FOR XML PATH(''Reporte5ProductosPorSemana'');
+    ';
+
+    -- Ejecutar la consulta dinámica y devolver el resultado como XML
+    EXEC sp_executesql @sql, N'@mes INT, @anio INT', @mes, @anio;
+END;
+
+
+
+
+--Mostrar los 5 productos menos vendidos en el mes.
+EXEC ProductosMenosVendidos @mes = 1, @anio = 2019;
+
+CREATE OR ALTER PROCEDURE ProductosMenosVendidos
+    @mes INT,  -- Mes para el reporte (1 a 12)
+    @anio INT   -- Año para el reporte
+AS
+BEGIN
+    -- Crear una consulta para obtener los 5 productos menos vendidos en el mes en formato XML
+    DECLARE @sql NVARCHAR(MAX);
+    
+    SET @sql = '
+        WITH ProductosConRanking AS (
+            SELECT 
+                Producto,
+                SUM(Cantidad) AS CantidadVendida,
+                ROW_NUMBER() OVER (ORDER BY SUM(Cantidad) ASC) AS Ranking
+            FROM 
+                ddbba.ventasRegistradas
+            WHERE 
+                MONTH(Fecha) = @mes AND YEAR(Fecha) = @anio
+            GROUP BY 
+                Producto
+        )
+        SELECT 
+            Producto,
+            CantidadVendida
+        FROM 
+            ProductosConRanking
+        WHERE 
+            Ranking <= 5
+        ORDER BY 
+            CantidadVendida ASC
+        FOR XML PATH(''ReporteMenosVendidos'');
+    ';
+
+    -- Ejecutar la consulta dinámica y devolver el resultado como XML
+    EXEC sp_executesql @sql, N'@mes INT, @anio INT', @mes, @anio;
 END;
