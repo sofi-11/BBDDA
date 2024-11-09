@@ -268,7 +268,6 @@ CREATE TABLE ddbba.factura (
     tipoFactura VARCHAR(50) CHECK (tipoFactura IN ('A', 'B', 'C')),
     ciudad VARCHAR(50),
     tipoDeCliente VARCHAR(50) check (tipoDeCliente in ('Normal','Member')),
-    genero VARCHAR(10) check (genero in ('Male','Female')),
     fecha DATE,
     hora TIME,
     medioDePago VARCHAR(50) check (medioDePago in ('Credit Card','Cash','Ewallet')),
@@ -279,7 +278,6 @@ CREATE TABLE ddbba.factura (
 	estado VARCHAR(20)
 );
 END
-
 
 
 

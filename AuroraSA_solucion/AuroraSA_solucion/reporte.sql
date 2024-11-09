@@ -6,6 +6,11 @@ RECONFIGURE;
 EXEC sp_configure 'xp_cmdshell', 1;
 RECONFIGURE;
 
+--Mensual: ingresando un mes y año determinado mostrar el total facturado por días de
+--la semana, incluyendo sábado y domingo.
+
+EXEC FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
+
 CREATE OR ALTER PROCEDURE FacturacionMensualPorDiaDeSemana
     @mes INT,  -- Mes para el reporte (1 a 12)
     @anio INT  -- Año para el reporte
@@ -40,4 +45,3 @@ BEGIN
     EXEC sp_executesql @sql, N'@mes INT, @anio INT', @mes, @anio;
 END;
 
-EXEC FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
