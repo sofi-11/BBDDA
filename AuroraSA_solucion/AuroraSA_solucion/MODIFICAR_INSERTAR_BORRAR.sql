@@ -381,7 +381,7 @@ BEGIN
 		END
 	ELSE
 		BEGIN
-			insert ddbba.Factura values (@idFactura,@numeroFactura,@tipoFactura,@ciudad,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
+			insert ddbba.Factura values (@numeroFactura,@tipoFactura,@ciudad,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
 			@montoTotal,@puntoDeVenta,@estado)
 		END
 END
@@ -404,13 +404,13 @@ CREATE OR ALTER PROCEDURE facturacion.detalleVentaEmitir
 	@estado VARCHAR(20)
 AS
 BEGIN
-	if exists(select 1 from ddbba.Factura where idFactura=@idFactura)
+	if exists(select 1 from ddbba.Factura where numeroFactura=@numeroFactura)
 		BEGIN
 			update ddbba.Factura set montoTotal=montoTotal + @montoTotal
 		END
 	ELSE
 		BEGIN
-			insert ddbba.Factura values (@idFactura,@numeroFactura,@tipoFactura,@ciudad,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
+			insert ddbba.Factura values (@numeroFactura,@tipoFactura,@ciudad,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
 			@montoTotal,@puntoDeVenta,@estado)
 		END
 END

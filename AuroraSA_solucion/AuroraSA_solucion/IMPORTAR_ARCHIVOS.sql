@@ -473,6 +473,66 @@ BEGIN
 END;
 
 
+--IMPORTAR SUCURSAL
+
+exec importar.SucursalImportar @ruta= 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+
+
+CREATE OR ALTER PROCEDURE importar.SucursalImportar
+    @ruta VARCHAR(255) -- Ruta de la carpeta donde se encuentra el archivo Excel
+AS
+BEGIN
+    -- Declarar las variables necesarias
+    DECLARE @RutaCompleta VARCHAR(500);
+    DECLARE @sql NVARCHAR(MAX);
+
+    -- Construir la ruta completa del archivo Excel
+    SET @RutaCompleta = @ruta + '\Informacion_complementaria.xlsx';
+    
+    -- Crear la tabla temporal para almacenar los datos importados del archivo Excel
+    CREATE TABLE #TempSucursal (
+        Ciudad VARCHAR(100),
+        Reemplazar_por VARCHAR(100),
+        direccion VARCHAR(255),
+        Horario VARCHAR(50),
+        Telefono VARCHAR(50)
+    );
+
+    -- Crear el SQL dinámico para cargar los datos del archivo Excel a la tabla temporal
+    SET @sql = N'
+        INSERT INTO #TempSucursal (Ciudad, Reemplazar_por, direccion, Horario, Telefono)
+        SELECT 
+            Ciudad, 
+            [Reemplazar por], 
+            direccion, 
+            Horario, 
+            Telefono
+        FROM 
+            OPENROWSET(''Microsoft.ACE.OLEDB.12.0'', 
+                       ''Excel 12.0; Database=' + @RutaCompleta + ';'', 
+                       ''SELECT * FROM [sucursal$]'')';
+
+    -- Ejecutar el SQL dinámico
+    EXEC sp_executesql @sql;
+
+    -- Verificar si la ciudad ya existe en la tabla sucursal y solo insertar si no existe
+    INSERT INTO ddbba.sucursal (ciudad, reemplazarPor, direccion, Horario, Telefono)
+    SELECT 
+        ts.Ciudad,
+        ts.Reemplazar_por,
+        ts.direccion,
+        ts.Horario,
+        ts.Telefono
+    FROM #TempSucursal ts
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM ddbba.sucursal s
+        WHERE s.Ciudad = ts.Ciudad
+    );
+
+    -- Eliminar la tabla temporal después de usarla
+    DROP TABLE #TempSucursal;
+END;
 
 
 

@@ -1,11 +1,14 @@
 --REPORTES
 use Com2900G01
 
+go
+
 EXEC sp_configure 'show advanced options', 1;
 RECONFIGURE;
 EXEC sp_configure 'xp_cmdshell', 1;
 RECONFIGURE;
 
+go
 
 --Mensual: ingresando un mes y año determinado mostrar el total facturado por días de
 --la semana, incluyendo sábado y domingo.
@@ -23,9 +26,9 @@ BEGIN
     SET @sql = '
     SELECT 
         DATENAME(WEEKDAY, Fecha) AS DiaSemana, 
-        SUM(PrecioUnitario * Cantidad) AS TotalFacturado
+        SUM(montoTotal)
     FROM 
-        ddbba.ventasRegistradas
+        ddbba.factura
     WHERE 
         MONTH(Fecha) = @mes AND YEAR(Fecha) = @anio
     GROUP BY 
@@ -66,13 +69,13 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-            SUM(PrecioUnitario * Cantidad) AS TotalFacturacion,
+            SUM(montoTotal) AS TotalFacturacion,
             CASE 
                 WHEN DATEPART(HOUR, hora) BETWEEN 8 AND 13 THEN ''Mañana''
                 WHEN DATEPART(HOUR, hora) BETWEEN 14 AND 23 THEN ''Tarde''
             END AS Turno,
             MONTH(Fecha) AS Mes
-        FROM ddbba.ventasRegistradas
+        FROM ddbba.factura
         WHERE 
             YEAR(Fecha) = @anio 
             AND ( 
@@ -122,13 +125,19 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-            Producto, 
-            SUM(Cantidad) AS CantidadVendida
-        FROM ddbba.ventasRegistradas
-        WHERE Fecha BETWEEN @fecha_inicio AND @fecha_fin
-        GROUP BY Producto
-        ORDER BY CantidadVendida DESC
-		FOR XML PATH(''ReportePorFechas'')
+            dv.Producto, 
+            SUM(dv.Cantidad) AS CantidadVendida
+        FROM 
+            ddbba.detalleVenta AS dv
+        INNER JOIN 
+            ddbba.factura AS f ON dv.nroFactura = f.numeroFactura
+        WHERE 
+            f.fecha BETWEEN @fecha_inicio AND @fecha_fin
+        GROUP BY 
+            dv.Producto
+        ORDER BY 
+            CantidadVendida DESC
+        FOR XML PATH(''ReportePorFechas'')
     ';
 
     -- Ejecutamos la consulta dinámica con los parámetros de fecha
@@ -159,24 +168,30 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-			v.Producto, 
-			SUM(v.Cantidad) AS CantidadVendida,
-			e.Sucursal
-		FROM ddbba.ventasRegistradas v
-		INNER JOIN ddbba.Empleados e
-			ON e.Legajo = v.Empleado
-		WHERE Fecha BETWEEN @fecha_inicio AND @fecha_fin
-			AND (
-				CASE 
-					WHEN v.Ciudad = ''Yangon'' THEN ''San Justo''
-					WHEN v.Ciudad = ''Naypyitaw'' THEN ''Ramos Mejia''
-					WHEN v.Ciudad = ''Mandalay'' THEN ''Ramos Lomas del Mirador''
-					ELSE v.Ciudad
-				END = e.Sucursal
-			)
-		GROUP BY v.Producto, e.Sucursal
-		ORDER BY CantidadVendida DESC
-		FOR XML PATH(''ReportePorFechasPorSucursal'');
+            dv.Producto, 
+            SUM(dv.Cantidad) AS CantidadVendida,
+            e.Sucursal
+        FROM 
+            ddbba.detalleVenta AS dv
+        INNER JOIN 
+            ddbba.factura AS f ON dv.nroFactura = f.numeroFactura
+        INNER JOIN 
+            ddbba.Empleados AS e ON e.Legajo = f.empleado
+        WHERE 
+            f.fecha BETWEEN @fecha_inicio AND @fecha_fin
+            AND (
+                CASE 
+                    WHEN f.ciudad = ''Yangon'' THEN ''San Justo''
+                    WHEN f.ciudad = ''Naypyitaw'' THEN ''Ramos Mejia''
+                    WHEN f.ciudad = ''Mandalay'' THEN ''Lomas del Mirador''
+                    ELSE f.ciudad
+                END = e.Sucursal
+            )
+        GROUP BY 
+            dv.Producto, e.Sucursal
+        ORDER BY 
+            CantidadVendida DESC
+        FOR XML PATH(''ReportePorFechasPorSucursal'')
     ';
 
     -- Ejecutamos la consulta dinámica con los parámetros de fecha

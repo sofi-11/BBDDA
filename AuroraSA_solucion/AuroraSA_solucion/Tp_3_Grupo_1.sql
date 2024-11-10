@@ -333,6 +333,19 @@ BEGIN
 END;
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.sucursal') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.sucursal (
+	idSucursal int identity(1,1),
+	ciudad varchar(50),
+	reemplazarPor varchar(50),
+	direccion varchar(100),
+	horario varchar(50),
+	telefono varchar(20)
+);
+END
+
+GO
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.factura') AND type in (N'U'))
 BEGIN
@@ -413,6 +426,8 @@ CREATE TABLE ddbba.detalleVenta (
 	monto decimal(10,2)
 )
 END
+
+select * from ddbba.detalleVenta
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cotizacionDolar') AND type in (N'U'))
 BEGIN
