@@ -13,9 +13,8 @@ go
 --Mensual: ingresando un mes y año determinado mostrar el total facturado por días de
 --la semana, incluyendo sábado y domingo.
 
-EXEC FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
 
-CREATE OR ALTER PROCEDURE FacturacionMensualPorDiaDeSemana
+CREATE OR ALTER PROCEDURE reporte.FacturacionMensualPorDiaDeSemana
     @mes INT,  -- Mes para el reporte (1 a 12)
     @anio INT  -- Año para el reporte
 AS
@@ -50,14 +49,13 @@ BEGIN
 END;
 
 
-
+GO
 
 
 --Trimestral: mostrar el total facturado por turnos de trabajo por mes.
 
-EXEC FacturacionTrimestralPorTurnosPorMes @turno = 'Mañana', @trimestre = 1, @anio = 2019;
 
-CREATE OR ALTER PROCEDURE FacturacionTrimestralPorTurnosPorMes
+CREATE OR ALTER PROCEDURE reporte.FacturacionTrimestralPorTurnosPorMes
     @turno VARCHAR(50),  -- Turno del empleado para el reporte
     @trimestre INT,      -- Trimestre para el reporte
     @anio INT            -- Año para el reporte
@@ -107,14 +105,13 @@ END;
 
 
 
-
+GO
 
 -- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder mostrar
 --la cantidad de productos vendidos en ese rango, ordenado de mayor a menor.
 
-EXEC VentasPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2019-06-29';
 
-CREATE OR ALTER PROCEDURE VentasPorRangoFechas
+CREATE OR ALTER PROCEDURE reporte.VentasPorRangoFechas
     @fecha_inicio DATE,  -- Fecha de inicio del rango
     @fecha_fin DATE      -- Fecha de fin del rango
 AS
@@ -149,15 +146,14 @@ END;
 
 
 
-
+GO
 
 -- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder 
 --mostrar la cantidad de productos vendidos en ese rango por sucursal, ordenado 
 --de mayor a menor.
 
-EXEC VentasPorSucursalPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2019-06-29';
 
-CREATE OR ALTER PROCEDURE VentasPorSucursalPorRangoFechas
+CREATE OR ALTER PROCEDURE reporte.VentasPorSucursalPorRangoFechas
     @fecha_inicio DATE,  -- Fecha de inicio del rango
     @fecha_fin DATE      -- Fecha de fin del rango
 AS
@@ -202,33 +198,34 @@ BEGIN
 END;
 
 
-
+GO
 
 -- Mostrar los 5 productos más vendidos en un mes, por semana 
 
-EXEC ProductosMasVendidosPorSemana @mes = 1, @anio = 2019;
 
-CREATE OR ALTER PROCEDURE ProductosMasVendidosPorSemana
+CREATE OR ALTER PROCEDURE reporte.ProductosMasVendidosPorSemana
     @mes INT,  -- Mes para el reporte (1 a 12)
     @anio INT   -- Año para el reporte
 AS
 BEGIN
-    -- Crear una consulta para obtener los 5 productos más vendidos por semana en formato XML
+    -- Declaramos una variable para el SQL dinámico
     DECLARE @sql NVARCHAR(MAX);
     
+    -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         WITH ProductosConRanking AS (
             SELECT 
-                DATEPART(WEEK, Fecha) AS Semana,
-                Producto,
-                SUM(Cantidad) AS CantidadVendida,
-                ROW_NUMBER() OVER (PARTITION BY DATEPART(WEEK, Fecha) ORDER BY SUM(Cantidad) DESC) AS Ranking
+                DATEPART(WEEK, f.Fecha) AS Semana,  -- Calcula la semana de la factura
+                dv.Producto,
+                SUM(dv.Cantidad) AS CantidadVendida,
+                ROW_NUMBER() OVER (PARTITION BY DATEPART(WEEK, f.Fecha) ORDER BY SUM(dv.Cantidad) DESC) AS Ranking
             FROM 
-                ddbba.ventasRegistradas
+                ddbba.factura f
+            INNER JOIN ddbba.detalleVenta dv ON f.numeroFactura = dv.nroFactura
             WHERE 
-                MONTH(Fecha) = @mes AND YEAR(Fecha) = @anio
+                MONTH(f.Fecha) = @mes AND YEAR(f.Fecha) = @anio  -- Filtra por mes y año
             GROUP BY 
-                DATEPART(WEEK, Fecha), Producto
+                DATEPART(WEEK, f.Fecha), dv.Producto
         )
         SELECT 
             Semana,
@@ -237,43 +234,45 @@ BEGIN
         FROM 
             ProductosConRanking
         WHERE 
-            Ranking <= 5
+            Ranking <= 5  -- Solo los 5 productos más vendidos
         ORDER BY 
             Semana, Ranking
         FOR XML PATH(''Reporte5ProductosPorSemana'');
     ';
 
-    -- Ejecutar la consulta dinámica y devolver el resultado como XML
+    -- Ejecutamos la consulta dinámica con los parámetros del mes y año
     EXEC sp_executesql @sql, N'@mes INT, @anio INT', @mes, @anio;
 END;
 
 
 
+GO
 
 --Mostrar los 5 productos menos vendidos en el mes.
 
-EXEC ProductosMenosVendidos @mes = 1, @anio = 2019;
 
-CREATE OR ALTER PROCEDURE ProductosMenosVendidos
+CREATE OR ALTER PROCEDURE reporte.ProductosMenosVendidosPorMes
     @mes INT,  -- Mes para el reporte (1 a 12)
     @anio INT   -- Año para el reporte
 AS
 BEGIN
-    -- Crear una consulta para obtener los 5 productos menos vendidos en el mes en formato XML
+    -- Declaramos una variable para el SQL dinámico
     DECLARE @sql NVARCHAR(MAX);
     
+    -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         WITH ProductosConRanking AS (
             SELECT 
-                Producto,
-                SUM(Cantidad) AS CantidadVendida,
-                ROW_NUMBER() OVER (ORDER BY SUM(Cantidad) ASC) AS Ranking
+                dv.Producto,
+                SUM(dv.Cantidad) AS CantidadVendida,
+                ROW_NUMBER() OVER (ORDER BY SUM(dv.Cantidad) ASC) AS Ranking  -- Ordenamos de menor a mayor por cantidad vendida
             FROM 
-                ddbba.ventasRegistradas
+                ddbba.factura f
+            INNER JOIN ddbba.detalleVenta dv ON f.numeroFactura = dv.nroFactura
             WHERE 
-                MONTH(Fecha) = @mes AND YEAR(Fecha) = @anio
+                MONTH(f.Fecha) = @mes AND YEAR(f.Fecha) = @anio  -- Filtra por mes y año
             GROUP BY 
-                Producto
+                dv.Producto
         )
         SELECT 
             Producto,
@@ -281,26 +280,26 @@ BEGIN
         FROM 
             ProductosConRanking
         WHERE 
-            Ranking <= 5
+            Ranking <= 5  -- Solo los 5 productos menos vendidos
         ORDER BY 
-            CantidadVendida ASC
-        FOR XML PATH(''ReporteMenosVendidos'');
+            CantidadVendida ASC  -- Ordenamos de menor a mayor cantidad vendida
+        FOR XML PATH(''Reporte5ProductosMenosVendidos'');
     ';
 
-    -- Ejecutar la consulta dinámica y devolver el resultado como XML
+    -- Ejecutamos la consulta dinámica con los parámetros del mes y año
     EXEC sp_executesql @sql, N'@mes INT, @anio INT', @mes, @anio;
 END;
 
 
 
 
+GO
 
 -- Mostrar total acumulado de ventas (o sea tambien mostrar el detalle) para una 
 --fecha y sucursal particulares
 
-EXEC TotalAcumuladoPorFechaYSucursal @fecha = '01-01-2019', @sucursal = 'San Justo';
 
-CREATE OR ALTER PROCEDURE TotalAcumuladoPorFechaYSucursal
+CREATE OR ALTER PROCEDURE reporte.TotalAcumuladoPorFechaYSucursal
     @fecha DATE,  -- Fecha para el reporte
     @sucursal VARCHAR(50)  -- Sucursal para el reporte
 AS

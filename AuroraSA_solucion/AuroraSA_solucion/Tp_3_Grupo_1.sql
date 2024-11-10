@@ -74,6 +74,21 @@ GO
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
+    WHERE name = N'reporte')
+BEGIN
+    EXEC('CREATE SCHEMA reporte');
+    PRINT 'Esquema reporte creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema reporte ya existe.';
+END;
+
+GO
+
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
     WHERE name = N'producto')
 BEGIN
     EXEC('CREATE SCHEMA producto');
