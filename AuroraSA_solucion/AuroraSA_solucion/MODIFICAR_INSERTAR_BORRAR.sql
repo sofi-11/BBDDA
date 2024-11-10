@@ -8,7 +8,7 @@ go
 --productosImportados
 
 
-CREATE OR ALTER PROCEDURE insertar.ProductosImportadosInsertar
+CREATE OR ALTER PROCEDURE producto.ProductosImportadosInsertar
     @id INT,
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
@@ -41,7 +41,7 @@ GO
 --electronicAccesories
 
 
-CREATE OR ALTER PROCEDURE insertar.ElectronicAccesoriesInsertar
+CREATE OR ALTER PROCEDURE producto.ElectronicAccesoriesInsertar
     @Product VARCHAR(100), 
     @PrecioUnitarioUSD DECIMAL(10,2) 
 AS
@@ -70,7 +70,7 @@ GO
 
 --catalogo
 
-CREATE OR ALTER PROCEDURE insertar.CatalogoInsertar
+CREATE OR ALTER PROCEDURE producto.CatalogoInsertar
     @id INT, -- Identificación, clave primaria
     @category VARCHAR(100), -- Categoría del producto
     @nombre VARCHAR(100), -- Nombre del producto
@@ -96,7 +96,7 @@ GO
 
 --ventasRegistradas
 
-CREATE OR ALTER PROCEDURE insertar.VentasRegistradasInsertar
+CREATE OR ALTER PROCEDURE ventas.VentasRegistradasInsertar
     @IDFactura VARCHAR(50), 
     @TipoFactura VARCHAR(2), 
     @Ciudad VARCHAR(100), 
@@ -125,7 +125,7 @@ END;
 
 GO
 
-CREATE OR ALTER PROCEDURE insertar.cotizacionDolarInsertar
+CREATE OR ALTER PROCEDURE dolar.cotizacionDolarInsertar
 @tipo varchar(10),
 @valor decimal(10,2)
 AS
@@ -139,11 +139,12 @@ BEGIN
 END
 
 
+
 -----------------------------------------------------------------------------------------------------MODIFICAR
 GO
 --productosImportados
  
-CREATE OR ALTER PROCEDURE modificar.ProductosImportadosModificar
+CREATE OR ALTER PROCEDURE producto.ProductosImportadosModificar
     @id int,
     @NombreProducto VARCHAR(100),
     @Proveedor NVARCHAR(100),
@@ -168,7 +169,7 @@ GO
 
 --electronicAccesories
 
-CREATE OR ALTER PROCEDURE modificar.ElectronicAccesoriesModificar
+CREATE OR ALTER PROCEDURE producto.ElectronicAccesoriesModificar
     @Product VARCHAR(100), 
     @PrecioUnitarioUSD DECIMAL(10,2) 
 AS
@@ -184,7 +185,7 @@ END
 GO
 --catalogo
 
-CREATE OR ALTER PROCEDURE modificar.CatalogoModificar
+CREATE OR ALTER PROCEDURE producto.CatalogoModificar
 		@id INT , 
         @category VARCHAR(100), 
         @nombre VARCHAR(100), 
@@ -212,7 +213,7 @@ END
 GO
 --ventasRegistradas
 
-CREATE OR ALTER PROCEDURE modificar.VentasRegistradasModificar
+CREATE OR ALTER PROCEDURE ventas.VentasRegistradasModificar
 		@IDFactura VARCHAR(50) , 
         @TipoFactura VARCHAR(2), 
         @Ciudad VARCHAR(100), 
@@ -247,32 +248,11 @@ BEGIN
 END
 
 
-
-GO
---informacionAdicional
-
-CREATE OR ALTER PROCEDURE modificar.InformacionAdicionalModificar
-		@Ciudad VARCHAR(100), 
-        @ReemplazarPor VARCHAR(100), 
-        @Direccion VARCHAR(200), 
-        @Horario VARCHAR(50), 
-        @Telefono VARCHAR(20) 
-AS
-BEGIN
-    UPDATE ddbba.InformacionAdicional
-    SET Ciudad=@Ciudad ,
-		ReemplazarPor=@ReemplazarPor,
-		Direccion=@Direccion,
-		Horario=@Horario,
-		Telefono=@Telefono
-    WHERE Ciudad = @Ciudad;
-END
-
 GO
 
 --ACTUALIZAR COTIZACIONES DEL DOLAR
 
-CREATE OR ALTER PROCEDURE modificar.cotizacionDolarModificar
+CREATE OR ALTER PROCEDURE dolar.cotizacionDolarModificar
 @tipo varchar(10),
 @valor decimal(10,2)
 AS
@@ -286,11 +266,6 @@ BEGIN
 	end
 END
 
-exec insertar.cotizacionDolarInsertar @tipo='dolarblue',@valor= 1135
-exec insertar.cotizacionDolarInsertar @tipo='dolaroficial',@valor= 967
-exec modificar.cotizacionDolarModificar @tipo='dolaroficial',@valor= 968
-
-select * from ddbba.cotizacionDolar
 
 go
 --------------------------------------------------------------------Borrado
@@ -377,7 +352,13 @@ END
 
 go
 
-CREATE OR ALTER PROCEDURE insertar.facturaModificar
+
+
+----------------------EMITIR
+
+--EMITIR FACTURA
+
+CREATE OR ALTER PROCEDURE facturacion.facturaEmitir
 	@idFactura INT,
     @numeroFactura VARCHAR(50), 
     @tipoFactura VARCHAR(50),
@@ -407,6 +388,37 @@ END
 
 go
 
+CREATE OR ALTER PROCEDURE facturacion.detalleVentaEmitir
+    @numeroFactura VARCHAR(50), 
+    @tipoFactura VARCHAR(50),
+    @ciudad VARCHAR(50),
+    @tipoDeCliente VARCHAR(50),
+    @genero VARCHAR(10),
+    @fecha DATE,
+    @hora TIME,
+    @medioDePago VARCHAR(50),
+    @empleado VARCHAR(100),
+    @identificadorDePago VARCHAR(100),
+    @montoTotal DECIMAL(10, 2),
+    @puntoDeVenta VARCHAR(50),
+	@estado VARCHAR(20)
+AS
+BEGIN
+	if exists(select 1 from ddbba.Factura where idFactura=@idFactura)
+		BEGIN
+			update ddbba.Factura set montoTotal=montoTotal + @montoTotal
+		END
+	ELSE
+		BEGIN
+			insert ddbba.Factura values (@idFactura,@numeroFactura,@tipoFactura,@ciudad,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
+			@montoTotal,@puntoDeVenta,@estado)
+		END
+END
+
+go
+
+
+
 --EMITIR NOTA DE CREDITO
 
 CREATE OR ALTER PROCEDURE nota.EmitirNotaCredito
@@ -435,4 +447,6 @@ BEGIN
         PRINT 'No se puede emitir la nota de credito: la factura no está en estado "pagado" o no existe.';
     END
 END;
+
+
 

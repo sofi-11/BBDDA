@@ -2,17 +2,12 @@
 
 USE COM2900G01
 
+go
 ----------------------------------------------------------------- IMPORTACION
 
 -- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
 
-select*from ddbba.electronicAccesories
-exec importar.ElectronicAccessoriesImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
-select*from ddbba.electronicAccesories
-
-truncate table ddbba.productos
-select * from ddbba.productos
 
 
 CREATE OR ALTER PROCEDURE importar.ElectronicAccessoriesImportar
@@ -67,14 +62,17 @@ BEGIN
     );
 
 	 INSERT INTO ddbba.productos (nombre, precio, clasificacion)
-    SELECT u.Product, u.[Precio Unitario en dolares], 'Electronica'
+    SELECT u.Product, u.[Precio Unitario en dolares]*d.valor, 'Electronica'
     FROM #UniqueElectronicAccessories u
+	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
     WHERE NOT EXISTS (
         SELECT 1
         FROM ddbba.productos p
         WHERE p.nombre = u.Product COLLATE Modern_Spanish_CI_AS
-    );
-
+    )
+	
+	;
+	
 
     -- Eliminar la tabla temporal
     DROP TABLE #TempElectronicAccessories;
@@ -91,9 +89,7 @@ drop procedure importar.ImportarElectronicAccessories*/
 -- Stored procedure para importar datos de 'catalogo.csv'
 
 
-exec importar.CatalogoImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
-
-
+go
 
 CREATE OR ALTER PROCEDURE importar.CatalogoImportar 
     @ruta NVARCHAR(255)  -- Parámetro de entrada para la ruta del archivo
@@ -140,16 +136,16 @@ BEGIN
         FROM #TempCatalogo
     )
     INSERT INTO ddbba.productos(nombre, precio, clasificacion)
-    SELECT nombre, price, category
-    FROM UniqueProductos
+    SELECT u.nombre, u.price * d.valor , u.category
+    FROM UniqueProductos u
+	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
     WHERE RowNum = 1
-      AND nombre IS NOT NULL
+      AND u.nombre IS NOT NULL
       AND NOT EXISTS (
           SELECT 1
           FROM ddbba.productos p
-          WHERE p.nombre = UniqueProductos.nombre
+          WHERE p.nombre = u.nombre
       );
-
 
     -- Eliminar la tabla temporal
     DROP TABLE #TempCatalogo;
@@ -159,6 +155,7 @@ END;
 GO
 
 GO
+
 
 /*select* from ddbba.catalogo
 
@@ -171,7 +168,7 @@ drop procedure importar.CatalogoImportar
 
 */
 
-exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+
 
 
 CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
@@ -180,19 +177,9 @@ AS
 BEGIN
     -- Crear la tabla temporal
     CREATE TABLE #TempVentas (
-        IDFactura VARCHAR(50),
-        TipoFactura CHAR(1),
-        Ciudad VARCHAR(50),
-        TipoCliente VARCHAR(30),
-        Genero VARCHAR(10),
-        Producto NVARCHAR(100),
-        PrecioUnitario DECIMAL(10, 2),
-        Cantidad INT,
-        Fecha NVARCHAR(50),
-        Hora TIME,
-        MedioPago VARCHAR(20),
-        Empleado INT,
-        IdentificadorPago VARCHAR(25)
+        IDFactura VARCHAR(50),TipoFactura CHAR(1),Ciudad VARCHAR(50),TipoCliente VARCHAR(30),Genero VARCHAR(10),
+        Producto NVARCHAR(100),PrecioUnitario DECIMAL(10, 2),Cantidad INT,Fecha NVARCHAR(50),Hora TIME, MedioPago VARCHAR(20),
+        Empleado INT,IdentificadorPago VARCHAR(25)
     );
 
     -- Concatenar la ruta y el nombre del archivo CSV
@@ -215,40 +202,60 @@ BEGIN
 
     -- Insertar los datos de la tabla temporal en la tabla final, evitando duplicados en IDFactura
     INSERT INTO ddbba.ventasRegistradas (
-        IDFactura, 
-        TipoFactura, 
-        Ciudad, 
-        TipoCliente, 
-        Genero, 
-        Producto, 
-        PrecioUnitario, 
-        Cantidad, 
-        Fecha, 
-        Hora, 
-        MedioPago, 
-        Empleado, 
-        IdentificadorPago
+        IDFactura,  TipoFactura,  Ciudad,  TipoCliente,  Genero, Producto, PrecioUnitario, Cantidad,  Fecha, 
+        Hora,  MedioPago, Empleado, IdentificadorPago
     )
     SELECT 
-        IDFactura, 
-        TipoFactura, 
-        Ciudad, 
-        TipoCliente, 
-        Genero, 
-        Producto, 
-        PrecioUnitario, 
-        Cantidad, 
-        CONVERT(DATE, Fecha, 101), 
-        Hora, 
-        MedioPago, 
-        Empleado, 
-        IdentificadorPago
+        IDFactura,  TipoFactura, Ciudad, TipoCliente,  Genero, Producto, 
+        PrecioUnitario,  Cantidad, CONVERT(DATE, Fecha, 101), Hora, 
+        MedioPago, Empleado,  IdentificadorPago
     FROM #TempVentas AS tv
     WHERE NOT EXISTS (
         SELECT 1 
         FROM ddbba.ventasRegistradas AS vr 
         WHERE vr.IDFactura = tv.IDFactura COLLATE Modern_Spanish_CI_AS
     );
+
+	INSERT INTO ddbba.factura (
+	numeroFactura, tipoFactura,ciudad , tipoDeCliente,fecha, hora,
+    medioDePago,empleado ,identificadorDePago,montoTotal ,puntoDeVenta ,estado)
+	SELECT 
+		CAST(REPLACE(idfactura, '-', '') AS INT) AS idfactura_num, 
+        TipoFactura, 
+        Ciudad, 
+        TipoCliente,
+        CONVERT(DATE, Fecha, 101), 
+        Hora, 
+        MedioPago, 
+        Empleado, 
+        IdentificadorPago,
+		Cantidad*PrecioUnitario,
+		'1',
+		'pagada'
+    FROM #TempVentas AS tv
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM ddbba.factura AS f
+        WHERE f.numeroFactura = CAST(REPLACE(tv.idfactura, '-', '') AS INT) 
+    ) AND tv.idfactura IS NOT NULL
+
+	INSERT ddbba.detalleVenta (nroFactura, producto, categoria, cantidad, precio_unitario, monto)
+SELECT 
+    CAST(REPLACE(tv.idfactura, '-', '') AS INT) AS idfactura_num, 
+    tv.Producto, 
+    p.clasificacion, 
+    tv.Cantidad, 
+    tv.PrecioUnitario, 
+    tv.Cantidad * tv.PrecioUnitario AS Monto
+FROM #TempVentas AS tv
+JOIN ddbba.productos AS p
+    ON tv.Producto = p.Nombre
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM ddbba.detalleVenta AS d
+    WHERE d.nroFactura = CAST(REPLACE(tv.idfactura, '-', '') AS INT) 
+)
+AND tv.idfactura IS NOT NULL;
 
     -- Eliminar la tabla temporal
     DROP TABLE #TempVentas;
@@ -261,7 +268,6 @@ GO
 go
 /*IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
 
-exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 
 CREATE OR ALTER PROCEDURE importar.EmpleadosImportar
@@ -356,7 +362,6 @@ go
 
 --IMPORTAR CLASIFICACION DE PRODUCTOS 
 
-exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 CREATE OR ALTER PROCEDURE importar.ClasificacionProductosImportar
     @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
@@ -385,7 +390,7 @@ BEGIN
     EXEC sp_executesql @sql;
 
     -- Paso 3: Insertar datos en la tabla final, evitando duplicados
-    INSERT INTO ddbba.ClasificacionProductos (LineaDeProducto, Producto)
+    INSERT ddbba.ClasificacionProductos (LineaDeProducto, Producto)
     SELECT tp.LineaDeProducto, tp.Producto
     FROM #TempClasificacionProductos AS tp
     WHERE NOT EXISTS (
@@ -394,6 +399,12 @@ BEGIN
         WHERE cp.LineaDeProducto = tp.LineaDeProducto collate Modern_Spanish_CI_AS
         AND cp.Producto = tp.Producto collate Modern_Spanish_CI_AS
     );
+
+	if not exists (select 1 from ddbba.ClasificacionProductos where LineaDeProducto = 'Electronica')
+	begin
+	INSERT ddbba.ClasificacionProductos(LineaDeProducto,Producto)
+	values ('Electronica','Electronica'),('Importado','Importado')
+	end
 
     -- Limpiar tabla temporal
     DROP TABLE #TempClasificacionProductos;
@@ -408,7 +419,6 @@ GO
 
 --IMPORTAR PRODUCTOS IMPORTADOS
 
-exec importar.productosImportadosImportar @ruta = 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA'
 
 CREATE OR ALTER PROCEDURE importar.ProductosImportadosImportar
     @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo incluyendo el nombre del archivo
@@ -448,8 +458,9 @@ BEGIN
     AND tp.IdProducto IS NOT NULL;  
 
 	INSERT INTO ddbba.productos(nombre,precio,clasificacion)
-	select tp.NombreProducto,tp.PrecioUnidad, 'Importado'
+	select tp.NombreProducto,tp.PrecioUnidad * d.valor , 'Importado'
 	from #TempProductos AS tp
+	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
 	WHERE NOT EXISTS (
 		SELECT 1
 		FROM ddbba.productos as p
@@ -465,17 +476,3 @@ END;
 
 
 
-go
-exec importar.EmpleadosImportar
-go
-exec importar.ImportarClasificacionProductos
-go
-exec importar.ImportarElectronicAccessories
-go
-exec importar.EmpleadosImportar
-go
-exec importar.ProductosImportadosImportar
-go
-exec importar.VentasRegistradasImportar
-go
-exec importar.CatalogoImportar

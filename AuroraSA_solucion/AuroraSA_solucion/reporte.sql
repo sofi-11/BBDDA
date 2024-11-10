@@ -106,7 +106,8 @@ END;
 
 
 
--- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder mostrar--la cantidad de productos vendidos en ese rango, ordenado de mayor a menor.
+-- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder mostrar
+--la cantidad de productos vendidos en ese rango, ordenado de mayor a menor.
 
 EXEC VentasPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2019-06-29';
 
@@ -234,7 +235,8 @@ END;
 
 
 
---Mostrar los 5 productos menos vendidos en el mes.
+--Mostrar los 5 productos menos vendidos en el mes.
+
 EXEC ProductosMenosVendidos @mes = 1, @anio = 2019;
 
 CREATE OR ALTER PROCEDURE ProductosMenosVendidos

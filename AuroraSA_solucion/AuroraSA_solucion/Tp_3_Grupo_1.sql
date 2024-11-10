@@ -30,7 +30,7 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.
 
 
 
--- Verifica si la base de datos 'AuroraSA' ya existe, si no, la crea.
+-- Verifica si la base de datos 'Com2900G01' ya existe, si no, la crea.
 IF NOT EXISTS (
     SELECT name 
     FROM sys.databases 
@@ -68,7 +68,39 @@ ELSE
 BEGIN
     PRINT 'El esquema ddbba ya existe.';
 END;
+
 GO
+
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'producto')
+BEGIN
+    EXEC('CREATE SCHEMA producto');
+    PRINT 'Esquema producto creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema producto ya existe.';
+END;
+
+
+GO
+
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'facturacion')
+BEGIN
+    EXEC('CREATE SCHEMA facturacion');
+    PRINT 'Esquema facturacion creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema facturacion ya existe.';
+END;
+
+go
 
 
 -- Verifica si el esquema 'insertar' ya existe, si no, lo crea.
@@ -99,6 +131,21 @@ END
 ELSE
 BEGIN
     PRINT 'El esquema modificar ya existe.';
+END;
+
+GO
+
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'dolar')
+BEGIN
+    EXEC('CREATE SCHEMA dolar');
+    PRINT 'Esquema dolar creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema dolar ya existe.';
 END;
 GO
 
@@ -134,6 +181,21 @@ BEGIN
 END;
 GO
 
+
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'ventas')
+BEGIN
+    EXEC('CREATE SCHEMA ventas');
+    PRINT 'Esquema ventas creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema ventas ya existe.';
+END;
+GO
+
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -148,6 +210,19 @@ BEGIN
 END;
 GO
 
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
+    WHERE name = N'empleados')
+BEGIN
+    EXEC('CREATE SCHEMA empleados');
+    PRINT 'Esquema empleados creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema empleados ya existe.';
+END;
+GO
 
 
 
@@ -240,7 +315,7 @@ BEGIN
         Ciudad VARCHAR(50), -- Ciudad de la venta
         TipoCliente VARCHAR(30), -- Tipo de cliente
         Genero VARCHAR(10) CHECK (Genero IN ('Male', 'Female')), -- Género del cliente
-        Producto VARCHAR(100),-- CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
+        Producto VARCHAR(100) COLLATE Latin1_General_CS_AS,-- CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
         PrecioUnitario DECIMAL(10, 2), -- Precio unitario del producto
         Cantidad INT, -- Cantidad de productos
         Fecha DATE, -- Fecha de la venta
@@ -258,12 +333,11 @@ BEGIN
 END;
 GO
 
-select * from ddbba.ventasRegistradas
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.factura') AND type in (N'U'))
 BEGIN
 CREATE TABLE ddbba.factura (
-    idFactura INT PRIMARY KEY,
+    idFactura INT IDENTITY (1,1) PRIMARY KEY,
     numeroFactura int UNIQUE, 
     tipoFactura VARCHAR(50) CHECK (tipoFactura IN ('A', 'B', 'C')),
     ciudad VARCHAR(50),
@@ -281,19 +355,18 @@ END
 
 
 
-
-
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productos') AND type in (N'U'))
 BEGIN
 CREATE TABLE ddbba.productos (
     idProducto int identity(1,1) primary key,
 	nombre varchar(100) unique,
-	precio decimal(10,2),
+	precio decimal(15,2),
 	clasificacion varchar(100),
 	CONSTRAINT FK_ClasificacionProducto FOREIGN KEY (clasificacion) 
     REFERENCES ddbba.ClasificacionProductos(Producto)
 );
 END
+
 
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cliente') AND type in (N'U'))
@@ -349,12 +422,4 @@ CREATE TABLE ddbba.cotizacionDolar (
 	valor decimal(10,2)
 )
 END
-
-
-
-select*from ddbba.ventasRegistradas
-
-select*from ddbba.ClasificacionProductos
-
-select*from ddbba.productos
 
