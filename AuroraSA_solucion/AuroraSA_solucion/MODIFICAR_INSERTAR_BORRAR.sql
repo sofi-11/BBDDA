@@ -31,34 +31,38 @@ END;
 
 GO
 
---ventasRegistradas
+-- INSERTAR EMPLEADO
 
-CREATE OR ALTER PROCEDURE ventas.VentasRegistradasInsertar
-    @IDFactura VARCHAR(50), 
-    @TipoFactura VARCHAR(2), 
-    @Ciudad VARCHAR(100), 
-    @TipoCliente VARCHAR(50), 
-    @Genero VARCHAR(10), 
-    @Producto NVARCHAR(100), 
-    @PrecioUnitario DECIMAL(10, 2),
-    @Cantidad INT,
-    @Fecha DATE, 
-    @Hora TIME, 
-    @MedioPago VARCHAR(50), 
-    @Empleado INT, 
-    @IdentificadorPago VARCHAR(100) 
+CREATE OR ALTER PROCEDURE empleados.EmpleadoInsertar
+    @Legajo INT,
+    @Nombre VARCHAR(50),
+    @Apellido VARCHAR(50),
+    @DNI CHAR(9),
+    @Direccion VARCHAR(150),
+    @EmailPersonal NVARCHAR(100),
+    @EmailEmpresa NVARCHAR(100),
+    @CUIL VARCHAR(20),
+    @Cargo VARCHAR(50),
+    @Sucursal VARCHAR(50),
+    @Turno VARCHAR(50)
 AS
 BEGIN
-    -- Verifica si el IDFactura no existe en la tabla antes de realizar la inserción
-    IF NOT EXISTS (SELECT 1 FROM ddbba.ventasRegistradas WHERE IDFactura = @IDFactura)
+    -- Verifica si ya existe un empleado con el mismo Legajo
+    IF EXISTS (SELECT 1 FROM ddbba.empleados WHERE Legajo = @Legajo)
     BEGIN
-        -- Inserta el nuevo registro
-        INSERT INTO ddbba.ventasRegistradas(IDFactura, TipoFactura, Ciudad, TipoCliente, Genero, Producto, PrecioUnitario, Cantidad, Fecha, Hora, MedioPago, Empleado, IdentificadorPago)
-        VALUES (@IDFactura, @TipoFactura, @Ciudad, @TipoCliente, @Genero, @Producto, @PrecioUnitario, @Cantidad, @Fecha, @Hora, @MedioPago, @Empleado, @IdentificadorPago);
+        PRINT 'El empleado con ese legajo ya existe';
+    END
+    ELSE
+    BEGIN
+        -- Inserta el empleado en la tabla si no existe uno con el mismo Legajo
+        INSERT INTO ddbba.empleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
+        VALUES (@Legajo, @Nombre, @Apellido, @DNI, @Direccion, @EmailPersonal, @EmailEmpresa, @CUIL, @Cargo, @Sucursal, @Turno);
 
-        PRINT 'Venta registrada correctamente.';
+        PRINT 'Empleado insertado exitosamente';
     END
 END;
+
+
 
 GO
 
@@ -75,113 +79,126 @@ BEGIN
 	end
 END
 
+GO
+
+CREATE OR ALTER PROCEDURE producto.ClasificacionProductoInsertar
+    @LineaDeProducto VARCHAR(30),
+    @Producto VARCHAR(100)
+AS
+BEGIN
+    -- Verifica si ya existe un registro con el mismo Producto
+    IF EXISTS (SELECT 1 FROM ddbba.ClasificacionProductos WHERE Producto = @Producto)
+    BEGIN
+        PRINT 'El producto ya existe en la clasificación';
+    END
+    ELSE
+    BEGIN
+        -- Inserta el registro en la tabla si no existe uno con el mismo Producto
+        INSERT INTO ddbba.ClasificacionProductos (LineaDeProducto, Producto)
+        VALUES (@LineaDeProducto, @Producto);
+
+        PRINT 'Clasificación del producto insertada exitosamente';
+    END
+END;
+
+--SUCURSAL
+
+CREATE OR ALTER PROCEDURE sucursal.SucursalInsertar
+    @Ciudad VARCHAR(20),
+    @Direccion VARCHAR(100),
+    @Horario VARCHAR(50),
+    @Telefono VARCHAR(20)
+AS
+BEGIN
+    -- Verifica si ya existe una sucursal en la misma ciudad
+    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE Ciudad = @Ciudad)
+    BEGIN
+        PRINT 'Ya existe una sucursal en esta ciudad';
+    END
+    ELSE
+    BEGIN
+        -- Inserta la sucursal en la tabla si no existe una en la misma ciudad
+        INSERT INTO ddbba.sucursal (Ciudad, Direccion, Horario, Telefono)
+        VALUES (@Ciudad, @Direccion, @Horario, @Telefono);
+
+        PRINT 'Sucursal insertada exitosamente';
+    END
+END;
+
+
 
 
 -----------------------------------------------------------------------------------------------------MODIFICAR
 GO
---productosImportados
- 
-CREATE OR ALTER PROCEDURE producto.ProductosImportadosModificar
-    @id int,
-    @NombreProducto VARCHAR(100),
-    @Proveedor NVARCHAR(100),
-    @Categoria VARCHAR(100),
-	@CantidadPorUnidad VARCHAR(50),
-	@PrecioUnidad decimal(10,2)
+--productos
+
+CREATE OR ALTER PROCEDURE producto.ProductoModificar
+    @nombre VARCHAR(100),
+    @precio DECIMAL(15, 2),
+    @clasificacion VARCHAR(50)
 AS
 BEGIN
-    UPDATE ddbba.productosImportados
-    SET NombreProducto=@NombreProducto ,
-		Proveedor=@Proveedor ,
-		Categoria=@Categoria ,
-		CantidadPorUnidad=@CantidadPorUnidad,
-		PrecioUnidad=@PrecioUnidad 
-    WHERE IdProducto = @Id;
-    
-END
+    -- Verifica si existe un producto con el nombre especificado
+    IF EXISTS (SELECT 1 FROM ddbba.Productos WHERE nombre = @nombre)
+    BEGIN
+        -- Si el producto existe, actualiza sus datos
+        UPDATE ddbba.Productos
+        SET precio = @precio,
+            clasificacion = @clasificacion
+        WHERE nombre = @nombre;
 
-
+        PRINT 'Producto actualizado exitosamente';
+    END
+    ELSE
+    BEGIN
+        -- Si el producto no existe, muestra un mensaje
+        PRINT 'No existe un producto con ese nombre';
+    END
+END;
 
 GO
 
---electronicAccesories
+--ACTUALIZAR EMPLEADO
 
-CREATE OR ALTER PROCEDURE producto.ElectronicAccesoriesModificar
-    @Product VARCHAR(100), 
-    @PrecioUnitarioUSD DECIMAL(10,2) 
+CREATE OR ALTER PROCEDURE empleados.EmpleadoActualizar
+    @Legajo INT,
+    @Nombre VARCHAR(50),
+    @Apellido VARCHAR(50),
+    @DNI CHAR(9),
+    @Direccion VARCHAR(150),
+    @EmailPersonal NVARCHAR(100),
+    @EmailEmpresa NVARCHAR(100),
+    @CUIL VARCHAR(20),
+    @Cargo VARCHAR(50),
+    @Sucursal VARCHAR(50),
+    @Turno VARCHAR(50)
 AS
 BEGIN
-    UPDATE ddbba.electronicAccesories
-    SET PrecioUnitarioUSD=@PrecioUnitarioUSD
-    WHERE Product=@Product
-    
-END
+    -- Verifica si existe un empleado con el legajo especificado
+    IF EXISTS (SELECT 1 FROM ddbba.empleados WHERE Legajo = @Legajo)
+    BEGIN
+        -- Si el empleado existe, actualiza sus datos
+        UPDATE ddbba.empleados
+        SET Nombre = @Nombre,
+            Apellido = @Apellido,
+            DNI = @DNI,
+            Direccion = @Direccion,
+            EmailPersonal = @EmailPersonal,
+            EmailEmpresa = @EmailEmpresa,
+            CUIL = @CUIL,
+            Cargo = @Cargo,
+            Sucursal = @Sucursal,
+            Turno = @Turno
+        WHERE Legajo = @Legajo;
 
-
-
-GO
---catalogo
-
-CREATE OR ALTER PROCEDURE producto.CatalogoModificar
-		@id INT , 
-        @category VARCHAR(100), 
-        @nombre VARCHAR(100), 
-        @price DECIMAL(10, 2), 
-        @reference_price DECIMAL(10, 2), 
-        @reference_unit VARCHAR(50), 
-        @fecha DATE 
-AS
-BEGIN
-    UPDATE ddbba.catalogo
-    SET category=@category ,
-		nombre=@nombre,
-		price=@price,
-		reference_price=@reference_price,
-		reference_unit=@reference_unit,
-		fecha=@fecha
-    WHERE id = @id;
-    
-    
-END
-
-
-
-GO
---ventasRegistradas
-
-CREATE OR ALTER PROCEDURE ventas.VentasRegistradasModificar
-		@IDFactura VARCHAR(50) , 
-        @TipoFactura VARCHAR(2), 
-        @Ciudad VARCHAR(100), 
-        @TipoCliente VARCHAR(50), 
-		@Genero VARCHAR(10), 
-        @Producto NVARCHAR(100), 
-        @PrecioUnitario DECIMAL(10, 2), 
-        @Cantidad INT, 
-        @Fecha DATE, 
-        @Hora TIME, 
-        @MedioPago VARCHAR(50),
-        @Empleado INT, 
-        @IdentificadorPago VARCHAR(100) 
-AS
-BEGIN
-    UPDATE ddbba.ventasRegistradas
-    SET TipoFactura=@TipoFactura ,
-		Ciudad=@Ciudad,
-		TipoCliente=@TipoCliente,
-		Genero=@Genero,
-		Producto=@Producto,
-		PrecioUnitario=@PrecioUnitario,
-		Cantidad=@Cantidad,
-		Fecha=@Fecha,
-		Hora=@Hora,
-		MedioPago=@MedioPago,
-		Empleado=@Empleado,
-		IdentificadorPago=@IdentificadorPago
-
-    WHERE IDFactura = @IDFactura;
-    
-END
+        PRINT 'Empleado actualizado exitosamente';
+    END
+    ELSE
+    BEGIN
+        -- Si el empleado no existe, muestra un mensaje
+        PRINT 'No existe un empleado con ese legajo';
+    END
+END;
 
 
 GO

@@ -41,3 +41,26 @@ EXEC FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
 --INSERTAR
 
 exec producto.productoInsertar @nombre = 'zanahoria', @precio = 500, @clasificacion = 'verdura'
+
+exec empleados.empleadoInsertar @legajo= 1234, @Nombre= 'rafa', @apellido = 'ruiz' , @dni = 44114444, 
+	@direccion= 'avenida siempreviva', @emailpersonal='milhouse@gmail.com',@emailempresa='VanHouten@unlam.com',@cuil=1212,@cargo='Cajero',
+	@sucursal= 'San Justo',@turno='TM'
+
+exec producto.ClasificacionProductoInsertar @LineadeProducto= 'Almacen',@producto= 'choclo_cremoso'
+
+exec sucursal.sucursalInsertar @ciudad= 'Cañuelas',@direccion='av siempreviva',@horario='9 a 13', @telefono='2226090901'
+
+
+
+--MODIFICAR
+
+exec producto.productoModificar @nombre='Acelgas',@precio=2000,@clasificacion='verdura'
+exec producto.productoModificar @nombre='homero',@precio=2000,@clasificacion='verdura'
+
+exec empleados.EmpleadoActualizar
+    @Legajo = 1234,@Nombre = 'Juan', @Apellido = 'Pérez',@DNI = '123456789',@Direccion = 'Calle Falsa 123',@EmailPersonal = 'juan.perez@gmail.com',
+    @EmailEmpresa = 'juan.perez@empresa.com',@CUIL = '20-12345678-9',@Cargo = 'Cajero', @Sucursal = 'San Justo',@Turno = 'TM';
+
+
+
+

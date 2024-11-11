@@ -89,6 +89,21 @@ GO
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
+    WHERE name = N'sucursal')
+BEGIN
+    EXEC('CREATE SCHEMA sucursal');
+    PRINT 'Esquema sucursal creado exitosamente.';
+END
+ELSE
+BEGIN
+    PRINT 'El esquema sucursal ya existe.';
+END;
+
+GO
+
+IF NOT EXISTS (
+    SELECT name 
+    FROM sys.schemas 
     WHERE name = N'producto')
 BEGIN
     EXEC('CREATE SCHEMA producto');
