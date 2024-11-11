@@ -242,9 +242,6 @@ GO
 
 go
 /*IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
-
-
-
 CREATE OR ALTER PROCEDURE importar.EmpleadosImportar
     @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
 AS
@@ -252,16 +249,16 @@ BEGIN
     -- 1. Crear la tabla temporal con la estructura que coincide con la hoja de Excel
     CREATE TABLE #TempEmpleados (
         Legajo VARCHAR(10),            -- Numero unico que representa a cada Empleado
-        Nombre NVARCHAR(50),    -- Nombre del Empleado
-        Apellido NVARCHAR(50),  -- Apellido del Empleado
-        DNI CHAR(9),          -- DNI del Empleado
-        Direccion NVARCHAR(150),-- Direccion del Empleado
-        EmailPersonal NVARCHAR(100), -- Email Personal del Empleado
-        EmailEmpresa NVARCHAR(100),  -- Email Empresarial del Empleado
-        CUIL VARCHAR(100),     -- CUIL del Empleado
-        Cargo VARCHAR(50),     -- Cargo del Empleado
-        Sucursal VARCHAR(50),   -- Sucursal del Empleado
-        Turno VARCHAR(50)      -- Turno del Empleado
+        Nombre NVARCHAR(50),           -- Nombre del Empleado
+        Apellido NVARCHAR(50),         -- Apellido del Empleado
+        DNI CHAR(9),                   -- DNI del Empleado
+        Direccion NVARCHAR(150),       -- Direccion del Empleado
+        EmailPersonal NVARCHAR(100),   -- Email Personal del Empleado
+        EmailEmpresa NVARCHAR(100),    -- Email Empresarial del Empleado
+        CUIL VARCHAR(100),             -- CUIL del Empleado
+        Cargo VARCHAR(50),             -- Cargo del Empleado
+        Sucursal VARCHAR(50),          -- Sucursal del Empleado
+        Turno VARCHAR(50)              -- Turno del Empleado
     );
 
     -- Concatenar la ruta y el nombre del archivo Excel
@@ -273,13 +270,13 @@ BEGIN
     SET @sql = N'
     INSERT INTO #TempEmpleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
     SELECT 
-        [Legajo/ID],
+        [Legajo/ID] AS Legajo,
         Nombre, 
         Apellido, 
-        CAST(DNI AS INT), 
+        CAST(DNI AS INT) AS DNI, 
         Direccion, 
-        REPLACE(REPLACE(REPLACE([email personal], " ", ""), CHAR(160), ""), CHAR(9), ""), 
-        REPLACE(REPLACE(REPLACE([email empresa], " ", ""), CHAR(160), ""), CHAR(9), ""), 
+        REPLACE(REPLACE(REPLACE([email personal], '' '', ''''), CHAR(160), ''''), CHAR(9), '''') AS EmailPersonal, 
+        REPLACE(REPLACE(REPLACE([email empresa], '' '', ''''), CHAR(160), ''''), CHAR(9), '''') AS EmailEmpresa, 
         CUIL, 
         Cargo, 
         Sucursal, 
@@ -287,11 +284,17 @@ BEGIN
     FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'',
         ''Excel 12.0;Database=' + @rutaCompleta + ';HDR=YES'',
         ''SELECT * FROM [Empleados$]'')';
-    
-    
+
+    -- Para depuración, imprimimos el SQL dinámico generado
+    PRINT @sql;
+
+    -- Ejecutar el SQL dinámico
     EXEC sp_executesql @sql;
 
-    -- insertar los datos en la tabla final ddbba.Empleados si el Legajo no existe
+    -- 3. Abrir la clave simétrica para encriptar los datos antes de insertarlos
+    OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+
+    -- 4. Insertar los datos en la tabla final ddbba.Empleados con encriptación en DNI, Direccion y CUIL
     INSERT INTO ddbba.Empleados (
         Legajo, 
         Nombre, 
@@ -309,11 +312,20 @@ BEGIN
         CAST(Legajo AS INT), 
         Nombre, 
         Apellido, 
-        DNI, 
-        Direccion, 
-		EmailPersonal, 
-		EmailEmpresa,  
-        CUIL, 
+        CASE 
+            WHEN DNI IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), DNI) 
+            ELSE NULL 
+        END,        -- Encriptar DNI
+        CASE 
+            WHEN Direccion IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), Direccion) 
+            ELSE NULL 
+        END,  -- Encriptar Direccion
+        EmailPersonal, 
+        EmailEmpresa,  
+        CASE 
+            WHEN CUIL IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CUIL) 
+            ELSE NULL 
+        END,       -- Encriptar CUIL
         Cargo, 
         Sucursal, 
         Turno
@@ -325,15 +337,16 @@ BEGIN
     )
     AND te.Legajo IS NOT NULL;
 
-    -- 4. Eliminar la tabla temporal
+    -- 5. Cerrar la clave simétrica
+    CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
+
+    -- 6. Eliminar la tabla temporal
     DROP TABLE #TempEmpleados;
 
     PRINT 'Datos importados exitosamente desde Informacion_complementaria.xlsx';
 END;
 GO
 
-
-go
 
 --IMPORTAR CLASIFICACION DE PRODUCTOS 
 

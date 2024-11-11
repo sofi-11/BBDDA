@@ -1,5 +1,24 @@
 --PRUEBAS INSERTAR,MODIFICAR,BORRAR Y IMPORTAR
  
+ USE ddbba;  -- Asegúrate de usar la base de datos donde debería estar la clave
+GO
+
+SELECT * 
+FROM sys.symmetric_keys 
+WHERE name = 'ClaveEncriptacionEmpleados';
+
+USE ddbba;  -- Cambia a la base de datos adecuada
+GO
+
+CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
+WITH ALGORITHM = AES_256
+ENCRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+
+GRANT VIEW DEFINITION ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO Valentino;
+GRANT CONTROL ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO  Valentino;
+
+OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+
  USE Com2900G01
 
 --IMPORTAR ARCHIVOS
@@ -11,7 +30,7 @@ exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escr
 
 TRUNCATE TABLE ddbba.Empleados
 select * from ddbba.Empleados
-exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+exec importar.EmpleadosImportar @ruta='D:\BDD TP';
 
 exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
@@ -115,3 +134,4 @@ revert
 execute as login= 'rafael'
 exec nota.EmitirNotaCredito @idFactura = 226313081, @monto=10
 
+select * from ddbba.empleados
