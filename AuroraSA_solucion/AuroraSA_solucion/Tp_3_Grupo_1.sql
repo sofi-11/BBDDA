@@ -258,16 +258,6 @@ END;
 GO
 
 
--- Verifica si la tabla 'electronicAccesories' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.electronicAccesories') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.electronicAccesories (
-        Product VARCHAR(100), -- Nombre del producto
-        PrecioUnitarioUSD DECIMAL(10,2), -- Precio en dólares
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
-
 GO
 -- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
@@ -282,8 +272,8 @@ BEGIN
         EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
 		CUIL VARCHAR (20), --CUIL del Empleado
 		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
-		Sucursal VARCHAR(50),-- CHECK (Sucursal IN ('Ramos Mejia', 'Lomas del Mirador', 'San Justo')), --Sucursal a la cual corresponde el Empleado
-		Turno VARCHAR(50),-- CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
+		Sucursal VARCHAR(50),
+		Turno VARCHAR(50) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
@@ -322,7 +312,7 @@ GO
 
 
 -- Verifica si la tabla 'ventasRegistradas' ya existe, si no, la crea.
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventasRegistradas') AND type in (N'U'))
+/*IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventasRegistradas') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.ventasRegistradas (
         IDFactura VARCHAR(50) PRIMARY KEY, -- Llave primaria, identificador de factura
@@ -345,20 +335,8 @@ BEGIN
 			), -- Identificador de pago*/
 			Activo BIT DEFAULT 1 --Campo para borrado logico
     );
-END;
-GO
+END;*/
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.sucursal') AND type in (N'U'))
-BEGIN
-CREATE TABLE ddbba.sucursal (
-	idSucursal int identity(1,1),
-	ciudad varchar(50),
-	reemplazarPor varchar(50),
-	direccion varchar(100),
-	horario varchar(50),
-	telefono varchar(20)
-);
-END
 
 GO
 
@@ -368,7 +346,6 @@ CREATE TABLE ddbba.factura (
     idFactura INT IDENTITY (1,1) PRIMARY KEY,
     numeroFactura int UNIQUE, 
     tipoFactura VARCHAR(50) CHECK (tipoFactura IN ('A', 'B', 'C')),
-    ciudad VARCHAR(50),
     tipoDeCliente VARCHAR(50) check (tipoDeCliente in ('Normal','Member')),
     fecha DATE,
     hora TIME,
@@ -396,14 +373,14 @@ CREATE TABLE ddbba.productos (
 END
 
 
-
+/*
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cliente') AND type in (N'U'))
 BEGIN
 CREATE TABLE ddbba.cliente (
     idCliente int identity (1,1) primary key,
 	tipoCliente varchar(20) check (tipoCliente in ('Normal','Member'))
 )
-END
+END*/
 
 
 
@@ -413,11 +390,13 @@ BEGIN
 CREATE TABLE ddbba.sucursal (
     idSucursal int identity (1,1) primary key,
 	ciudad varchar(20),
-	direccion varchar(50),
-	horario time,
+	direccion varchar(100),
+	horario varchar(50),
 	telefono varchar(20)
 )
 END
+drop table ddbba.sucursal
+
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.notaDeCredito') AND type in (N'U'))
 BEGIN
@@ -442,7 +421,6 @@ CREATE TABLE ddbba.detalleVenta (
 )
 END
 
-select * from ddbba.detalleVenta
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cotizacionDolar') AND type in (N'U'))
 BEGIN

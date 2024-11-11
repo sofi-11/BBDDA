@@ -209,7 +209,6 @@ END
 
 
 
-
 GO
 --ventasRegistradas
 

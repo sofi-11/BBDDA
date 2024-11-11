@@ -52,14 +52,7 @@ BEGIN
 
 
     -- Insertar los datos de la tabla temporal en la tabla de destino
-    INSERT INTO ddbba.electronicAccesories (Product, PrecioUnitarioUSD)
-    SELECT t.Product, t.[Precio Unitario en dolares]
-    FROM #TempElectronicAccessories t
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM ddbba.electronicAccesories e
-        WHERE e.Product = t.Product COLLATE Modern_Spanish_CI_AS
-    );
+
 
 	 INSERT INTO ddbba.productos (nombre, precio, clasificacion)
     SELECT u.Product, u.[Precio Unitario en dolares]*d.valor, 'Electronica'
@@ -73,7 +66,6 @@ BEGIN
 	
 	;
 	
-
     -- Eliminar la tabla temporal
     DROP TABLE #TempElectronicAccessories;
 	DROP TABLE #UniqueElectronicAccessories;
@@ -169,8 +161,6 @@ drop procedure importar.CatalogoImportar
 */
 
 
-
-
 CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
     @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
 AS
@@ -201,28 +191,13 @@ BEGIN
     EXEC sp_executesql @sql;
 
     -- Insertar los datos de la tabla temporal en la tabla final, evitando duplicados en IDFactura
-    INSERT INTO ddbba.ventasRegistradas (
-        IDFactura,  TipoFactura,  Ciudad,  TipoCliente,  Genero, Producto, PrecioUnitario, Cantidad,  Fecha, 
-        Hora,  MedioPago, Empleado, IdentificadorPago
-    )
-    SELECT 
-        IDFactura,  TipoFactura, Ciudad, TipoCliente,  Genero, Producto, 
-        PrecioUnitario,  Cantidad, CONVERT(DATE, Fecha, 101), Hora, 
-        MedioPago, Empleado,  IdentificadorPago
-    FROM #TempVentas AS tv
-    WHERE NOT EXISTS (
-        SELECT 1 
-        FROM ddbba.ventasRegistradas AS vr 
-        WHERE vr.IDFactura = tv.IDFactura COLLATE Modern_Spanish_CI_AS
-    );
 
 	INSERT INTO ddbba.factura (
-	numeroFactura, tipoFactura,ciudad , tipoDeCliente,fecha, hora,
+	numeroFactura, tipoFactura, tipoDeCliente,fecha, hora,
     medioDePago,empleado ,identificadorDePago,montoTotal ,puntoDeVenta ,estado)
 	SELECT 
 		CAST(REPLACE(idfactura, '-', '') AS INT) AS idfactura_num, 
         TipoFactura, 
-        Ciudad, 
         TipoCliente,
         CONVERT(DATE, Fecha, 101), 
         Hora, 
@@ -472,10 +447,8 @@ BEGIN
     DROP TABLE #TempProductos;
 END;
 
-
+go
 --IMPORTAR SUCURSAL
-
-exec importar.SucursalImportar @ruta= 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 
 CREATE OR ALTER PROCEDURE importar.SucursalImportar
@@ -491,7 +464,7 @@ BEGIN
     
     -- Crear la tabla temporal para almacenar los datos importados del archivo Excel
     CREATE TABLE #TempSucursal (
-        Ciudad VARCHAR(100),
+        Ciudad VARCHAR(20),
         Reemplazar_por VARCHAR(100),
         direccion VARCHAR(255),
         Horario VARCHAR(50),
@@ -516,9 +489,8 @@ BEGIN
     EXEC sp_executesql @sql;
 
     -- Verificar si la ciudad ya existe en la tabla sucursal y solo insertar si no existe
-    INSERT INTO ddbba.sucursal (ciudad, reemplazarPor, direccion, Horario, Telefono)
+    INSERT INTO ddbba.sucursal (ciudad, direccion, Horario, Telefono)
     SELECT 
-        ts.Ciudad,
         ts.Reemplazar_por,
         ts.direccion,
         ts.Horario,
@@ -527,7 +499,7 @@ BEGIN
     WHERE NOT EXISTS (
         SELECT 1
         FROM ddbba.sucursal s
-        WHERE s.Ciudad = ts.Ciudad
+        WHERE s.Ciudad = ts.Reemplazar_por 
     );
 
     -- Eliminar la tabla temporal después de usarla
