@@ -9,6 +9,7 @@ exec importar.productosImportadosImportar @ruta = 'C:\Users\rafae\OneDrive\Escri
 select * from ddbba.ClasificacionProductos
 exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
+TRUNCATE TABLE ddbba.Empleados
 select * from ddbba.Empleados
 exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
@@ -37,4 +38,6 @@ EXEC FacturacionTrimestralPorTurnosPorMes @turno = 'Mañana', @trimestre = 1, @an
 
 EXEC FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
 
---
+--INSERTAR
+
+exec producto.productoInsertar @nombre = 'zanahoria', @precio = 500, @clasificacion = 'verdura'

@@ -278,6 +278,7 @@ BEGIN
     );
 END;
 
+
 go
 -- Verifica si la tabla 'ClasificacionProductos' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ClasificacionProductos') AND type in (N'U'))

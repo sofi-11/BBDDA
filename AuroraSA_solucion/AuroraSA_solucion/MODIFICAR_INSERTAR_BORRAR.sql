@@ -5,92 +5,29 @@ use COM2900G01
 go
 -----------------------------------------------------------------------------INSERTAR
 
---productosImportados
+--PRODUCTOS
 
 
-CREATE OR ALTER PROCEDURE producto.ProductosImportadosInsertar
-    @id INT,
-    @NombreProducto VARCHAR(100),
-    @Proveedor NVARCHAR(100),
-    @Categoria VARCHAR(100),
-    @CantidadPorUnidad VARCHAR(50),
-    @PrecioUnidad DECIMAL(10,2)
+CREATE OR ALTER PROCEDURE producto.ProductoInsertar
+    @nombre VARCHAR(100),
+    @precio DECIMAL(15, 2),
+    @clasificacion VARCHAR(50)
 AS
 BEGIN
-    -- Verifica si el ID no existe en la tabla antes de realizar la inserción
-    IF NOT EXISTS (SELECT 1 FROM ddbba.productosImportados WHERE IdProducto = @id)
+    -- Verifica si ya existe un producto con el mismo nombre
+    IF EXISTS (SELECT 1 FROM ddbba.productos WHERE nombre = @nombre)
     BEGIN
-        -- Inserta el nuevo registro
-        INSERT INTO ddbba.productosImportados(IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-        VALUES (@id, @NombreProducto, @Proveedor, @Categoria, @CantidadPorUnidad, @PrecioUnidad);
-
-        PRINT 'Producto insertado correctamente.';
+        PRINT 'El producto con ese nombre ya existe';
     END
     ELSE
     BEGIN
-        -- Muestra un mensaje si el ID ya existe
-        PRINT 'El ID especificado ya existe. No se realizó ninguna inserción.';
+        -- Inserta el producto en la tabla si no existe uno con el mismo nombre
+        INSERT INTO ddbba.productos (nombre, precio, clasificacion)
+        VALUES (@nombre, @precio, @clasificacion);
+
+        PRINT 'Producto insertado exitosamente';
     END
 END;
-
-
-
-
-GO
-
---electronicAccesories
-
-
-CREATE OR ALTER PROCEDURE producto.ElectronicAccesoriesInsertar
-    @Product VARCHAR(100), 
-    @PrecioUnitarioUSD DECIMAL(10,2) 
-AS
-BEGIN
-    -- Verifica si el producto no existe en la tabla antes de realizar la inserción
-    IF NOT EXISTS (SELECT 1 FROM ddbba.electronicAccesories WHERE Product = @Product)
-    BEGIN
-        -- Inserta el nuevo registro
-        INSERT INTO ddbba.electronicAccesories(Product, PrecioUnitarioUSD)
-        VALUES (@Product, @PrecioUnitarioUSD);
-
-        PRINT 'Producto insertado correctamente.';
-    END
-    ELSE
-    BEGIN
-        -- Muestra un mensaje si el producto ya existe
-        PRINT 'El producto especificado ya existe. No se realizó ninguna inserción.';
-    END
-END;
-
-
-
-
-
-GO
-
---catalogo
-
-CREATE OR ALTER PROCEDURE producto.CatalogoInsertar
-    @id INT, -- Identificación, clave primaria
-    @category VARCHAR(100), -- Categoría del producto
-    @nombre VARCHAR(100), -- Nombre del producto
-    @price DECIMAL(10, 2), -- Precio del producto, debe ser mayor a 0
-    @reference_price DECIMAL(10, 2), -- Precio de referencia
-    @reference_unit VARCHAR(50), -- Unidad de referencia
-    @fecha DATE -- Fecha
-AS
-BEGIN
-    -- Verifica si el ID no existe en la tabla y si el precio es mayor a 0
-    IF NOT EXISTS (SELECT 1 FROM ddbba.catalogo WHERE id = @id) AND @price > 0
-    BEGIN
-        -- Inserta el nuevo registro
-        INSERT INTO ddbba.catalogo(id, category, nombre, price, reference_price, reference_unit, fecha)
-        VALUES (@id, @category, @nombre, @price, @reference_price, @reference_unit, @fecha);
-
-        PRINT 'Producto insertado correctamente.';
-    END
-END;
-
 
 GO
 
