@@ -186,7 +186,7 @@ FROM sys.server_principals
 WHERE type IN ('S', 'U')  -- 'S' para logins de SQL Server, 'U' para logins de Windows
 ORDER BY name;
 
-
+/*
 execute as login= 'sofia'
 
 exec nota.EmitirNotaCredito @idFactura = 10,@monto=10
@@ -195,3 +195,4 @@ revert
 execute as login= 'rafael'
 
 
+*/

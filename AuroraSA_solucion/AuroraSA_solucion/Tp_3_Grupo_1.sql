@@ -376,6 +376,8 @@ END
 
 
 
+
+
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productos') AND type in (N'U'))
 BEGIN
 CREATE TABLE ddbba.productos (
@@ -383,10 +385,12 @@ CREATE TABLE ddbba.productos (
 	nombre varchar(100) unique,
 	precio decimal(15,2),
 	clasificacion varchar(100),
+	activo int
 	CONSTRAINT FK_ClasificacionProducto FOREIGN KEY (clasificacion) 
     REFERENCES ddbba.ClasificacionProductos(Producto)
 );
 END
+
 
 
 /*
@@ -408,10 +412,10 @@ CREATE TABLE ddbba.sucursal (
 	ciudad varchar(20),
 	direccion varchar(100),
 	horario varchar(50),
-	telefono varchar(20)
+	telefono varchar(20),
+	activo int
 )
 END
-drop table ddbba.sucursal
 
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.notaDeCredito') AND type in (N'U'))

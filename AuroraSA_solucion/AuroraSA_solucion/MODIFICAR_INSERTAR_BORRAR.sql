@@ -219,38 +219,77 @@ BEGIN
 	end
 END
 
+--SUCURSAL
+
+CREATE OR ALTER PROCEDURE sucursal.sucursalActualizar
+    @Ciudad VARCHAR(20),
+    @Direccion VARCHAR(100),
+    @Horario VARCHAR(50),
+    @Telefono VARCHAR(20)
+AS
+BEGIN
+    -- Verifica si existe una sucursal en la ciudad especificada
+    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE Ciudad = @Ciudad)
+    BEGIN
+        -- Si existe una sucursal en la ciudad, actualiza sus datos
+        UPDATE ddbba.sucursal
+        SET Direccion = @Direccion,
+            Horario = @Horario,
+            Telefono = @Telefono
+        WHERE Ciudad = @Ciudad;
+
+        PRINT 'Sucursal actualizada exitosamente';
+    END
+    ELSE
+    BEGIN
+        -- Si no existe una sucursal en esa ciudad, muestra un mensaje
+        PRINT 'No existe una sucursal en esa ciudad';
+    END
+END;
+
 
 go
 --------------------------------------------------------------------Borrado
 -- Stored procedure para borrado logico tabla Clasificacion Productos
-CREATE OR ALTER PROCEDURE borrar.BorradoLogicoClasificacionProductos
+CREATE OR ALTER PROCEDURE borrar.ClasificacionProductosBorradoLogico
     @Producto VARCHAR(70)
 AS
 BEGIN
-    UPDATE ddbb.ClasificacionProductos
+    UPDATE ddbba.ClasificacionProductos
     SET Activo = 0
     WHERE Producto = @Producto;
 END;
 GO
 
+--PRODUCTOS
 
-
-
--- Stored procedure para borrado logico tabla Catalogo
-CREATE OR ALTER PROCEDURE borrar.BorradoLogicoCatalogo
-    @ID INT
+CREATE OR ALTER PROCEDURE borrar.ProductoBorradoLogico
+    @Nombre VARCHAR(100)
 AS
 BEGIN
-    UPDATE ddbb.catalogo
-    SET Activo = 0
-    WHERE id = @ID;
+    -- Verifica si existe un producto con el nombre especificado
+    IF EXISTS (SELECT 1 FROM ddbba.productos WHERE Nombre = @Nombre)
+    BEGIN
+        -- Si el producto existe, realiza el borrado lógico (pone activo en 0)
+        UPDATE ddbba.productos
+        SET activo = 0
+        WHERE Nombre = @Nombre;
+
+        PRINT 'Producto desactivado exitosamente';
+    END
+    ELSE
+    BEGIN
+        -- Si el producto no existe, muestra un mensaje
+        PRINT 'No existe un producto con ese nombre';
+    END
 END;
-GO
+
+
 
 
 -- Stored procedure para borrado logico tabla Empleados
 
-CREATE OR ALTER PROCEDURE borrar.BorradoLogicoEmpleados
+CREATE OR ALTER PROCEDURE borrar.EmpleadosBorradoLogico
     @Legajo INT
 AS
 BEGIN
@@ -260,50 +299,31 @@ BEGIN
 END;
 GO
 
+--SUCURSAL
 
--- Stored procedure para borrado logico tabla productos importados
-
-CREATE OR ALTER PROCEDURE borrar.ProductosImportadosBorradoLogico
-	@id int
-	AS
-	BEGIN
-	UPDATE ddbba.productosImportados 
-	set Activo=0
-	where IdProducto =@id
- 
-	END
-
-
-GO
-
-
--- Stored procedure para borrado logico tabla electronic accesories
-
-CREATE OR ALTER PROCEDURE borrar.BorradoLogicoElectronicAccesories
-@product varchar(50)
-	AS
-	BEGIN
-		UPDATE ddbba.electronicAccesories
-		set Activo=0
-		where Product =@product
-	END
-
-
-
-GO
-
--- Stored procedure para borrado logico tabla ventas Registradas
-CREATE OR ALTER PROCEDURE borrar.BorradoLogicoVentasRegistradas
-@IDFactura varchar(50)
+CREATE OR ALTER PROCEDURE borrar.SucursalBorradoLogico
+    @Ciudad VARCHAR(20)
 AS
 BEGIN
-		UPDATE ddbba.ventasRegistradas
-		set Activo=0
-		where IDFactura =@IDFactura
- 
-END
+    -- Verifica si existe una sucursal en la ciudad especificada
+    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE Ciudad = @Ciudad)
+    BEGIN
+        -- Si existe una sucursal en la ciudad, realiza el borrado lógico (pone activo en 0)
+        UPDATE ddbba.sucursal
+        SET activo = 0
+        WHERE Ciudad = @Ciudad;
 
-go
+        PRINT 'Sucursal desactivada exitosamente';
+    END
+    ELSE
+    BEGIN
+        -- Si no existe una sucursal en esa ciudad, muestra un mensaje
+        PRINT 'No existe una sucursal en esa ciudad';
+    END
+END;
+
+
+GO
 
 
 
@@ -312,41 +332,9 @@ go
 --EMITIR FACTURA
 
 CREATE OR ALTER PROCEDURE facturacion.facturaEmitir
-	@idFactura INT,
     @numeroFactura VARCHAR(50), 
     @tipoFactura VARCHAR(50),
-    @ciudad VARCHAR(50),
     @tipoDeCliente VARCHAR(50),
-    @genero VARCHAR(10),
-    @fecha DATE,
-    @hora TIME,
-    @medioDePago VARCHAR(50),
-    @empleado VARCHAR(100),
-    @identificadorDePago VARCHAR(100),
-    @montoTotal DECIMAL(10, 2),
-    @puntoDeVenta VARCHAR(50),
-	@estado VARCHAR(20)
-AS
-BEGIN
-	if exists(select 1 from ddbba.Factura where idFactura=@idFactura)
-		BEGIN
-			update ddbba.Factura set montoTotal=montoTotal + @montoTotal
-		END
-	ELSE
-		BEGIN
-			insert ddbba.Factura values (@numeroFactura,@tipoFactura,@ciudad,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
-			@montoTotal,@puntoDeVenta,@estado)
-		END
-END
-
-go
-
-CREATE OR ALTER PROCEDURE facturacion.detalleVentaEmitir
-    @numeroFactura VARCHAR(50), 
-    @tipoFactura VARCHAR(50),
-    @ciudad VARCHAR(50),
-    @tipoDeCliente VARCHAR(50),
-    @genero VARCHAR(10),
     @fecha DATE,
     @hora TIME,
     @medioDePago VARCHAR(50),
@@ -359,16 +347,63 @@ AS
 BEGIN
 	if exists(select 1 from ddbba.Factura where numeroFactura=@numeroFactura)
 		BEGIN
-			update ddbba.Factura set montoTotal=montoTotal + @montoTotal
+			update ddbba.factura set montoTotal=montoTotal + @montoTotal where numeroFactura=@numeroFactura
 		END
 	ELSE
 		BEGIN
-			insert ddbba.Factura values (@numeroFactura,@tipoFactura,@ciudad,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
+			insert ddbba.Factura(numeroFactura,tipoFactura,tipoDeCliente,fecha,hora,medioDePago,empleado,identificadorDePago,
+			montoTotal,puntoDeVenta,estado) values (@numeroFactura,@tipoFactura,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
 			@montoTotal,@puntoDeVenta,@estado)
 		END
 END
 
 go
+
+--DETALLE DE VENTA
+
+CREATE OR ALTER PROCEDURE facturacion.DetalleVentaEmitir
+    @nroFactura INT,
+    @producto VARCHAR(100),
+    @cantidad INT
+AS
+BEGIN
+    -- Verifica si el número de factura existe en la tabla ddbba.factura
+    IF NOT EXISTS (SELECT 1 FROM ddbba.factura WHERE numeroFactura = @nroFactura)
+    BEGIN
+        -- Si no existe la factura, muestra un mensaje de error
+        PRINT 'Error: El número de factura no existe.';
+    END
+    ELSE
+    BEGIN
+        -- Verifica si el producto existe en la tabla ddbba.productos
+        DECLARE @precio_unitario DECIMAL(10,2);
+        DECLARE @categoria VARCHAR(100);
+
+        SELECT @precio_unitario = precio, @categoria = clasificacion
+        FROM ddbba.productos
+        WHERE nombre = @producto;
+
+        -- Si el producto no existe, muestra un mensaje de error
+        IF @precio_unitario IS NULL
+        BEGIN
+            PRINT 'Error: El producto no existe.';
+        END
+        ELSE
+        BEGIN
+            -- Si el producto existe, inserta el detalle de la venta
+            INSERT INTO ddbba.detalleVenta (nroFactura, producto, categoria, cantidad, precio_unitario, monto)
+            VALUES (@nroFactura, @producto, @categoria, @cantidad, @precio_unitario, @cantidad * @precio_unitario);
+
+            PRINT 'Detalle de venta emitido exitosamente';
+        END
+    END
+END;
+
+
+
+
+go
+
 
 
 
@@ -384,10 +419,10 @@ BEGIN
     -- Comprobar el estado de la factura
     SELECT @estado = estado 
     FROM ddbba.factura 
-    WHERE idFactura = @idFactura;
+    WHERE numeroFactura = @idFactura;
 
     -- Validar si la factura existe y esta pagada
-    IF @estado = 'pagado'
+    IF @estado = 'pagada'
     BEGIN
         -- Insertar la nota de crédito
         INSERT INTO ddbba.notaDeCredito (nroFactura, fechaEmision, monto)

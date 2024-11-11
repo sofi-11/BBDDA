@@ -22,7 +22,6 @@ exec importar.ElectronicAccessoriesImportar @ruta='C:\Users\rafae\OneDrive\Escri
 exec importar.SucursalImportar @ruta= 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 
-
 --REPORTES
 EXEC TotalAcumuladoPorFechaYSucursal @fecha = '01-01-2019', @sucursal = 'San Justo';
 
@@ -61,6 +60,58 @@ exec empleados.EmpleadoActualizar
     @Legajo = 1234,@Nombre = 'Juan', @Apellido = 'Pérez',@DNI = '123456789',@Direccion = 'Calle Falsa 123',@EmailPersonal = 'juan.perez@gmail.com',
     @EmailEmpresa = 'juan.perez@empresa.com',@CUIL = '20-12345678-9',@Cargo = 'Cajero', @Sucursal = 'San Justo',@Turno = 'TM';
 
+--SUCURSAL EXISTE
+exec sucursal.sucursalActualizar @ciudad = 'San Justo',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
+    @Telefono = '011-9876-5432';
+
+--SUCURSAL NO EXISTE
+exec sucursal.sucursalActualizar @ciudad = 'BSAS',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
+    @Telefono = '011-9876-5432';
 
 
+--BORRADO LOGICO
+
+--empleado existe
+exec borrar.EmpleadosBorradoLogico @legajo= 1234
+--empleado no existe
+exec borrar.EmpleadosBorradoLogico @legajo= 12345
+
+--clasificacionProducto existe
+exec borrar.ClasificacionProductosBorradoLogico @producto='chocolate'
+--clasificacionProducto no existe
+exec borrar.ClasificacionProductosBorradoLogico @producto='homero'
+
+--producto existe
+exec borrar.productoBorradoLogico @nombre= 'Sirope de regaliz'
+--producto no existe
+exec borrar.productoBorradoLogico @nombre= 'bart'
+
+--sucursal existe
+exec borrar.SucursalBorradoLogico @Ciudad = 'San Justo';
+--sucursal no existe
+exec borrar.SucursalBorradoLogico @Ciudad = 'BSAS';
+
+
+--FACTURACION
+
+--factura
+EXEC facturacion.facturaEmitir @numeroFactura = 12300123,@tipoFactura = 'A',@tipoDeCliente = 'Member',
+	@fecha = '2024-11-11', @hora = '15:30:00',@medioDePago = 'Credit Card', @empleado = 'Juan Pérez',
+    @identificadorDePago = '123456',@montoTotal = 5000.00, @puntoDeVenta = '1', @estado = 'pagada';
+
+--detalle venta factura existe
+EXEC facturacion.DetalleVentaEmitir @nroFactura = 750678428, @producto = 'Regaliz',
+@cantidad = 2;
+--detalle venta factura no existe
+EXEC facturacion.DetalleVentaEmitir @nroFactura = 750678, @producto = 'Regaliz',
+@cantidad = 2;
+
+--nota de credito
+
+execute as login= 'sofia'
+exec nota.EmitirNotaCredito @idFactura = 750678428,@monto=10
+
+revert
+execute as login= 'rafael'
+exec nota.EmitirNotaCredito @idFactura = 226313081, @monto=10
 
