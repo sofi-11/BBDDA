@@ -412,8 +412,8 @@ BEGIN
     )
     AND tp.IdProducto IS NOT NULL;  
 
-	INSERT INTO ddbba.productos(nombre,precio,clasificacion,activo)
-	select tp.NombreProducto,tp.PrecioUnidad * d.valor , 'Importado',1
+	INSERT INTO ddbba.productos(nombre,precio,clasificacion)
+	select tp.NombreProducto,tp.PrecioUnidad * d.valor , 'Importado'
 	from #TempProductos AS tp
 	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
 	WHERE NOT EXISTS (

@@ -256,27 +256,29 @@ go
 --------------------------------------------------------------------Borrado
 -- Stored procedure para borrado logico tabla Clasificacion Productos
 CREATE OR ALTER PROCEDURE borrar.ClasificacionProductosBorradoLogico
-    @Producto VARCHAR(70)
+    @Producto VARCHAR(70),
+	@FechaBaja Date
 AS
 BEGIN
     UPDATE ddbba.ClasificacionProductos
-    SET Activo = 0
-    WHERE Producto = @Producto;
+	SET FechaBaja = @FechaBaja
+    WHERE Producto = @Producto
 END;
 GO
 
 --PRODUCTOS
 
 CREATE OR ALTER PROCEDURE borrar.ProductoBorradoLogico
-    @Nombre VARCHAR(100)
+    @Nombre VARCHAR(100),
+	@FechaBaja DATE
 AS
 BEGIN
     -- Verifica si existe un producto con el nombre especificado
     IF EXISTS (SELECT 1 FROM ddbba.productos WHERE nombre = @Nombre)
     BEGIN
-        -- Si el producto existe, realiza el borrado lógico (pone activo en 0)
+        -- Si el producto existe, realiza el borrado lógico (Inserta la Fecha de baja)
         UPDATE ddbba.productos
-        SET activo = 0
+		SET FechaBaja = @FechaBaja
         WHERE nombre = @Nombre;
 
         PRINT 'Producto desactivado exitosamente';
@@ -294,11 +296,12 @@ go
 -- Stored procedure para borrado logico tabla Empleados
 
 CREATE OR ALTER PROCEDURE borrar.EmpleadosBorradoLogico
-    @Legajo INT
+    @Legajo INT,
+	@FechaBaja DATE
 AS
 BEGIN
     UPDATE ddbba.Empleados
-    SET Activo = 0
+	SET FechaBaja = @FechaBaja
     WHERE Legajo = @Legajo;
 END;
 GO
@@ -306,15 +309,16 @@ GO
 --SUCURSAL
 
 CREATE OR ALTER PROCEDURE borrar.SucursalBorradoLogico
-    @Ciudad VARCHAR(20)
+    @Ciudad VARCHAR(20),
+	@FechaBaja DATE
 AS
 BEGIN
     -- Verifica si existe una sucursal en la ciudad especificada
     IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE ciudad = @Ciudad)
     BEGIN
-        -- Si existe una sucursal en la ciudad, realiza el borrado lógico (pone activo en 0)
+        -- Si existe una sucursal en la ciudad, realiza el borrado lógico (Cambia la fecha de baja, de NULL a la fecha )
         UPDATE ddbba.sucursal
-        SET activo = 0
+		SET FechaBaja = @FechaBaja
         WHERE ciudad = @Ciudad;
 
         PRINT 'Sucursal desactivada exitosamente';

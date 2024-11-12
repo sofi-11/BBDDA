@@ -98,7 +98,7 @@ select * from ddbba.ClasificacionProductos
 exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 select * from ddbba.Empleados
-exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+exec importar.EmpleadosImportar @ruta='D:\BDD TP';
 truncate table ddbba.Empleados
 
 
@@ -159,7 +159,7 @@ exec sucursal.sucursalActualizar @ciudad = 'BSAS',@Direccion = 'Av. Corrientes 1
 --BORRADO LOGICO
 
 --empleado existe
-exec borrar.EmpleadosBorradoLogico @legajo= 1234;
+exec borrar.EmpleadosBorradoLogico @Legajo= 257020, @FechaBaja = '2024-10-18';
 --empleado no existe
 exec borrar.EmpleadosBorradoLogico @legajo= 12345;
 

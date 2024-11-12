@@ -239,7 +239,21 @@ END;
 
 GO
 
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.sucursal') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.sucursal (
+    idSucursal int identity (1,1) primary key,
+	ciudad varchar(20) unique,
+	direccion varchar(100),
+	horario varchar(50),
+	telefono varchar(20),
+    FechaBaja DATE DEFAULT NULL                     -- Campo para borrado lógico
+)
+END
 GO
+
+
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.Empleados (
@@ -254,11 +268,10 @@ BEGIN
         Cargo VARCHAR(50) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')), -- Cargo del Empleado
         Sucursal VARCHAR(20) foreign key references ddbba.sucursal(ciudad),                     -- Sucursal donde trabaja el Empleado
         Turno VARCHAR(50) CHECK (Turno IN ('TM', 'TT', 'JC')), 
-        Activo BIT DEFAULT 1                      -- Campo para borrado lógico
+        FechaBaja DATE DEFAULT NULL                     -- Campo para borrado lógico
     );
 END;
 
-drop table ddbba.Empleados
 
 
 
@@ -270,7 +283,8 @@ BEGIN
 		IdClasificacion int identity(1,1) primary key,
         LineaDeProducto VARCHAR(30) CHECK (LineaDeProducto IN ('Electronica','Almacen', 'Perfumeria', 'Hogar', 'Frescos', 'Bazar', 'Limpieza', 'Otros', 'Congelados', 'Bebidas', 'Mascota', 'Comida','Importado')), -- Categoria a la cual pertenece
 		Producto VARCHAR(100) unique, --Descripcion del producto (Ej. Arroz)
-		Activo BIT DEFAULT 1 --Campo para borrado logico
+        FechaBaja DATE DEFAULT NULL                     -- Campo para borrado lógico
+
     );
 END;
 
@@ -291,11 +305,13 @@ CREATE TABLE ddbba.factura (
     fecha DATE,
     hora TIME,
     medioDePago VARCHAR(50) CHECK (medioDePago in ('Credit Card','Cash','Ewallet')),
-    empleado VARCHAR(100) foreign key references ddbba.Empleados(Legajo),
+    empleado int foreign key references ddbba.Empleados(Legajo),
     identificadorDePago VARBINARY(256),
     montoTotal DECIMAL(10, 2),
     puntoDeVenta VARCHAR(50),
-	estado VARCHAR(20) CHECK (estado in ('pagada','pendiente','anulada','vencida','reembolsada'))
+	estado VARCHAR(20) CHECK (estado in ('pagada','pendiente','anulada','vencida','reembolsada')),
+	FechaBaja DATE DEFAULT NULL               -- Campo para borrado lógico
+
 );
 END
 
@@ -309,7 +325,7 @@ CREATE TABLE ddbba.productos (
 	nombre varchar(100) unique,
 	precio decimal(15,2),
 	clasificacion varchar(100),
-	activo int -- CAMBIAR
+    FechaBaja DATE DEFAULT NULL                     -- Campo para borrado lógico
 	CONSTRAINT FK_ClasificacionProducto FOREIGN KEY (clasificacion) 
     REFERENCES ddbba.ClasificacionProductos(Producto)
 );
@@ -321,17 +337,7 @@ GO
 
 
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.sucursal') AND type in (N'U'))
-BEGIN
-CREATE TABLE ddbba.sucursal (
-    idSucursal int identity (1,1) primary key,
-	ciudad varchar(20) unique,
-	direccion varchar(100),
-	horario varchar(50),
-	telefono varchar(20),
-	activo int -- CAMBIAR
-)
-END
+
 
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.notaDeCredito') AND type in (N'U'))
@@ -340,7 +346,8 @@ CREATE TABLE ddbba.notaDeCredito (
     notaID int identity(1,1) primary key,
 	nroFactura int foreign key references ddbba.factura(numeroFactura),
 	fechaEmision date,
-	monto decimal(10,2)
+	monto decimal(10,2),
+	FechaBaja DATE DEFAULT NULL
 )
 END
 
@@ -353,7 +360,8 @@ CREATE TABLE ddbba.detalleVenta (
 	categoria varchar(100),
 	cantidad int,
 	precio_unitario decimal (10,2),
-	monto decimal(10,2)
+	monto decimal(10,2),
+	FechaBaja DATE DEFAULT NULL
 )
 END
 
