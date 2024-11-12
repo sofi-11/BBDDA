@@ -30,13 +30,11 @@ GO
 USE Com2900G01;
 GO
 
-<<<<<<< HEAD
+
 -- Cambia la intercalación (collation) de la base de datos a 'Latin1_General_CS_AS' (sensible a mayúsculas y acentos)
 ALTER DATABASE Com2900G01 SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 GO
-=======
 
->>>>>>> 6f9390e4f8b308ac9845e25f419cfcf4ed69d039
 ALTER DATABASE Com2900G01
 COLLATE Latin1_General_CS_AS;
 GO

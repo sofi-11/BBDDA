@@ -143,7 +143,7 @@ GO
 GO
 
 
-<<<<<<< HEAD
+
 
 
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
@@ -151,8 +151,8 @@ GO
 
 
 
-=======
->>>>>>> 6f9390e4f8b308ac9845e25f419cfcf4ed69d039
+
+
 CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
     @ruta NVARCHAR(255) 
 AS

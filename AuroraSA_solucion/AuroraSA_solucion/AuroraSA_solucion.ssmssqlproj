@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="DESKTOP-AUI1GUT\SQLEXPRESS:DESKTOP-AUI1GUT\valen">
+        <ConnectionNode Name="DESKTOP-AUI1GUT\SQLEXPRESS:DESKTOP-NJ7MOBP\rafae">
           <Created>2024-11-11T21:00:29.5704474-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-AUI1GUT\SQLEXPRESS</Server>
@@ -18,7 +18,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="DESKTOP-CUJPENS\SQLEXPRESS:DESKTOP-AUI1GUT\valen">
+        <ConnectionNode Name="DESKTOP-CUJPENS\SQLEXPRESS:DESKTOP-NJ7MOBP\rafae">
           <Created>2024-11-11T16:41:12.5853158-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-CUJPENS\SQLEXPRESS</Server>
@@ -33,7 +33,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="DESKTOP-NJ7MOBP\SQLEXPRESS:DESKTOP-AUI1GUT\valen">
+        <ConnectionNode Name="DESKTOP-NJ7MOBP\SQLEXPRESS:DESKTOP-NJ7MOBP\rafae">
           <Created>2024-11-05T19:22:57.7622829-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-NJ7MOBP\SQLEXPRESS</Server>
@@ -59,20 +59,20 @@
           <FullPath>encriptacion.sql</FullPath>
         </FileNode>
         <FileNode Name="IMPORTAR_ARCHIVOS.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>IMPORTAR_ARCHIVOS.sql</FullPath>
         </FileNode>
         <FileNode Name="MODIFICAR_INSERTAR_BORRAR.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>MODIFICAR_INSERTAR_BORRAR.sql</FullPath>
         </FileNode>
         <FileNode Name="pruebas.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>pruebas.sql</FullPath>
         </FileNode>
@@ -89,8 +89,8 @@
           <FullPath>roles.sql</FullPath>
         </FileNode>
         <FileNode Name="Tp_3_Grupo_1.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Tp_3_Grupo_1.sql</FullPath>
         </FileNode>
