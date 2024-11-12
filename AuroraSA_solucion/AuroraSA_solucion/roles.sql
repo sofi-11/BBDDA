@@ -152,14 +152,12 @@ GRANT EXECUTE ON SCHEMA::importar TO supervisor;
 GRANT EXECUTE ON SCHEMA::borrar TO supervisor;
 GRANT EXECUTE ON SCHEMA::facturacion to supervisor
 GRANT EXECUTE ON SCHEMA::dolar to supervisor
-GRANT EXECUTE ON SCHEMA::ventas to supervisor
 GRANT EXECUTE ON SCHEMA::empleados to supervisor
 GRANT EXECUTE ON SCHEMA::producto to supervisor
 
 go
 
 GRANT EXECUTE ON SCHEMA::facturacion to cajero
-GRANT EXECUTE ON SCHEMA::ventas to cajero
 DENY EXECUTE ON SCHEMA::nota TO cajero
 DENY EXECUTE ON SCHEMA::ddbba TO cajero
 DENY EXECUTE ON SCHEMA::importar TO cajero
@@ -181,18 +179,3 @@ DENY EXECUTE ON SCHEMA::facturacion to repositor
 
 
 
-SELECT name, type_desc
-FROM sys.server_principals
-WHERE type IN ('S', 'U')  -- 'S' para logins de SQL Server, 'U' para logins de Windows
-ORDER BY name;
-
-/*
-execute as login= 'sofia'
-
-exec nota.EmitirNotaCredito @idFactura = 10,@monto=10
-
-revert
-execute as login= 'rafael'
-
-
-*/

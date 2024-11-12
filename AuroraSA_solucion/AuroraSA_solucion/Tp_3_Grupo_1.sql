@@ -195,19 +195,6 @@ END;
 GO
 
 
-IF NOT EXISTS (
-    SELECT name 
-    FROM sys.schemas 
-    WHERE name = N'ventas')
-BEGIN
-    EXEC('CREATE SCHEMA ventas');
-    PRINT 'Esquema ventas creado exitosamente.';
-END
-ELSE
-BEGIN
-    PRINT 'El esquema ventas ya existe.';
-END;
-GO
 
 IF NOT EXISTS (
     SELECT name 
@@ -372,6 +359,5 @@ CREATE TABLE ddbba.cotizacionDolar (
 )
 END
 
-go
-insert ddbba.cotizacionDolar values ('dolarBlue',1200)
+
 

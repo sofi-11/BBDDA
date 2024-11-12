@@ -13,7 +13,9 @@ USE Com2900G01
 
 GO
 
+exec dolar.cotizacionDolarInsertar @tipo= 'dolarBlue',@valor=1100
 
+go
 
 CREATE SYMMETRIC KEY ClaveEncriptacionFactura
 WITH ALGORITHM = AES_256
@@ -109,10 +111,12 @@ EXEC reporte.FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
 
 --INSERTAR
 
+
 --producto funciona
 exec producto.ProductoInsertar @nombre = 'zanahoria', @precio = 500, @clasificacion = 'verdura' ;
 --producto no funciona 
 exec producto.ProductoInsertar @nombre = 'zapallito', @precio = -2, @clasificacion = 'verdura' ;
+select*from ddbba.productos
 
 --empleado funciona
 exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI ='51014441', 
@@ -122,12 +126,13 @@ exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI ='51
 exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI ='51014442221', 
 	@Direccion= 'avenida siempreviva', @EmailPersonal='milhouse@gmail.com',@EmailEmpresa='VanHouten@unlam.com',@CUIL='00-44960383-0',@Cargo='Cajero',
 	@Sucursal= 'San Justo',@Turno='TM';
-
+select*from ddbba.Empleados
 
 exec producto.ClasificacionProductoInsertar @LineaDeProducto= 'Almacen',@Producto= 'choclo_cremoso';
+select *from ddbba.ClasificacionProductos
 
 exec sucursal.SucursalInsertar @Ciudad= 'Cañuelas',@Direccion='av siempreviva',@Horario='9 a 13', @Telefono='2226090901';
-
+select*from ddbba.sucursal
 
 
 --MODIFICAR
@@ -136,6 +141,7 @@ exec sucursal.SucursalInsertar @Ciudad= 'Cañuelas',@Direccion='av siempreviva',@
 exec producto.ProductoModificar @nombre='Acelgas',@precio=2000,@clasificacion='verdura';
 --producto no existe
 exec producto.ProductoModificar @nombre='homero',@precio=2000,@clasificacion='verdura';
+select*from ddbba.productos
 
 --empleado existe
 exec empleados.EmpleadoActualizar
@@ -145,7 +151,7 @@ exec empleados.EmpleadoActualizar
 exec empleados.EmpleadoActualizar
     @Legajo = 57030,@Nombre = 'Juan', @Apellido = 'Pérez',@DNI = '23456789',@Direccion = 'Calle Falsa 123',@EmailPersonal = 'juan.perez@gmail.com',
     @EmailEmpresa = 'juan.perez@empresa.com',@CUIL = '20-12345678-9',@Cargo = 'Cajero', @Sucursal = 'San Justo',@Turno = 'TM';
-
+select*from ddbba.Empleados
 
 --SUCURSAL EXISTE
 exec sucursal.sucursalActualizar @Ciudad = 'San Justo',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
@@ -153,29 +159,33 @@ exec sucursal.sucursalActualizar @Ciudad = 'San Justo',@Direccion = 'Av. Corrien
 --SUCURSAL NO EXISTE
 exec sucursal.sucursalActualizar @Ciudad = 'BSAS',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
     @Telefono = '011-9876-5432';
-
+select*from ddbba.sucursal
 
 --BORRADO LOGICO
 
 --empleado existe
-exec borrar.EmpleadosBorradoLogico @Legajo= 257020, @FechaBaja = '2024-10-18';
+exec borrar.EmpleadosBorradoLogico @Legajo= 257020;
 --empleado no existe
-exec borrar.EmpleadosBorradoLogico @legajo= 12345;
+exec borrar.EmpleadosBorradoLogico @Legajo= 12345;
+select*from ddbba.Empleados
 
 --clasificacionProducto existe
 exec borrar.ClasificacionProductosBorradoLogico @Producto='chocolate';
 --clasificacionProducto no existe
 exec borrar.ClasificacionProductosBorradoLogico @Producto='homero';
+select*from ddbba.ClasificacionProductos
 
 --producto existe
 exec borrar.ProductoBorradoLogico @Nombre= 'Sirope de regaliz';
 --producto no existe
 exec borrar.ProductoBorradoLogico @Nombre= 'bart';
+select*from ddbba.productos
 
 --sucursal existe
 exec borrar.SucursalBorradoLogico @Ciudad = 'San Justo';
 --sucursal no existe
 exec borrar.SucursalBorradoLogico @Ciudad = 'BSAS';
+select*from ddbba.sucursal
 
 
 
@@ -185,6 +195,8 @@ exec borrar.SucursalBorradoLogico @Ciudad = 'BSAS';
 EXEC facturacion.facturaEmitir @numeroFactura = 12300123,@tipoFactura = 'A',@tipoDeCliente = 'Member',
 	@fecha = '2024-11-11', @hora = '15:30:00',@medioDePago = 'Credit card', @empleado = '257024',
     @identificadorDePago = '123456',@montoTotal = 5000.00, @puntoDeVenta = '1', @estado = 'pagada';
+select*from ddbba.factura
+
 
 --detalle venta factura existe
 EXEC facturacion.DetalleVentaEmitir @nroFactura = 750678428, @producto = 'Regaliz',
@@ -192,6 +204,7 @@ EXEC facturacion.DetalleVentaEmitir @nroFactura = 750678428, @producto = 'Regali
 --detalle venta factura no existe
 EXEC facturacion.DetalleVentaEmitir @nroFactura = 750678, @producto = 'Regaliz',
 @cantidad = 2;
+select*from ddbba.detalleVenta
 
 --nota de credito
 

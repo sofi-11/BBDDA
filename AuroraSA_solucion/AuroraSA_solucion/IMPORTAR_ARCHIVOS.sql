@@ -167,18 +167,19 @@ BEGIN
 	numeroFactura, tipoFactura, tipoDeCliente,fecha, hora,
     medioDePago,empleado ,identificadorDePago,montoTotal ,puntoDeVenta ,estado)
 	SELECT 
-		CAST(REPLACE(idfactura, '-', '') AS INT) AS idfactura_num, 
-        TipoFactura, 
-        TipoCliente,
-        CONVERT(DATE, Fecha, 101), 
-        Hora, 
-        MedioPago, 
-        Empleado, 
-        ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionFactura'), CONVERT(NVARCHAR(500), IdentificadorPago)) ,
-		Cantidad*PrecioUnitario,
+		CAST(REPLACE(tv.idfactura, '-', '') AS INT) AS idfactura_num, 
+        tv.TipoFactura, 
+        tv.TipoCliente,
+        CONVERT(DATE, tv.Fecha, 101), 
+        tv.Hora, 
+        tv.MedioPago, 
+        tv.Empleado, 
+        ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionFactura'), CONVERT(NVARCHAR(500), tv.IdentificadorPago)) ,
+		tv.Cantidad*tv.PrecioUnitario*d.valor,
 		'1',
 		'pagada'
     FROM #TempVentas AS tv
+	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
     WHERE NOT EXISTS (
         SELECT 1 
         FROM ddbba.factura AS f
@@ -191,11 +192,12 @@ SELECT
     tv.Producto, 
     p.clasificacion, 
     tv.Cantidad, 
-    tv.PrecioUnitario, 
-    tv.Cantidad * tv.PrecioUnitario AS Monto
+    tv.PrecioUnitario * d.valor, 
+    tv.Cantidad * tv.PrecioUnitario*d.valor AS Monto
 FROM #TempVentas AS tv
 JOIN ddbba.productos AS p
     ON tv.Producto = p.nombre collate Modern_Spanish_CI_AS
+	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
 WHERE NOT EXISTS (
     SELECT 1 
     FROM ddbba.detalleVenta AS d
