@@ -183,7 +183,7 @@ exec borrar.SucursalBorradoLogico @Ciudad = 'BSAS';
 
 --factura
 EXEC facturacion.facturaEmitir @numeroFactura = 12300123,@tipoFactura = 'A',@tipoDeCliente = 'Member',
-	@fecha = '2024-11-11', @hora = '15:30:00',@medioDePago = 'Credit Card', @empleado = '257024',
+	@fecha = '2024-11-11', @hora = '15:30:00',@medioDePago = 'Credit card', @empleado = '257024',
     @identificadorDePago = '123456',@montoTotal = 5000.00, @puntoDeVenta = '1', @estado = 'pagada';
 
 --detalle venta factura existe
@@ -201,5 +201,3 @@ exec nota.EmitirNotaCredito @idFactura = 750678428,@monto=10;
 revert
 execute as login= 'rafael'
 exec nota.EmitirNotaCredito @idFactura = 226313081, @monto=10;
-
-select * from ddbba.empleados
