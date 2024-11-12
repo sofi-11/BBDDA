@@ -92,8 +92,8 @@ BEGIN
     EXEC sp_executesql @sql;
 
     -- Insertar en la tabla de destino solo los registros que no existen
-    INSERT INTO ddbba.catalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
-    SELECT t.id, t.category, t.nombre, t.price, t.reference_price, t.reference_unit, t.fecha
+    INSERT INTO ddbba.catalogo (category, nombre, price, reference_price, reference_unit, fecha)
+    SELECT t.category, t.nombre, t.price, t.reference_price, t.reference_unit, t.fecha
     FROM #TempCatalogo t
     WHERE NOT EXISTS (
         SELECT 1
@@ -276,8 +276,7 @@ BEGIN
 	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
     PRINT 'Clave simétrica abierta correctamente.';
 
-    INSERT INTO ddbba.Empleados (
-        Legajo, 
+    INSERT INTO ddbba.Empleados ( 
         Nombre, 
         Apellido, 
         DNI, 
@@ -290,24 +289,27 @@ BEGIN
         Turno
     )
     SELECT 
-        CAST(Legajo AS INT), 
         Nombre, 
         Apellido, 
         ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), DNI)) ,  
         ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500),Direccion)),  
         EmailPersonal, 
         EmailEmpresa,  
-        CUIL,  
+        ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500),CONCAT('00-', RIGHT('00000000' + CAST(DNI AS NVARCHAR(8)), 8), '-0'))),  
         Cargo, 
         Sucursal, 
-        Turno
+        CASE 
+			WHEN Turno = 'TM' THEN 'TM'
+			WHEN Turno = 'TT' THEN 'TT'
+			WHEN Turno = 'Jornada completa' THEN 'JC'
+			ELSE Turno 
+		END AS Turno
     FROM #TempEmpleados AS te
     WHERE NOT EXISTS (
         SELECT 1 
         FROM ddbba.Empleados AS e 
-        WHERE e.Legajo = te.Legajo
-    )
-    AND te.Legajo IS NOT NULL;
+        WHERE CONVERT(NVARCHAR(500), DECRYPTBYKEY(e.DNI)) = te.DNI
+    ) AND te.DNI is not null
 
 	CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
 

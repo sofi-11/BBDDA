@@ -31,10 +31,10 @@ SELECT
     Nombre, 
     Apellido, 
     CONVERT(NVARCHAR(500), DECRYPTBYKEY(DNI)) AS DNI,  -- Desencriptar DNI como NVARCHAR
-    CONVERT(NVARCHAR(500), DECRYPTBYKEY(Direccion)) AS Direccion,  -- Desencriptar Direccion como NVARCHAR
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(Direccion)) AS Direccion ,  -- Desencriptar Direccion como NVARCHAR
     EmailPersonal, 
     EmailEmpresa,  
-    CUIL,  -- Desencriptar CUIL como NVARCHAR
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(CUIL)) AS CUIL,  -- Desencriptar CUIL como NVARCHAR
     Cargo, 
     Sucursal, 
     Turno
@@ -79,10 +79,11 @@ truncate table ddbba.ClasificacionProductos
 truncate table ddbba.detalleVenta
 truncate table ddbba.productos
 truncate table ddbba.factura
+truncate table ddbba.notaCredito
 
 TRUNCATE TABLE ddbba.Empleados
 select * from ddbba.Empleados
-exec importar.EmpleadosImportar @ruta='C:\Users\valen\OneDrive\Escritorio\Base de Datos Aplicada\TP\BBDDA';
+exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 TRUNCATE TABLE ddbba.factura
 drop table ddbba.factura
@@ -98,7 +99,7 @@ exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escr
 
 select * from ddbba.Empleados
 exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
-truncate table ddbba.empleados
+truncate table ddbba.Empleados
 
 
 select* from ddbba.factura
@@ -126,9 +127,10 @@ EXEC reporte.FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
 
 exec producto.productoInsertar @nombre = 'zanahoria', @precio = 500, @clasificacion = 'verdura' ;
 
-exec empleados.empleadoInsertar @legajo= 1234, @Nombre= 'rafa', @apellido = 'ruiz' , @dni = 44114444, 
-	@direccion= 'avenida siempreviva', @emailpersonal='milhouse@gmail.com',@emailempresa='VanHouten@unlam.com',@cuil=1212,@cargo='Cajero',
-	@sucursal= 'San Justo',@turno='TM';
+exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI = 51114441, 
+	@Direccion= 'avenida siempreviva', @EmailPersonal='milhouse@gmail.com',@EmailEmpresa='VanHouten@unlam.com',@CUIL='00-44960383-0',@Cargo='Cajero',
+	@Sucursal= 'San Justo',@Turno='TM';
+	select*from ddbba.Empleados
 
 exec producto.ClasificacionProductoInsertar @LineadeProducto= 'Almacen',@producto= 'choclo_cremoso';
 
@@ -142,7 +144,7 @@ exec producto.productoModificar @nombre='Acelgas',@precio=2000,@clasificacion='v
 exec producto.productoModificar @nombre='homero',@precio=2000,@clasificacion='verdura';
 
 exec empleados.EmpleadoActualizar
-    @Legajo = 1234,@Nombre = 'Juan', @Apellido = 'Pérez',@DNI = '123456789',@Direccion = 'Calle Falsa 123',@EmailPersonal = 'juan.perez@gmail.com',
+    @Legajo = 257030,@Nombre = 'Juan', @Apellido = 'Pérez',@DNI = '123456789',@Direccion = 'Calle Falsa 123',@EmailPersonal = 'juan.perez@gmail.com',
     @EmailEmpresa = 'juan.perez@empresa.com',@CUIL = '20-12345678-9',@Cargo = 'Cajero', @Sucursal = 'San Justo',@Turno = 'TM';
 
 --SUCURSAL EXISTE

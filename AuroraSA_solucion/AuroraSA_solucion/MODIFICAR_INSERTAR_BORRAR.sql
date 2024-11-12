@@ -34,10 +34,9 @@ GO
 -- INSERTAR EMPLEADO
 
 CREATE OR ALTER PROCEDURE empleados.EmpleadoInsertar
-    @Legajo INT,
     @Nombre VARCHAR(50),
     @Apellido VARCHAR(50),
-    @DNI CHAR(9),
+    @DNI VARCHAR(20),
     @Direccion VARCHAR(150),
     @EmailPersonal NVARCHAR(100),
     @EmailEmpresa NVARCHAR(100),
@@ -47,16 +46,17 @@ CREATE OR ALTER PROCEDURE empleados.EmpleadoInsertar
     @Turno VARCHAR(50)
 AS
 BEGIN
+	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
     -- Verifica si ya existe un empleado con el mismo Legajo
-    IF EXISTS (SELECT 1 FROM ddbba.empleados WHERE Legajo = @Legajo)
+    IF EXISTS (SELECT 1 FROM ddbba.Empleados WHERE CONVERT(NVARCHAR(500), DECRYPTBYKEY(DNI)) = @DNI)
     BEGIN
         PRINT 'El empleado con ese legajo ya existe';
     END
     ELSE
     BEGIN
         -- Inserta el empleado en la tabla si no existe uno con el mismo Legajo
-        INSERT INTO ddbba.empleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
-        VALUES (@Legajo, @Nombre, @Apellido, @DNI, @Direccion, @EmailPersonal, @EmailEmpresa, @CUIL, @Cargo, @Sucursal, @Turno);
+        INSERT INTO ddbba.Empleados (Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
+        VALUES (@Nombre, @Apellido, ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @DNI)), ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @Direccion)), @EmailPersonal, @EmailEmpresa, ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500),@CUIL )), @Cargo, @Sucursal, @Turno);
 
         PRINT 'Empleado insertado exitosamente';
     END
@@ -165,7 +165,7 @@ CREATE OR ALTER PROCEDURE empleados.EmpleadoActualizar
     @Legajo INT,
     @Nombre VARCHAR(50),
     @Apellido VARCHAR(50),
-    @DNI CHAR(9),
+    @DNI VARCHAR(20),
     @Direccion VARCHAR(150),
     @EmailPersonal NVARCHAR(100),
     @EmailEmpresa NVARCHAR(100),
@@ -175,18 +175,19 @@ CREATE OR ALTER PROCEDURE empleados.EmpleadoActualizar
     @Turno VARCHAR(50)
 AS
 BEGIN
+	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
     -- Verifica si existe un empleado con el legajo especificado
-    IF EXISTS (SELECT 1 FROM ddbba.empleados WHERE Legajo = @Legajo)
+    IF EXISTS (SELECT 1 FROM ddbba.Empleados WHERE Legajo = @Legajo)
     BEGIN
         -- Si el empleado existe, actualiza sus datos
-        UPDATE ddbba.empleados
+        UPDATE ddbba.Empleados
         SET Nombre = @Nombre,
             Apellido = @Apellido,
-            DNI = @DNI,
-            Direccion = @Direccion,
+            DNI = ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @DNI)),
+            Direccion = ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @Direccion)),
             EmailPersonal = @EmailPersonal,
             EmailEmpresa = @EmailEmpresa,
-            CUIL = @CUIL,
+            CUIL = ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @Cuil)),
             Cargo = @Cargo,
             Sucursal = @Sucursal,
             Turno = @Turno
@@ -199,6 +200,7 @@ BEGIN
         -- Si el empleado no existe, muestra un mensaje
         PRINT 'No existe un empleado con ese legajo';
     END
+	CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados
 END;
 
 
@@ -347,17 +349,19 @@ CREATE OR ALTER PROCEDURE facturacion.facturaEmitir
 	@estado VARCHAR(20)
 AS
 BEGIN
-	if exists(select 1 from ddbba.Factura where numeroFactura=@numeroFactura)
+	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1'
+	if exists(select 1 from ddbba.factura where numeroFactura=@numeroFactura)
 		BEGIN
 			update ddbba.factura set montoTotal=montoTotal + @montoTotal where numeroFactura=@numeroFactura
 		END
 	ELSE
 		BEGIN
 			OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
-			insert ddbba.Factura(numeroFactura,tipoFactura,tipoDeCliente,fecha,hora,medioDePago,empleado,identificadorDePago,
+			insert ddbba.factura(numeroFactura,tipoFactura,tipoDeCliente,fecha,hora,medioDePago,empleado,identificadorDePago,
 			montoTotal,puntoDeVenta,estado) values (@numeroFactura,@tipoFactura,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionFactura'), CONVERT(NVARCHAR(500), @IdentificadorDePago)),
 			@montoTotal,@puntoDeVenta,@estado)
 		END
+		CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados
 END
 
 go

@@ -235,22 +235,7 @@ ELSE
 BEGIN
     PRINT 'El esquema empleados ya existe.';
 END;
-GO
 
-
-
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.productosImportados') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.productosImportados (
-        IdProducto INT PRIMARY KEY,
-        NombreProducto NVARCHAR(100), 
-        Proveedor NVARCHAR(100), 
-        Categoria VARCHAR(100), 
-        CantidadPorUnidad VARCHAR(50), -- Descripción de la cantidad por unidad
-        PrecioUnidad DECIMAL(10, 2) CHECK (PrecioUnidad > 0), 
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
 
 GO
 
@@ -258,20 +243,24 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.Empleados (
-        Legajo INT PRIMARY KEY,                  
+        Legajo INT identity(257020,1) PRIMARY KEY,                  
         Nombre VARCHAR(50),                      
         Apellido VARCHAR(50),                     
-        DNI VARBINARY(500),                      -- DNI del Empleado, almacenado encriptado
+        DNI VARBINARY(500) NOT NULL,                      -- DNI del Empleado, almacenado encriptado
         Direccion VARBINARY(500),                -- Dirección del Empleado, almacenada encriptada
         EmailPersonal VARCHAR(100),              
         EmailEmpresa VARCHAR(100),             
-        CUIL VARCHAR(15),                      -- CUIL del Empleado, almacenado encriptado
+        CUIL VARBINARY(500) NOT NULL,                      -- CUIL del Empleado, almacenado encriptado
         Cargo VARCHAR(50) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')), -- Cargo del Empleado
-        Sucursal VARCHAR(50),                     -- Sucursal donde trabaja el Empleado
-        Turno VARCHAR(50) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), 
+        Sucursal VARCHAR(20) foreign key references ddbba.sucursal(ciudad),                     -- Sucursal donde trabaja el Empleado
+        Turno VARCHAR(50) CHECK (Turno IN ('TM', 'TT', 'JC')), 
         Activo BIT DEFAULT 1                      -- Campo para borrado lógico
     );
 END;
+
+drop table ddbba.Empleados
+
+
 
 
 go
@@ -286,27 +275,10 @@ BEGIN
 END;
 
 
-GO
-
-
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.catalogo') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.catalogo (
-        id int PRIMARY KEY, 
-        category VARCHAR(100), 
-        nombre VARCHAR(100),
-        price DECIMAL(10, 2) CHECK (price > 0), 
-        reference_price DECIMAL(10, 2), 
-        reference_unit VARCHAR(10), 
-        fecha DATETIME, 
-		Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;
-
 
 GO
 
-USE Com2900G01
+
 
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.factura') AND type in (N'U'))
@@ -319,7 +291,7 @@ CREATE TABLE ddbba.factura (
     fecha DATE,
     hora TIME,
     medioDePago VARCHAR(50) CHECK (medioDePago in ('Credit Card','Cash','Ewallet')),
-    empleado VARCHAR(100),
+    empleado VARCHAR(100) foreign key references ddbba.Empleados(Legajo),
     identificadorDePago VARBINARY(256),
     montoTotal DECIMAL(10, 2),
     puntoDeVenta VARCHAR(50),
@@ -353,7 +325,7 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.suc
 BEGIN
 CREATE TABLE ddbba.sucursal (
     idSucursal int identity (1,1) primary key,
-	ciudad varchar(20),
+	ciudad varchar(20) unique,
 	direccion varchar(100),
 	horario varchar(50),
 	telefono varchar(20),
@@ -378,7 +350,7 @@ CREATE TABLE ddbba.detalleVenta (
     detalleID int identity(1,1) primary key,
 	nroFactura int foreign key references ddbba.factura(numeroFactura),
 	producto varchar(100) foreign key references ddbba.productos(nombre),
-	categoria varchar(100) foreign key references ddbba.ClasificacionProductos(Producto),
+	categoria varchar(100),
 	cantidad int,
 	precio_unitario decimal (10,2),
 	monto decimal(10,2)
