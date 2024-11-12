@@ -3,7 +3,22 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="DESKTOP-CUJPENS\SQLEXPRESS:DESKTOP-CUJPENS\Joaco">
+        <ConnectionNode Name="DESKTOP-AUI1GUT\SQLEXPRESS:DESKTOP-AUI1GUT\valen">
+          <Created>2024-11-11T21:00:29.5704474-03:00</Created>
+          <Type>SQL</Type>
+          <Server>DESKTOP-AUI1GUT\SQLEXPRESS</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <TrustServerCertificate>True</TrustServerCertificate>
+          <HostNameInServerCertificate />
+          <EncryptionOption>True</EncryptionOption>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="DESKTOP-CUJPENS\SQLEXPRESS:DESKTOP-AUI1GUT\valen">
           <Created>2024-11-11T16:41:12.5853158-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-CUJPENS\SQLEXPRESS</Server>
@@ -18,7 +33,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="DESKTOP-NJ7MOBP\SQLEXPRESS:DESKTOP-CUJPENS\Joaco">
+        <ConnectionNode Name="DESKTOP-NJ7MOBP\SQLEXPRESS:DESKTOP-AUI1GUT\valen">
           <Created>2024-11-05T19:22:57.7622829-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-NJ7MOBP\SQLEXPRESS</Server>
@@ -38,8 +53,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="IMPORTAR_ARCHIVOS.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>IMPORTAR_ARCHIVOS.sql</FullPath>
         </FileNode>
@@ -50,8 +65,8 @@
           <FullPath>MODIFICAR_INSERTAR_BORRAR.sql</FullPath>
         </FileNode>
         <FileNode Name="pruebas.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>pruebas.sql</FullPath>
         </FileNode>
@@ -62,14 +77,14 @@
           <FullPath>reporte.sql</FullPath>
         </FileNode>
         <FileNode Name="roles.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>roles.sql</FullPath>
         </FileNode>
         <FileNode Name="Tp_3_Grupo_1.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-AUI1GUT\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-AUI1GUT\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Tp_3_Grupo_1.sql</FullPath>
         </FileNode>

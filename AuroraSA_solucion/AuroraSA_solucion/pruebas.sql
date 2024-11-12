@@ -9,17 +9,43 @@ WHERE name = 'ClaveEncriptacionEmpleados';
 
 USE ddbba;  -- Cambia a la base de datos adecuada
 GO
-
+     
 CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
 WITH ALGORITHM = AES_256
 ENCRYPTION BY PASSWORD = 'ContraseñaSegura123!';
 
-GRANT VIEW DEFINITION ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO Valentino;
-GRANT CONTROL ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO  Valentino;
+GRANT VIEW DEFINITION ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO valentino;
+GRANT CONTROL ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO  valentino;
 
 OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
 
  USE Com2900G01
+
+-- Abrir la clave simétrica
+OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+
+-- Desencriptar los valores
+SELECT 
+    Legajo, 
+    Nombre, 
+    Apellido, 
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(DNI)) AS DNI,  -- Desencriptar DNI como NVARCHAR
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(Direccion)) AS Direccion,  -- Desencriptar Direccion como NVARCHAR
+    EmailPersonal, 
+    EmailEmpresa,  
+    CONVERT(NVARCHAR(100), DECRYPTBYKEY(CUIL)) AS CUIL,  -- Desencriptar CUIL como NVARCHAR
+    Cargo, 
+    Sucursal, 
+    Turno
+FROM ddbba.Empleados;
+
+-- Cerrar la clave simétrica
+CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
+
+
+
+
+
 
 --IMPORTAR ARCHIVOS
 select * from ddbba.productos
@@ -30,7 +56,7 @@ exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escr
 
 TRUNCATE TABLE ddbba.Empleados
 select * from ddbba.Empleados
-exec importar.EmpleadosImportar @ruta='D:\BDD TP';
+exec importar.EmpleadosImportar @ruta='C:\Users\valen\OneDrive\Escritorio\Base de Datos Aplicada\TP\BBDDA';
 
 exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 

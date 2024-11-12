@@ -49,7 +49,7 @@ USE Com2900G01;
 GO
 
 -- Cambia la intercalación (collation) de la base de datos a 'Latin1_General_CS_AS' (sensible a mayúsculas y acentos)
-ALTER DATABASE AuroraSA
+ALTER DATABASE Com2900G01
 COLLATE Latin1_General_CS_AS;
 
 GO
@@ -271,25 +271,25 @@ BEGIN
 END;
 
 GO
-
+drop table ddbba.Empleados
 
 GO
 -- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.Empleados (
-		Legajo INT PRIMARY KEY, --Numero unico que representa a cada Empleado
-		Nombre VARCHAR(50), --Nombre del Empleado
-		Apellido VARCHAR(50), --Apellido del Empleado
-		DNI CHAR(9),-- CHECK (DNI LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), --DNI del Empleado
-		Direccion VARCHAR(150), --Direccion del Empleado
-        EmailPersonal nVARCHAR(100), --Email Personal del Empleado 
-        EmailEmpresa nVARCHAR(100), --Email Empresarial del Empleado
-		CUIL VARCHAR (20), --CUIL del Empleado
-		Cargo VARCHAR(50),-- CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')),--Cargo del Empleado
-		Sucursal VARCHAR(50),
-		Turno VARCHAR(50) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), --Turno en el que trabaja el Empleado
-		Activo BIT DEFAULT 1 --Campo para borrado logico
+        Legajo INT PRIMARY KEY,                   -- Número único que representa a cada Empleado
+        Nombre VARCHAR(50),                       -- Nombre del Empleado
+        Apellido VARCHAR(50),                     -- Apellido del Empleado
+        DNI VARBINARY(MAX),                       -- DNI del Empleado, almacenado encriptado
+        Direccion VARBINARY(500),                 -- Dirección del Empleado, almacenada encriptada
+        EmailPersonal NVARCHAR(100),              -- Email Personal del Empleado
+        EmailEmpresa NVARCHAR(100),               -- Email Empresarial del Empleado
+        CUIL VARBINARY(100),                      -- CUIL del Empleado, almacenado encriptado
+        Cargo VARCHAR(50) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')), -- Cargo del Empleado
+        Sucursal VARCHAR(50),                     -- Sucursal donde trabaja el Empleado
+        Turno VARCHAR(50) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), -- Turno del Empleado
+        Activo BIT DEFAULT 1                      -- Campo para borrado lógico
     );
 END;
 
@@ -434,7 +434,7 @@ CREATE TABLE ddbba.detalleVenta (
     detalleID int identity(1,1) primary key,
 	nroFactura int foreign key references ddbba.factura(numeroFactura),
 	producto varchar(100) foreign key references ddbba.productos(nombre),
-	categoria varchar(100) foreign key references ddbba.ClasificacionProductos(producto),
+	categoria varchar(100) foreign key references ddbba.ClasificacionProductos(Producto),
 	cantidad int,
 	precio_unitario decimal (10,2),
 	monto decimal(10,2)

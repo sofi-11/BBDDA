@@ -240,8 +240,11 @@ END;
 GO
 
 
+
+
 go
 /*IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
+/* IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
 CREATE OR ALTER PROCEDURE importar.EmpleadosImportar
     @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
 AS
@@ -251,8 +254,8 @@ BEGIN
         Legajo VARCHAR(10),            -- Numero unico que representa a cada Empleado
         Nombre NVARCHAR(50),           -- Nombre del Empleado
         Apellido NVARCHAR(50),         -- Apellido del Empleado
-        DNI CHAR(9),                   -- DNI del Empleado
-        Direccion NVARCHAR(150),       -- Direccion del Empleado
+        DNI VARCHAR(500),              -- DNI del Empleado
+        Direccion NVARCHAR(500),       -- Direccion del Empleado
         EmailPersonal NVARCHAR(100),   -- Email Personal del Empleado
         EmailEmpresa NVARCHAR(100),    -- Email Empresarial del Empleado
         CUIL VARCHAR(100),             -- CUIL del Empleado
@@ -273,7 +276,7 @@ BEGIN
         [Legajo/ID] AS Legajo,
         Nombre, 
         Apellido, 
-        CAST(DNI AS INT) AS DNI, 
+        DNI, 
         Direccion, 
         REPLACE(REPLACE(REPLACE([email personal], '' '', ''''), CHAR(160), ''''), CHAR(9), '''') AS EmailPersonal, 
         REPLACE(REPLACE(REPLACE([email empresa], '' '', ''''), CHAR(160), ''''), CHAR(9), '''') AS EmailEmpresa, 
@@ -291,8 +294,9 @@ BEGIN
     -- Ejecutar el SQL dinámico
     EXEC sp_executesql @sql;
 
-    -- 3. Abrir la clave simétrica para encriptar los datos antes de insertarlos
+    -- 3. Abrir la clave simétrica para la encriptación
     OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+    PRINT 'Clave simétrica abierta correctamente.';
 
     -- 4. Insertar los datos en la tabla final ddbba.Empleados con encriptación en DNI, Direccion y CUIL
     INSERT INTO ddbba.Empleados (
@@ -313,9 +317,9 @@ BEGIN
         Nombre, 
         Apellido, 
         CASE 
-            WHEN DNI IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), DNI) 
+            WHEN DNI IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), DNI)) 
             ELSE NULL 
-        END,        -- Encriptar DNI
+        END,  -- Encriptar DNI
         CASE 
             WHEN Direccion IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), Direccion) 
             ELSE NULL 
@@ -325,7 +329,7 @@ BEGIN
         CASE 
             WHEN CUIL IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CUIL) 
             ELSE NULL 
-        END,       -- Encriptar CUIL
+        END,  -- Encriptar CUIL
         Cargo, 
         Sucursal, 
         Turno
@@ -346,6 +350,7 @@ BEGIN
     PRINT 'Datos importados exitosamente desde Informacion_complementaria.xlsx';
 END;
 GO
+
 
 
 --IMPORTAR CLASIFICACION DE PRODUCTOS 
