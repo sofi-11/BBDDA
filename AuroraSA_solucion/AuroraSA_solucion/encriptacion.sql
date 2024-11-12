@@ -9,7 +9,7 @@ ENCRYPTION BY PASSWORD = 'factura;2024,grupo1';
 CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
 WITH ALGORITHM = AES_128
 ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
-DROP SYMMETRIC KEY ClaveEncriptacionEmpleados;
+
 
 go
 

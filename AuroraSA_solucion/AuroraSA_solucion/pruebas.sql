@@ -68,44 +68,28 @@ CLOSE SYMMETRIC KEY ClaveEncriptacionFactura;
 
 
 --IMPORTAR ARCHIVOS
-select * from ddbba.productos
-exec importar.ProductosImportadosImportar @ruta = 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA'
-
-
 
 select * from ddbba.ClasificacionProductos
 exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
-truncate table ddbba.ClasificacionProductos
-truncate table ddbba.detalleVenta
-truncate table ddbba.productos
-truncate table ddbba.factura
-truncate table ddbba.notaCredito
 
-TRUNCATE TABLE ddbba.Empleados
+
+select * from ddbba.productos
+exec importar.ProductosImportadosImportar @ruta = 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA'
+exec importar.CatalogoImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+exec importar.ElectronicAccessoriesImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+--
+select * from ddbba.sucursal
+exec importar.SucursalImportar @ruta= 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+
 select * from ddbba.Empleados
 exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
-TRUNCATE TABLE ddbba.factura
-drop table ddbba.factura
-select* from ddbba.factura
-exec importar.VentasRegistradasImportar @ruta='C:\Users\valen\OneDrive\Escritorio\Base de Datos Aplicada\TP\BBDDA';
-
-exec importar.CatalogoImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
-
-exec importar.ElectronicAccessoriesImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
---
-select * from ddbba.ClasificacionProductos
-exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
-
-select * from ddbba.Empleados
-exec importar.EmpleadosImportar @ruta='D:\BDD TP';
-truncate table ddbba.Empleados
-
-
-select* from ddbba.factura
+select * from  ddbba.factura
+select * from ddbba.detalleVenta
 exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
-exec importar.SucursalImportar @ruta= 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+
+
 
 
 --REPORTES
@@ -125,34 +109,49 @@ EXEC reporte.FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
 
 --INSERTAR
 
-exec producto.productoInsertar @nombre = 'zanahoria', @precio = 500, @clasificacion = 'verdura' ;
+--producto funciona
+exec producto.ProductoInsertar @nombre = 'zanahoria', @precio = 500, @clasificacion = 'verdura' ;
+--producto no funciona 
+exec producto.ProductoInsertar @nombre = 'zapallito', @precio = -2, @clasificacion = 'verdura' ;
 
-exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI = 51114441, 
+--empleado funciona
+exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI ='51014441', 
 	@Direccion= 'avenida siempreviva', @EmailPersonal='milhouse@gmail.com',@EmailEmpresa='VanHouten@unlam.com',@CUIL='00-44960383-0',@Cargo='Cajero',
 	@Sucursal= 'San Justo',@Turno='TM';
-	select*from ddbba.Empleados
+--empleado no funciona
+exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI ='51014442221', 
+	@Direccion= 'avenida siempreviva', @EmailPersonal='milhouse@gmail.com',@EmailEmpresa='VanHouten@unlam.com',@CUIL='00-44960383-0',@Cargo='Cajero',
+	@Sucursal= 'San Justo',@Turno='TM';
 
-exec producto.ClasificacionProductoInsertar @LineadeProducto= 'Almacen',@producto= 'choclo_cremoso';
 
-exec sucursal.sucursalInsertar @ciudad= 'Cañuelas',@direccion='av siempreviva',@horario='9 a 13', @telefono='2226090901';
+exec producto.ClasificacionProductoInsertar @LineaDeProducto= 'Almacen',@Producto= 'choclo_cremoso';
+
+exec sucursal.SucursalInsertar @Ciudad= 'Cañuelas',@Direccion='av siempreviva',@Horario='9 a 13', @Telefono='2226090901';
 
 
 
 --MODIFICAR
 
-exec producto.productoModificar @nombre='Acelgas',@precio=2000,@clasificacion='verdura';
-exec producto.productoModificar @nombre='homero',@precio=2000,@clasificacion='verdura';
+--producto funciona
+exec producto.ProductoModificar @nombre='Acelgas',@precio=2000,@clasificacion='verdura';
+--producto no existe
+exec producto.ProductoModificar @nombre='homero',@precio=2000,@clasificacion='verdura';
 
+--empleado existe
 exec empleados.EmpleadoActualizar
     @Legajo = 257030,@Nombre = 'Juan', @Apellido = 'Pérez',@DNI = '123456789',@Direccion = 'Calle Falsa 123',@EmailPersonal = 'juan.perez@gmail.com',
     @EmailEmpresa = 'juan.perez@empresa.com',@CUIL = '20-12345678-9',@Cargo = 'Cajero', @Sucursal = 'San Justo',@Turno = 'TM';
+--empleado no existe
+exec empleados.EmpleadoActualizar
+    @Legajo = 57030,@Nombre = 'Juan', @Apellido = 'Pérez',@DNI = '23456789',@Direccion = 'Calle Falsa 123',@EmailPersonal = 'juan.perez@gmail.com',
+    @EmailEmpresa = 'juan.perez@empresa.com',@CUIL = '20-12345678-9',@Cargo = 'Cajero', @Sucursal = 'San Justo',@Turno = 'TM';
+
 
 --SUCURSAL EXISTE
-exec sucursal.sucursalActualizar @ciudad = 'San Justo',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
+exec sucursal.sucursalActualizar @Ciudad = 'San Justo',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
     @Telefono = '011-9876-5432';
-
 --SUCURSAL NO EXISTE
-exec sucursal.sucursalActualizar @ciudad = 'BSAS',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
+exec sucursal.sucursalActualizar @Ciudad = 'BSAS',@Direccion = 'Av. Corrientes 1234',@Horario = 'Lunes a Viernes 8:00 - 17:00',
     @Telefono = '011-9876-5432';
 
 
@@ -164,19 +163,20 @@ exec borrar.EmpleadosBorradoLogico @Legajo= 257020, @FechaBaja = '2024-10-18';
 exec borrar.EmpleadosBorradoLogico @legajo= 12345;
 
 --clasificacionProducto existe
-exec borrar.ClasificacionProductosBorradoLogico @producto='chocolate';
+exec borrar.ClasificacionProductosBorradoLogico @Producto='chocolate';
 --clasificacionProducto no existe
-exec borrar.ClasificacionProductosBorradoLogico @producto='homero';
+exec borrar.ClasificacionProductosBorradoLogico @Producto='homero';
 
 --producto existe
-exec borrar.productoBorradoLogico @Nombre= 'Sirope de regaliz';
+exec borrar.ProductoBorradoLogico @Nombre= 'Sirope de regaliz';
 --producto no existe
-exec borrar.productoBorradoLogico @Nombre= 'bart';
+exec borrar.ProductoBorradoLogico @Nombre= 'bart';
 
 --sucursal existe
 exec borrar.SucursalBorradoLogico @Ciudad = 'San Justo';
 --sucursal no existe
 exec borrar.SucursalBorradoLogico @Ciudad = 'BSAS';
+
 
 
 --FACTURACION

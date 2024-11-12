@@ -14,9 +14,22 @@ CREATE OR ALTER PROCEDURE producto.ProductoInsertar
     @clasificacion VARCHAR(50)
 AS
 BEGIN
-    -- Verifica si ya existe un producto con el mismo nombre
-    IF EXISTS (SELECT 1 FROM ddbba.productos WHERE nombre = @nombre)
+    -- Verifica la longitud de los parámetros
+    IF LEN(@nombre) > 100
     BEGIN
+        PRINT 'Error: El nombre del producto supera el límite de 100 caracteres.';
+    END
+    ELSE IF LEN(@clasificacion) > 50
+    BEGIN
+        PRINT 'Error: La clasificación del producto supera el límite de 50 caracteres.';
+    END
+	ELSE IF @precio < 0
+    BEGIN
+        PRINT 'Error: precio menor a cero.';
+    END
+    ELSE IF EXISTS (SELECT 1 FROM ddbba.productos WHERE nombre = @nombre)
+    BEGIN
+        -- Verifica si ya existe un producto con el mismo nombre
         PRINT 'El producto con ese nombre ya existe';
     END
     ELSE
@@ -28,6 +41,7 @@ BEGIN
         PRINT 'Producto insertado exitosamente';
     END
 END;
+
 
 GO
 
@@ -46,21 +60,43 @@ CREATE OR ALTER PROCEDURE empleados.EmpleadoInsertar
     @Turno VARCHAR(50)
 AS
 BEGIN
-	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
-    -- Verifica si ya existe un empleado con el mismo Legajo
-    IF EXISTS (SELECT 1 FROM ddbba.Empleados WHERE CONVERT(NVARCHAR(500), DECRYPTBYKEY(DNI)) = @DNI)
+    OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
+
+    -- Validación de longitud y formato de DNI (solo dígitos)
+    IF LEN(@DNI) < 7 OR LEN(@DNI) > 8 
     BEGIN
-        PRINT 'El empleado con ese legajo ya existe';
+        PRINT 'Error: El DNI debe contener 7 u 8 dígitos numéricos.';
+    END
+    -- Validación de presencia de "@" en los correos electrónicos
+    ELSE IF CHARINDEX('@', @EmailPersonal) = 0
+    BEGIN
+        PRINT 'Error: El EmailPersonal debe contener un símbolo "@".';
+    END
+    ELSE IF CHARINDEX('@', @EmailEmpresa) = 0
+    BEGIN
+        PRINT 'Error: El EmailEmpresa debe contener un símbolo "@".';
+    END
+    -- Verifica si ya existe un empleado con el mismo DNI
+    ELSE IF EXISTS (SELECT 1 FROM ddbba.Empleados WHERE CONVERT(NVARCHAR(500), DECRYPTBYKEY(DNI)) = @DNI)
+    BEGIN
+        PRINT 'El empleado con ese DNI ya existe';
     END
     ELSE
     BEGIN
-        -- Inserta el empleado en la tabla si no existe uno con el mismo Legajo
+        -- Inserta el empleado en la tabla si no existe uno con el mismo DNI
         INSERT INTO ddbba.Empleados (Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
-        VALUES (@Nombre, @Apellido, ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @DNI)), ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @Direccion)), @EmailPersonal, @EmailEmpresa, ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500),@CUIL )), @Cargo, @Sucursal, @Turno);
+        VALUES (@Nombre, @Apellido, ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @DNI)), 
+                ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), @Direccion)), 
+                @EmailPersonal, @EmailEmpresa, 
+                ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500),@CUIL)), 
+                @Cargo, @Sucursal, @Turno);
 
         PRINT 'Empleado insertado exitosamente';
     END
+
+    CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
 END;
+
 
 
 
@@ -140,10 +176,10 @@ CREATE OR ALTER PROCEDURE producto.ProductoModificar
 AS
 BEGIN
     -- Verifica si existe un producto con el nombre especificado
-    IF EXISTS (SELECT 1 FROM ddbba.Productos WHERE nombre = @nombre)
+    IF EXISTS (SELECT 1 FROM ddbba.productos WHERE nombre = @nombre)
     BEGIN
         -- Si el producto existe, actualiza sus datos
-        UPDATE ddbba.Productos
+        UPDATE ddbba.productos
         SET precio = @precio,
             clasificacion = @clasificacion
         WHERE nombre = @nombre;
@@ -256,12 +292,11 @@ go
 --------------------------------------------------------------------Borrado
 -- Stored procedure para borrado logico tabla Clasificacion Productos
 CREATE OR ALTER PROCEDURE borrar.ClasificacionProductosBorradoLogico
-    @Producto VARCHAR(70),
-	@FechaBaja Date
+    @Producto VARCHAR(70)
 AS
 BEGIN
     UPDATE ddbba.ClasificacionProductos
-	SET FechaBaja = @FechaBaja
+	SET FechaBaja = GETDATE()
     WHERE Producto = @Producto
 END;
 GO
@@ -269,8 +304,7 @@ GO
 --PRODUCTOS
 
 CREATE OR ALTER PROCEDURE borrar.ProductoBorradoLogico
-    @Nombre VARCHAR(100),
-	@FechaBaja DATE
+    @Nombre VARCHAR(100)
 AS
 BEGIN
     -- Verifica si existe un producto con el nombre especificado
@@ -278,7 +312,7 @@ BEGIN
     BEGIN
         -- Si el producto existe, realiza el borrado lógico (Inserta la Fecha de baja)
         UPDATE ddbba.productos
-		SET FechaBaja = @FechaBaja
+		SET FechaBaja = GETDATE()
         WHERE nombre = @Nombre;
 
         PRINT 'Producto desactivado exitosamente';
@@ -296,12 +330,11 @@ go
 -- Stored procedure para borrado logico tabla Empleados
 
 CREATE OR ALTER PROCEDURE borrar.EmpleadosBorradoLogico
-    @Legajo INT,
-	@FechaBaja DATE
+    @Legajo INT
 AS
 BEGIN
     UPDATE ddbba.Empleados
-	SET FechaBaja = @FechaBaja
+	SET FechaBaja = GETDATE()
     WHERE Legajo = @Legajo;
 END;
 GO
@@ -309,8 +342,7 @@ GO
 --SUCURSAL
 
 CREATE OR ALTER PROCEDURE borrar.SucursalBorradoLogico
-    @Ciudad VARCHAR(20),
-	@FechaBaja DATE
+    @Ciudad VARCHAR(20)
 AS
 BEGIN
     -- Verifica si existe una sucursal en la ciudad especificada
@@ -318,7 +350,7 @@ BEGIN
     BEGIN
         -- Si existe una sucursal en la ciudad, realiza el borrado lógico (Cambia la fecha de baja, de NULL a la fecha )
         UPDATE ddbba.sucursal
-		SET FechaBaja = @FechaBaja
+		SET FechaBaja = GETDATE()
         WHERE ciudad = @Ciudad;
 
         PRINT 'Sucursal desactivada exitosamente';

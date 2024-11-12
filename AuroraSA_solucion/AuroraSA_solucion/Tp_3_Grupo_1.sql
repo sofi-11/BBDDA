@@ -257,7 +257,7 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.Empleados') AND type in (N'U'))
 BEGIN
     CREATE TABLE ddbba.Empleados (
-        Legajo INT identity(257020,1) PRIMARY KEY,                  
+        Legajo INT identity(257019,1) PRIMARY KEY,                  
         Nombre VARCHAR(50),                      
         Apellido VARCHAR(50),                     
         DNI VARBINARY(500) NOT NULL,                      -- DNI del Empleado, almacenado encriptado
@@ -304,14 +304,12 @@ CREATE TABLE ddbba.factura (
     tipoDeCliente VARCHAR(50) check (tipoDeCliente in ('Normal','Member')),
     fecha DATE,
     hora TIME,
-    medioDePago VARCHAR(50) CHECK (medioDePago in ('Credit Card','Cash','Ewallet')),
+    medioDePago VARCHAR(50) CHECK (medioDePago in ('Credit card','Cash','Ewallet')),
     empleado int foreign key references ddbba.Empleados(Legajo),
     identificadorDePago VARBINARY(256),
     montoTotal DECIMAL(10, 2),
     puntoDeVenta VARCHAR(50),
-	estado VARCHAR(20) CHECK (estado in ('pagada','pendiente','anulada','vencida','reembolsada')),
-	FechaBaja DATE DEFAULT NULL               -- Campo para borrado lógico
-
+	estado VARCHAR(20) CHECK (estado in ('pagada','pendiente','anulada','vencida','reembolsada'))
 );
 END
 
@@ -332,9 +330,7 @@ CREATE TABLE ddbba.productos (
 END
 
 
-
 GO
-
 
 
 
@@ -346,10 +342,11 @@ CREATE TABLE ddbba.notaDeCredito (
     notaID int identity(1,1) primary key,
 	nroFactura int foreign key references ddbba.factura(numeroFactura),
 	fechaEmision date,
-	monto decimal(10,2),
-	FechaBaja DATE DEFAULT NULL
+	monto decimal(10,2)
 )
 END
+
+GO
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.detalleVenta') AND type in (N'U'))
 BEGIN
@@ -360,11 +357,11 @@ CREATE TABLE ddbba.detalleVenta (
 	categoria varchar(100),
 	cantidad int,
 	precio_unitario decimal (10,2),
-	monto decimal(10,2),
-	FechaBaja DATE DEFAULT NULL
+	monto decimal(10,2)
 )
 END
 
+GO
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cotizacionDolar') AND type in (N'U'))
 BEGIN

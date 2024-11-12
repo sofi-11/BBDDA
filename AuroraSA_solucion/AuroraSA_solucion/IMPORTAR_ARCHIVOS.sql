@@ -91,16 +91,6 @@ BEGIN
 
     EXEC sp_executesql @sql;
 
-    -- Insertar en la tabla de destino solo los registros que no existen
-    INSERT INTO ddbba.catalogo (category, nombre, price, reference_price, reference_unit, fecha)
-    SELECT t.category, t.nombre, t.price, t.reference_price, t.reference_unit, t.fecha
-    FROM #TempCatalogo t
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM ddbba.catalogo c
-        WHERE c.id = t.id
-    );
-
     -- Insertar en la tabla productos solo los registros que no existen
     WITH UniqueProductos AS (
         SELECT DISTINCT nombre, price, category,
@@ -108,7 +98,8 @@ BEGIN
         FROM #TempCatalogo
     )
     INSERT INTO ddbba.productos(nombre, precio, clasificacion)
-    SELECT u.nombre, u.price * d.valor , u.category
+    SELECT REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.nombre,'Ã±','ñ'), 'Ã¡', 'á'), 'Ã©', 'é'), 'Ã­', 'í'), 'Ã³', 'ó'), 'Ãº', 'ú') AS texto_corregido, 
+	u.price * d.valor , u.category
     FROM UniqueProductos u
 	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
     WHERE RowNum = 1
@@ -116,7 +107,7 @@ BEGIN
       AND NOT EXISTS (
           SELECT 1
           FROM ddbba.productos p
-          WHERE p.nombre = u.nombre
+          WHERE p.nombre = u.nombre collate Modern_Spanish_CI_AS
       );
 
     -- Eliminar la tabla temporal
@@ -146,7 +137,7 @@ BEGIN
 
     CREATE TABLE #TempVentas (
         IDFactura VARCHAR(50),TipoFactura CHAR(1),Ciudad VARCHAR(50),TipoCliente VARCHAR(30),Genero VARCHAR(10),
-        Producto NVARCHAR(100),PrecioUnitario DECIMAL(10, 2),Cantidad INT,Fecha NVARCHAR(50),Hora TIME, MedioPago VARCHAR(20),
+        Producto NVARCHAR(100),PrecioUnitario DECIMAL(10, 2),Cantidad INT,Fecha NVARCHAR(50),Hora TIME, MedioPago VARCHAR(50),
         Empleado INT,IdentificadorPago VARCHAR(25)
     );
 
@@ -204,7 +195,7 @@ SELECT
     tv.Cantidad * tv.PrecioUnitario AS Monto
 FROM #TempVentas AS tv
 JOIN ddbba.productos AS p
-    ON tv.Producto = p.Nombre
+    ON tv.Producto = p.nombre collate Modern_Spanish_CI_AS
 WHERE NOT EXISTS (
     SELECT 1 
     FROM ddbba.detalleVenta AS d
@@ -402,15 +393,6 @@ BEGIN
 
     EXEC sp_executesql @sql;
 
-    INSERT INTO ddbba.productosImportados(IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
-    SELECT CAST(tp.IdProducto AS INT), tp.NombreProducto, tp.Proveedor, tp.Categoria, tp.CantidadPorUnidad, tp.PrecioUnidad
-    FROM #TempProductos AS tp
-    WHERE NOT EXISTS (
-        SELECT 1 
-        FROM ddbba.productosImportados AS p 
-        WHERE p.IdProducto = CAST(tp.IdProducto AS INT)
-    )
-    AND tp.IdProducto IS NOT NULL;  
 
 	INSERT INTO ddbba.productos(nombre,precio,clasificacion)
 	select tp.NombreProducto,tp.PrecioUnidad * d.valor , 'Importado'
@@ -419,7 +401,7 @@ BEGIN
 	WHERE NOT EXISTS (
 		SELECT 1
 		FROM ddbba.productos as p
-		WHERE p.nombre = tp.NombreProducto
+		WHERE p.nombre = tp.NombreProducto collate Modern_Spanish_CI_AS
 	)
 	AND tp.IdProducto IS NOT NULL;  
 
@@ -466,7 +448,7 @@ BEGIN
 
     EXEC sp_executesql @sql;
 
-    INSERT INTO ddbba.sucursal (ciudad, direccion, Horario, Telefono)
+    INSERT INTO ddbba.sucursal (ciudad, direccion, horario, telefono)
     SELECT 
         ts.Reemplazar_por,
         ts.direccion,
@@ -476,7 +458,7 @@ BEGIN
     WHERE NOT EXISTS (
         SELECT 1
         FROM ddbba.sucursal s
-        WHERE s.Ciudad = ts.Reemplazar_por 
+        WHERE s.ciudad = ts.Reemplazar_por COLLATE Modern_Spanish_CI_AS
     );
 
     DROP TABLE #TempSucursal;

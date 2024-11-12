@@ -24,23 +24,23 @@ BEGIN
     
     SET @sql = '
     SELECT 
-        DATENAME(WEEKDAY, Fecha) AS DiaSemana, 
+        DATENAME(WEEKDAY, fecha) AS DiaSemana, 
         SUM(montoTotal)
     FROM 
         ddbba.factura
     WHERE 
-        MONTH(Fecha) = @mes AND YEAR(Fecha) = @anio
+        MONTH(fecha) = @mes AND YEAR(fecha) = @anio
     GROUP BY 
-        DATENAME(WEEKDAY, Fecha)
+        DATENAME(WEEKDAY, fecha)
     ORDER BY 
         CASE 
-            WHEN DATENAME(WEEKDAY, Fecha) = ''Monday'' THEN 1
-            WHEN DATENAME(WEEKDAY, Fecha) = ''Tuesday'' THEN 2
-            WHEN DATENAME(WEEKDAY, Fecha) = ''Wednesday'' THEN 3
-            WHEN DATENAME(WEEKDAY, Fecha) = ''Thursday'' THEN 4
-            WHEN DATENAME(WEEKDAY, Fecha) = ''Friday'' THEN 5
-            WHEN DATENAME(WEEKDAY, Fecha) = ''Saturday'' THEN 6
-            WHEN DATENAME(WEEKDAY, Fecha) = ''Sunday'' THEN 7
+            WHEN DATENAME(WEEKDAY, fecha) = ''Monday'' THEN 1
+            WHEN DATENAME(WEEKDAY, fecha) = ''Tuesday'' THEN 2
+            WHEN DATENAME(WEEKDAY, fecha) = ''Wednesday'' THEN 3
+            WHEN DATENAME(WEEKDAY, fecha) = ''Thursday'' THEN 4
+            WHEN DATENAME(WEEKDAY, fecha) = ''Friday'' THEN 5
+            WHEN DATENAME(WEEKDAY, fecha) = ''Saturday'' THEN 6
+            WHEN DATENAME(WEEKDAY, fecha) = ''Sunday'' THEN 7
         END
     FOR XML PATH(''ReporteFacturacion'')';
 
@@ -72,15 +72,15 @@ BEGIN
                 WHEN DATEPART(HOUR, hora) BETWEEN 8 AND 13 THEN ''Mañana''
                 WHEN DATEPART(HOUR, hora) BETWEEN 14 AND 23 THEN ''Tarde''
             END AS Turno,
-            MONTH(Fecha) AS Mes
+            MONTH(fecha) AS Mes
         FROM ddbba.factura
         WHERE 
-            YEAR(Fecha) = @anio 
+            YEAR(fecha) = @anio 
             AND ( 
-                (@trimestre = 1 AND MONTH(Fecha) IN (1, 2, 3)) OR
-                (@trimestre = 2 AND MONTH(Fecha) IN (4, 5, 6)) OR
-                (@trimestre = 3 AND MONTH(Fecha) IN (7, 8, 9)) OR
-                (@trimestre = 4 AND MONTH(Fecha) IN (10, 11, 12))
+                (@trimestre = 1 AND MONTH(fecha) IN (1, 2, 3)) OR
+                (@trimestre = 2 AND MONTH(fecha) IN (4, 5, 6)) OR
+                (@trimestre = 3 AND MONTH(fecha) IN (7, 8, 9)) OR
+                (@trimestre = 4 AND MONTH(fecha) IN (10, 11, 12))
             )
             AND CASE 
                     WHEN DATEPART(HOUR, hora) BETWEEN 8 AND 13 THEN ''Mañana''
@@ -91,7 +91,7 @@ BEGIN
                 WHEN DATEPART(HOUR, hora) BETWEEN 8 AND 13 THEN ''Mañana''
                 WHEN DATEPART(HOUR, hora) BETWEEN 14 AND 23 THEN ''Tarde''
             END,
-            MONTH(Fecha)
+            MONTH(fecha)
 		FOR XML PATH(''ReporteFacturacionTrimestral'')
     ';
 
@@ -122,8 +122,8 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-            dv.Producto, 
-            SUM(dv.Cantidad) AS CantidadVendida
+            dv.producto, 
+            SUM(dv.cantidad) AS CantidadVendida
         FROM 
             ddbba.detalleVenta AS dv
         INNER JOIN 
@@ -131,7 +131,7 @@ BEGIN
         WHERE 
             f.fecha BETWEEN @fecha_inicio AND @fecha_fin
         GROUP BY 
-            dv.Producto
+            dv.producto
         ORDER BY 
             CantidadVendida DESC
         FOR XML PATH(''ReportePorFechas'')
@@ -164,8 +164,8 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-            dv.Producto, 
-            SUM(dv.Cantidad) AS CantidadVendida,
+            dv.producto, 
+            SUM(dv.cantidad) AS CantidadVendida,
             e.Sucursal
         FROM 
             ddbba.detalleVenta AS dv
@@ -176,7 +176,7 @@ BEGIN
         WHERE 
             f.fecha BETWEEN @fecha_inicio AND @fecha_fin
         GROUP BY 
-            dv.Producto, e.Sucursal
+            dv.producto, e.Sucursal
         ORDER BY 
             CantidadVendida DESC
         FOR XML PATH(''ReportePorFechasPorSucursal'')
@@ -207,21 +207,21 @@ BEGIN
     SET @sql = '
         WITH ProductosConRanking AS (
             SELECT 
-                DATEPART(WEEK, f.Fecha) AS Semana,  -- Calcula la semana de la factura
-                dv.Producto,
-                SUM(dv.Cantidad) AS CantidadVendida,
-                ROW_NUMBER() OVER (PARTITION BY DATEPART(WEEK, f.Fecha) ORDER BY SUM(dv.Cantidad) DESC) AS Ranking
+                DATEPART(WEEK, f.fecha) AS Semana,  -- Calcula la semana de la factura
+                dv.producto,
+                SUM(dv.cantidad) AS CantidadVendida,
+                ROW_NUMBER() OVER (PARTITION BY DATEPART(WEEK, f.fecha) ORDER BY SUM(dv.cantidad) DESC) AS Ranking
             FROM 
                 ddbba.factura f
             INNER JOIN ddbba.detalleVenta dv ON f.numeroFactura = dv.nroFactura
             WHERE 
-                MONTH(f.Fecha) = @mes AND YEAR(f.Fecha) = @anio  -- Filtra por mes y año
+                MONTH(f.fecha) = @mes AND YEAR(f.fecha) = @anio  -- Filtra por mes y año
             GROUP BY 
-                DATEPART(WEEK, f.Fecha), dv.Producto
+                DATEPART(WEEK, f.fecha), dv.producto
         )
         SELECT 
             Semana,
-            Producto,
+            producto,
             CantidadVendida
         FROM 
             ProductosConRanking
@@ -255,19 +255,19 @@ BEGIN
     SET @sql = '
         WITH ProductosConRanking AS (
             SELECT 
-                dv.Producto,
-                SUM(dv.Cantidad) AS CantidadVendida,
-                ROW_NUMBER() OVER (ORDER BY SUM(dv.Cantidad) ASC) AS Ranking  -- Ordenamos de menor a mayor por cantidad vendida
+                dv.producto,
+                SUM(dv.cantidad) AS CantidadVendida,
+                ROW_NUMBER() OVER (ORDER BY SUM(dv.cantidad) ASC) AS Ranking  -- Ordenamos de menor a mayor por cantidad vendida
             FROM 
                 ddbba.factura f
             INNER JOIN ddbba.detalleVenta dv ON f.numeroFactura = dv.nroFactura
             WHERE 
-                MONTH(f.Fecha) = @mes AND YEAR(f.Fecha) = @anio  -- Filtra por mes y año
+                MONTH(f.fecha) = @mes AND YEAR(f.fecha) = @anio  -- Filtra por mes y año
             GROUP BY 
-                dv.Producto
+                dv.producto
         )
         SELECT 
-            Producto,
+            producto,
             CantidadVendida
         FROM 
             ProductosConRanking
@@ -301,21 +301,21 @@ BEGIN
     
     SET @sql = '
     SELECT 
-        v.Producto,
-        SUM(v.Cantidad) AS CantidadVendida,
-        SUM(v.precio_unitario * v.Cantidad) AS TotalFacturado,
+        v.producto,
+        SUM(v.cantidad) AS CantidadVendida,
+        SUM(v.precio_unitario * v.cantidad) AS TotalFacturado,
         e.Sucursal,
         f.fecha
     FROM 
         ddbba.detalleVenta v
     INNER JOIN ddbba.factura f
         ON f.numeroFactura = v.nroFactura
-	INNER JOIN ddbba.empleados e
+	INNER JOIN ddbba.Empleados e
         ON f.empleado = e.Legajo
     WHERE 
         f.fecha = @fecha AND e.Sucursal = @sucursal
     GROUP BY 
-        v.Producto, e.Sucursal, f.fecha
+        v.producto, e.Sucursal, f.fecha
     ORDER BY 
         TotalFacturado DESC
     FOR XML PATH(''ReporteTotalAcumuladoVentas'')';
