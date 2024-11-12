@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 --PRUEBAS INSERTAR,MODIFICAR,BORRAR Y IMPORTAR
  
 =======
@@ -8,14 +8,12 @@
 --                 IMPORTAR                        --
 --                                                 --
 --*************************************************--
->>>>>>> 6f9390e4f8b308ac9845e25f419cfcf4ed69d039
 
 USE Com2900G01
 
 GO
 
-<<<<<<< HEAD
-=======
+
 
 CREATE SYMMETRIC KEY ClaveEncriptacionFactura
 WITH ALGORITHM = AES_256
@@ -69,13 +67,12 @@ CLOSE SYMMETRIC KEY ClaveEncriptacionFactura;
 
 
 
->>>>>>> 6f9390e4f8b308ac9845e25f419cfcf4ed69d039
 --IMPORTAR ARCHIVOS
 select * from ddbba.productos
 exec importar.ProductosImportadosImportar @ruta = 'C:\Users\valen\OneDrive\Escritorio\Base de Datos Aplicada\TP\BBDDA'
 
-<<<<<<< HEAD
-=======
+
+
 select * from ddbba.ClasificacionProductos
 exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
@@ -88,7 +85,6 @@ drop table ddbba.factura
 select* from ddbba.factura
 exec importar.VentasRegistradasImportar @ruta='C:\Users\valen\OneDrive\Escritorio\Base de Datos Aplicada\TP\BBDDA';
 
->>>>>>> 6f9390e4f8b308ac9845e25f419cfcf4ed69d039
 exec importar.CatalogoImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 exec importar.ElectronicAccessoriesImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';

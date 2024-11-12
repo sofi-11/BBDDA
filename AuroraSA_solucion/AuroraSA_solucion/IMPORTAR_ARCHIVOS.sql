@@ -1,28 +1,19 @@
 
-
 USE COM2900G01
 
 go
---*************************************************--
---                                                 --
---				    IMPORTACION					   --
---                                                 --
---*************************************************--
-
-
 
 
 
 CREATE OR ALTER PROCEDURE importar.ElectronicAccessoriesImportar
     @ruta NVARCHAR(255) 
-
+AS
 BEGIN
     -- Crear tabla temporal
     CREATE TABLE #TempElectronicAccessories (
         Product varchar(100),
         [Precio Unitario en dolares] decimal(10, 2)
     );
-
     -- Concatenar la ruta y el nombre del archivo en una sola variable
     DECLARE @rutaCompleta NVARCHAR(255);
     SET @rutaCompleta = @ruta + '\Electronic accessories.xlsx';
@@ -53,9 +44,7 @@ BEGIN
     ) AS temp
     WHERE row_num = 1; -- Esto selecciona solo la primera aparición de cada producto
 
-
     -- Insertar los datos de la tabla temporal en la tabla de destino
-
 
 	 INSERT INTO ddbba.productos (nombre, precio, clasificacion)
     SELECT u.Product, u.[Precio Unitario en dolares]*d.valor, 'Electronica'
@@ -66,8 +55,6 @@ BEGIN
         FROM ddbba.productos p
         WHERE p.nombre = u.Product COLLATE Modern_Spanish_CI_AS
     )
-	
-	;
 	
     -- Eliminar la tabla temporal
     DROP TABLE #TempElectronicAccessories;

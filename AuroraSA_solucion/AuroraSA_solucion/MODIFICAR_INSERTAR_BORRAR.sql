@@ -112,14 +112,14 @@ CREATE OR ALTER PROCEDURE sucursal.SucursalInsertar
 AS
 BEGIN
     -- Verifica si ya existe una sucursal en la misma ciudad
-    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE Ciudad = @Ciudad)
+    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE ciudad = @Ciudad)
     BEGIN
         PRINT 'Ya existe una sucursal en esta ciudad';
     END
     ELSE
     BEGIN
         -- Inserta la sucursal en la tabla si no existe una en la misma ciudad
-        INSERT INTO ddbba.sucursal (Ciudad, Direccion, Horario, Telefono)
+        INSERT INTO ddbba.sucursal (ciudad, direccion, horario, telefono)
         VALUES (@Ciudad, @Direccion, @Horario, @Telefono);
 
         PRINT 'Sucursal insertada exitosamente';
@@ -231,14 +231,14 @@ CREATE OR ALTER PROCEDURE sucursal.sucursalActualizar
 AS
 BEGIN
     -- Verifica si existe una sucursal en la ciudad especificada
-    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE Ciudad = @Ciudad)
+    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE ciudad = @Ciudad)
     BEGIN
         -- Si existe una sucursal en la ciudad, actualiza sus datos
         UPDATE ddbba.sucursal
-        SET Direccion = @Direccion,
-            Horario = @Horario,
-            Telefono = @Telefono
-        WHERE Ciudad = @Ciudad;
+        SET direccion = @Direccion,
+            horario = @Horario,
+            telefono = @Telefono
+        WHERE ciudad = @Ciudad;
 
         PRINT 'Sucursal actualizada exitosamente';
     END
@@ -270,12 +270,12 @@ CREATE OR ALTER PROCEDURE borrar.ProductoBorradoLogico
 AS
 BEGIN
     -- Verifica si existe un producto con el nombre especificado
-    IF EXISTS (SELECT 1 FROM ddbba.productos WHERE Nombre = @Nombre)
+    IF EXISTS (SELECT 1 FROM ddbba.productos WHERE nombre = @Nombre)
     BEGIN
         -- Si el producto existe, realiza el borrado lógico (pone activo en 0)
         UPDATE ddbba.productos
         SET activo = 0
-        WHERE Nombre = @Nombre;
+        WHERE nombre = @Nombre;
 
         PRINT 'Producto desactivado exitosamente';
     END
@@ -308,12 +308,12 @@ CREATE OR ALTER PROCEDURE borrar.SucursalBorradoLogico
 AS
 BEGIN
     -- Verifica si existe una sucursal en la ciudad especificada
-    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE Ciudad = @Ciudad)
+    IF EXISTS (SELECT 1 FROM ddbba.sucursal WHERE ciudad = @Ciudad)
     BEGIN
         -- Si existe una sucursal en la ciudad, realiza el borrado lógico (pone activo en 0)
         UPDATE ddbba.sucursal
         SET activo = 0
-        WHERE Ciudad = @Ciudad;
+        WHERE ciudad = @Ciudad;
 
         PRINT 'Sucursal desactivada exitosamente';
     END
