@@ -149,16 +149,11 @@ GO
 GO
 
 
-/*select* from ddbba.catalogo
-
-
-exec importar.CatalogoImportar
-drop procedure importar.CatalogoImportar
 
 
 -- Stored procedure para importar datos de 'Ventas_registradas.csv'
 
-*/
+
 
 
 CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
@@ -295,7 +290,7 @@ BEGIN
     -- Ejecutar el SQL dinámico
     EXEC sp_executesql @sql;
 
-	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
     PRINT 'Clave simétrica abierta correctamente.';
 
     -- 4. Insertar los datos en la tabla final ddbba.Empleados con encriptación en DNI, Direccion y CUIL
@@ -440,8 +435,8 @@ BEGIN
     )
     AND tp.IdProducto IS NOT NULL;  
 
-	INSERT INTO ddbba.productos(nombre,precio,clasificacion)
-	select tp.NombreProducto,tp.PrecioUnidad * d.valor , 'Importado'
+	INSERT INTO ddbba.productos(nombre,precio,clasificacion,activo)
+	select tp.NombreProducto,tp.PrecioUnidad * d.valor , 'Importado',1
 	from #TempProductos AS tp
 	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
 	WHERE NOT EXISTS (

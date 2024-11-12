@@ -49,9 +49,12 @@ USE Com2900G01;
 GO
 
 -- Cambia la intercalación (collation) de la base de datos a 'Latin1_General_CS_AS' (sensible a mayúsculas y acentos)
+ALTER DATABASE Com2900G01 SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+GO
 ALTER DATABASE Com2900G01
 COLLATE Latin1_General_CS_AS;
-
+GO
+ALTER DATABASE Com2900G01 SET MULTI_USER;
 GO
 
 ----------------------------------------- ESQUEMAS -----------------------------------------------------
@@ -413,4 +416,7 @@ CREATE TABLE ddbba.cotizacionDolar (
 	valor decimal(10,2)
 )
 END
+
+go
+insert ddbba.cotizacionDolar values ('dolarBlue',1200)
 

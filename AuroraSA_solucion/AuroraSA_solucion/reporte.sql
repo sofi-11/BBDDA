@@ -175,14 +175,6 @@ BEGIN
             ddbba.Empleados AS e ON e.Legajo = f.empleado
         WHERE 
             f.fecha BETWEEN @fecha_inicio AND @fecha_fin
-            AND (
-                CASE 
-                    WHEN f.ciudad = ''Yangon'' THEN ''San Justo''
-                    WHEN f.ciudad = ''Naypyitaw'' THEN ''Ramos Mejia''
-                    WHEN f.ciudad = ''Mandalay'' THEN ''Lomas del Mirador''
-                    ELSE f.ciudad
-                END = e.Sucursal
-            )
         GROUP BY 
             dv.Producto, e.Sucursal
         ORDER BY 
@@ -311,17 +303,19 @@ BEGIN
     SELECT 
         v.Producto,
         SUM(v.Cantidad) AS CantidadVendida,
-        SUM(v.PrecioUnitario * v.Cantidad) AS TotalFacturado,
+        SUM(v.precio_unitario * v.Cantidad) AS TotalFacturado,
         e.Sucursal,
-        v.Fecha
+        f.fecha
     FROM 
-        ddbba.ventasRegistradas v
-    INNER JOIN ddbba.Empleados e
-        ON e.Legajo = v.Empleado
+        ddbba.detalleVenta v
+    INNER JOIN ddbba.factura f
+        ON f.numeroFactura = v.nroFactura
+	INNER JOIN ddbba.empleados e
+        ON f.empleado = e.Legajo
     WHERE 
-        v.Fecha = @fecha AND e.Sucursal = @sucursal
+        f.fecha = @fecha AND e.Sucursal = @sucursal
     GROUP BY 
-        v.Producto, e.Sucursal, v.Fecha
+        v.Producto, e.Sucursal, f.fecha
     ORDER BY 
         TotalFacturado DESC
     FOR XML PATH(''ReporteTotalAcumuladoVentas'')';
@@ -329,4 +323,3 @@ BEGIN
     -- Ejecutar la consulta dinámica y devolver el resultado como XML
     EXEC sp_executesql @sql, N'@fecha DATE, @sucursal VARCHAR(50)', @fecha, @sucursal;
 END;
-
