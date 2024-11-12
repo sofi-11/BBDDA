@@ -192,6 +192,8 @@ BEGIN
 
     -- Insertar los datos de la tabla temporal en la tabla final, evitando duplicados en IDFactura
 
+	OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
+
 	INSERT INTO ddbba.factura (
 	numeroFactura, tipoFactura, tipoDeCliente,fecha, hora,
     medioDePago,empleado ,identificadorDePago,montoTotal ,puntoDeVenta ,estado)
@@ -203,7 +205,7 @@ BEGIN
         Hora, 
         MedioPago, 
         Empleado, 
-        IdentificadorPago,
+        ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionFactura'), CONVERT(NVARCHAR(500), IdentificadorPago)) ,
 		Cantidad*PrecioUnitario,
 		'1',
 		'pagada'
@@ -235,9 +237,10 @@ AND tv.idfactura IS NOT NULL;
     -- Eliminar la tabla temporal
     DROP TABLE #TempVentas;
 
+	CLOSE SYMMETRIC KEY ClaveEncriptacionFactura;
+
     PRINT 'Datos importados exitosamente desde Ventas_registradas.csv';
 END;
-GO
 
 
 
@@ -254,10 +257,10 @@ BEGIN
         Legajo VARCHAR(10),            -- Numero unico que representa a cada Empleado
         Nombre NVARCHAR(50),           -- Nombre del Empleado
         Apellido NVARCHAR(50),         -- Apellido del Empleado
-        DNI VARCHAR(500),              -- DNI del Empleado
-        Direccion NVARCHAR(500),       -- Direccion del Empleado
-        EmailPersonal NVARCHAR(100),   -- Email Personal del Empleado
-        EmailEmpresa NVARCHAR(100),    -- Email Empresarial del Empleado
+        DNI CHAR(9),				   -- DNI del Empleado
+        Direccion VARCHAR(150),       -- Direccion del Empleado
+        EmailPersonal VARCHAR(100),   -- Email Personal del Empleado
+        EmailEmpresa VARCHAR(100),    -- Email Empresarial del Empleado
         CUIL VARCHAR(100),             -- CUIL del Empleado
         Cargo VARCHAR(50),             -- Cargo del Empleado
         Sucursal VARCHAR(50),          -- Sucursal del Empleado
@@ -276,7 +279,7 @@ BEGIN
         [Legajo/ID] AS Legajo,
         Nombre, 
         Apellido, 
-        DNI, 
+        CAST(DNI AS INT),
         Direccion, 
         REPLACE(REPLACE(REPLACE([email personal], '' '', ''''), CHAR(160), ''''), CHAR(9), '''') AS EmailPersonal, 
         REPLACE(REPLACE(REPLACE([email empresa], '' '', ''''), CHAR(160), ''''), CHAR(9), '''') AS EmailEmpresa, 
@@ -288,14 +291,11 @@ BEGIN
         ''Excel 12.0;Database=' + @rutaCompleta + ';HDR=YES'',
         ''SELECT * FROM [Empleados$]'')';
 
-    -- Para depuración, imprimimos el SQL dinámico generado
-    PRINT @sql;
 
     -- Ejecutar el SQL dinámico
     EXEC sp_executesql @sql;
 
-    -- 3. Abrir la clave simétrica para la encriptación
-    OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
     PRINT 'Clave simétrica abierta correctamente.';
 
     -- 4. Insertar los datos en la tabla final ddbba.Empleados con encriptación en DNI, Direccion y CUIL
@@ -316,20 +316,11 @@ BEGIN
         CAST(Legajo AS INT), 
         Nombre, 
         Apellido, 
-        CASE 
-            WHEN DNI IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), DNI)) 
-            ELSE NULL 
-        END,  -- Encriptar DNI
-        CASE 
-            WHEN Direccion IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), Direccion) 
-            ELSE NULL 
-        END,  -- Encriptar Direccion
+        ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500), DNI)) ,  
+        ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CONVERT(NVARCHAR(500),Direccion)),  
         EmailPersonal, 
         EmailEmpresa,  
-        CASE 
-            WHEN CUIL IS NOT NULL THEN ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionEmpleados'), CUIL) 
-            ELSE NULL 
-        END,  -- Encriptar CUIL
+        CUIL,  
         Cargo, 
         Sucursal, 
         Turno
@@ -341,8 +332,7 @@ BEGIN
     )
     AND te.Legajo IS NOT NULL;
 
-    -- 5. Cerrar la clave simétrica
-    CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
+	CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
 
     -- 6. Eliminar la tabla temporal
     DROP TABLE #TempEmpleados;

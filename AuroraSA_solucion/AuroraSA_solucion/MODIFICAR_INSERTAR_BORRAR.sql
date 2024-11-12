@@ -101,6 +101,7 @@ BEGIN
     END
 END;
 
+go
 --SUCURSAL
 
 CREATE OR ALTER PROCEDURE sucursal.SucursalInsertar
@@ -220,6 +221,7 @@ BEGIN
 END
 
 --SUCURSAL
+go
 
 CREATE OR ALTER PROCEDURE sucursal.sucursalActualizar
     @Ciudad VARCHAR(20),
@@ -285,7 +287,7 @@ BEGIN
 END;
 
 
-
+go
 
 -- Stored procedure para borrado logico tabla Empleados
 
@@ -351,8 +353,9 @@ BEGIN
 		END
 	ELSE
 		BEGIN
+			OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
 			insert ddbba.Factura(numeroFactura,tipoFactura,tipoDeCliente,fecha,hora,medioDePago,empleado,identificadorDePago,
-			montoTotal,puntoDeVenta,estado) values (@numeroFactura,@tipoFactura,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,@identificadorDePago,
+			montoTotal,puntoDeVenta,estado) values (@numeroFactura,@tipoFactura,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionFactura'), CONVERT(NVARCHAR(500), @IdentificadorDePago)),
 			@montoTotal,@puntoDeVenta,@estado)
 		END
 END

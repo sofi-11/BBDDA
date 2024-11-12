@@ -1,29 +1,20 @@
 --PRUEBAS INSERTAR,MODIFICAR,BORRAR Y IMPORTAR
  
- USE ddbba;  -- Asegúrate de usar la base de datos donde debería estar la clave
+USE Com2900G01
+
 GO
 
-SELECT * 
-FROM sys.symmetric_keys 
-WHERE name = 'ClaveEncriptacionEmpleados';
-
-USE ddbba;  -- Cambia a la base de datos adecuada
-GO
-     
-CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
+CREATE SYMMETRIC KEY ClaveEncriptacionFactura
 WITH ALGORITHM = AES_256
-ENCRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+ENCRYPTION BY PASSWORD = 'factura;2024,grupo1';     
 
-GRANT VIEW DEFINITION ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO valentino;
-GRANT CONTROL ON SYMMETRIC KEY::ClaveEncriptacionEmpleados TO  valentino;
+CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
+WITH ALGORITHM = AES_128
+ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
 
-OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+go
 
- USE Com2900G01
-
--- Abrir la clave simétrica
-OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
-
+OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
 -- Desencriptar los valores
 SELECT 
     Legajo, 
@@ -33,7 +24,7 @@ SELECT
     CONVERT(NVARCHAR(500), DECRYPTBYKEY(Direccion)) AS Direccion,  -- Desencriptar Direccion como NVARCHAR
     EmailPersonal, 
     EmailEmpresa,  
-    CONVERT(NVARCHAR(100), DECRYPTBYKEY(CUIL)) AS CUIL,  -- Desencriptar CUIL como NVARCHAR
+    CUIL,  -- Desencriptar CUIL como NVARCHAR
     Cargo, 
     Sucursal, 
     Turno
@@ -41,6 +32,25 @@ FROM ddbba.Empleados;
 
 -- Cerrar la clave simétrica
 CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
+
+OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
+-- Desencriptar los valores
+SELECT 
+    numeroFactura , 
+    tipoFactura ,
+    tipoDeCliente ,
+    fecha ,
+    hora ,
+    medioDePago,
+    empleado,
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(identificadorDePago)) AS identificadorDePago ,
+    montoTotal ,
+    puntoDeVenta ,
+	estado
+FROM ddbba.factura;
+
+-- Cerrar la clave simétrica
+CLOSE SYMMETRIC KEY ClaveEncriptacionFactura;
 
 
 
@@ -56,8 +66,10 @@ exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escr
 
 TRUNCATE TABLE ddbba.Empleados
 select * from ddbba.Empleados
-exec importar.EmpleadosImportar @ruta='C:\Users\valen\OneDrive\Escritorio\Base de Datos Aplicada\TP\BBDDA';
+exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
+drop table ddbba.factura
+select* from ddbba.factura
 exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 exec importar.CatalogoImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
@@ -141,7 +153,7 @@ exec borrar.SucursalBorradoLogico @Ciudad = 'BSAS';
 
 --factura
 EXEC facturacion.facturaEmitir @numeroFactura = 12300123,@tipoFactura = 'A',@tipoDeCliente = 'Member',
-	@fecha = '2024-11-11', @hora = '15:30:00',@medioDePago = 'Credit Card', @empleado = 'Juan Pérez',
+	@fecha = '2024-11-11', @hora = '15:30:00',@medioDePago = 'Credit Card', @empleado = '257024',
     @identificadorDePago = '123456',@montoTotal = 5000.00, @puntoDeVenta = '1', @estado = 'pagada';
 
 --detalle venta factura existe

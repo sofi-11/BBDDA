@@ -3,20 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # SQL Server Management Studio Solution File, Format Version 20.00
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "AuroraSA_solucion", "AuroraSA_solucion\AuroraSA_solucion.ssmssqlproj", "{7EC4EB0F-DC22-47C8-89EE-D12C8975EEF5}"
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "AuroraSA_solucion", "AuroraSA_solucion\AuroraSA_solucion.ssmssqlproj", "{78994670-4510-4A44-8FD9-6E946BD910BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7EC4EB0F-DC22-47C8-89EE-D12C8975EEF5}.Default|Default.ActiveCfg = Default
-		{D6723998-AEA1-42F5-98E4-8A3F41827FC3}.Default|Default.ActiveCfg = Default
+		{78994670-4510-4A44-8FD9-6E946BD910BE}.Default|Default.ActiveCfg = Default
+		{38C42650-4151-4276-BDAA-DF8F95C3E2F1}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4B38E415-AF06-46F0-8614-2B03CDC03F0E}
+		SolutionGuid = {FCCB6325-589F-4D2F-998E-CB6F881AFE57}
 	EndGlobalSection
 EndGlobal

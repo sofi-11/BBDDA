@@ -271,7 +271,6 @@ BEGIN
 END;
 
 GO
-drop table ddbba.Empleados
 
 GO
 -- Verifica si la tabla 'Empleados' ya existe, si no, la crea.
@@ -281,11 +280,11 @@ BEGIN
         Legajo INT PRIMARY KEY,                   -- Número único que representa a cada Empleado
         Nombre VARCHAR(50),                       -- Nombre del Empleado
         Apellido VARCHAR(50),                     -- Apellido del Empleado
-        DNI VARBINARY(MAX),                       -- DNI del Empleado, almacenado encriptado
+        DNI VARBINARY(500),                       -- DNI del Empleado, almacenado encriptado
         Direccion VARBINARY(500),                 -- Dirección del Empleado, almacenada encriptada
-        EmailPersonal NVARCHAR(100),              -- Email Personal del Empleado
-        EmailEmpresa NVARCHAR(100),               -- Email Empresarial del Empleado
-        CUIL VARBINARY(100),                      -- CUIL del Empleado, almacenado encriptado
+        EmailPersonal VARCHAR(100),              -- Email Personal del Empleado
+        EmailEmpresa VARCHAR(100),               -- Email Empresarial del Empleado
+        CUIL VARCHAR(15),                      -- CUIL del Empleado, almacenado encriptado
         Cargo VARCHAR(50) CHECK (Cargo IN ('Cajero', 'Supervisor', 'Gerente de sucursal')), -- Cargo del Empleado
         Sucursal VARCHAR(50),                     -- Sucursal donde trabaja el Empleado
         Turno VARCHAR(50) CHECK (Turno IN ('TM', 'TT', 'Jornada completa')), -- Turno del Empleado
@@ -324,34 +323,6 @@ BEGIN
 		Activo BIT DEFAULT 1 --Campo para borrado logico
     );
 END;
-GO
-
-
--- Verifica si la tabla 'ventasRegistradas' ya existe, si no, la crea.
-/*IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventasRegistradas') AND type in (N'U'))
-BEGIN
-    CREATE TABLE ddbba.ventasRegistradas (
-        IDFactura VARCHAR(50) PRIMARY KEY, -- Llave primaria, identificador de factura
-        TipoFactura CHAR(1) CHECK (TipoFactura IN ('A', 'B', 'C')), -- Tipo de factura (Ej: A, B, C)
-        Ciudad VARCHAR(50), -- Ciudad de la venta
-        TipoCliente VARCHAR(30), -- Tipo de cliente
-        Genero VARCHAR(10) CHECK (Genero IN ('Male', 'Female')), -- Género del cliente
-        Producto VARCHAR(100) COLLATE Latin1_General_CS_AS,-- CONSTRAINT FK_Producto_Catalogo FOREIGN KEY (Producto) REFERENCES ddbba.catalogo (nombre), -- Nombre del producto,
-        PrecioUnitario DECIMAL(10, 2), -- Precio unitario del producto
-        Cantidad INT, -- Cantidad de productos
-        Fecha DATE, -- Fecha de la venta
-        Hora TIME, -- Hora de la venta
-        MedioPago VARCHAR(20) CHECK (MedioPago IN ('Ewallet', 'Cash', 'Credit card')), -- Medio de pago utilizado
-        Empleado INT,-- CONSTRAINT FK_Empleado_IDEmpleado FOREIGN KEY (Empleado) REFERENCES ddbba.Empleados (Legajo), -- Identificador del empleado
-        IdentificadorPago VARCHAR(25),
-			/*CHECK (
-			(MedioPago = 'Ewallet' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]') OR
-			(MedioPago = 'Cash' AND (IdentificadorPago IS NULL OR IdentificadorPago = '--')) OR
-			(MedioPago = 'Credit Card' AND IdentificadorPago LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
-			), -- Identificador de pago*/
-			Activo BIT DEFAULT 1 --Campo para borrado logico
-    );
-END;*/
 
 
 GO
@@ -367,13 +338,12 @@ CREATE TABLE ddbba.factura (
     hora TIME,
     medioDePago VARCHAR(50) check (medioDePago in ('Credit Card','Cash','Ewallet')),
     empleado VARCHAR(100),
-    identificadorDePago VARCHAR(100),
+    identificadorDePago varbinary(256),
     montoTotal DECIMAL(10, 2),
     puntoDeVenta VARCHAR(50),
 	estado VARCHAR(20) check (estado in ('pagada','pendiente','anulada','vencida','reembolsada'))
 );
 END
-
 
 
 
@@ -393,14 +363,7 @@ END
 
 
 
-/*
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cliente') AND type in (N'U'))
-BEGIN
-CREATE TABLE ddbba.cliente (
-    idCliente int identity (1,1) primary key,
-	tipoCliente varchar(20) check (tipoCliente in ('Normal','Member'))
-)
-END*/
+GO
 
 
 
