@@ -3,16 +3,19 @@
 USE COM2900G01
 
 go
------------------------------------------------------------------ IMPORTACION
+--*************************************************--
+--                                                 --
+--				    IMPORTACION					   --
+--                                                 --
+--*************************************************--
 
--- Stored procedure para importar datos desde 'Electronic accessories.xlsx' a la tabla 'electronicAccesories'
 
 
 
 
 CREATE OR ALTER PROCEDURE importar.ElectronicAccessoriesImportar
-    @ruta NVARCHAR(255)  -- Parámetro de entrada para la ruta del archivo
-AS
+    @ruta NVARCHAR(255) 
+
 BEGIN
     -- Crear tabla temporal
     CREATE TABLE #TempElectronicAccessories (
@@ -74,20 +77,13 @@ BEGIN
 END;
 
 
-/*exec importar.ImportarElectronicAccessories
-drop procedure importar.ImportarElectronicAccessories*/
-
-
--- Stored procedure para importar datos de 'catalogo.csv'
-
 
 go
 
 CREATE OR ALTER PROCEDURE importar.CatalogoImportar 
-    @ruta NVARCHAR(255)  -- Parámetro de entrada para la ruta del archivo
+    @ruta NVARCHAR(255)  
 AS
 BEGIN
-    -- Crear tabla temporal para almacenar datos del archivo CSV
     CREATE TABLE #TempCatalogo (
         id INT,
         category VARCHAR(100),
@@ -99,7 +95,6 @@ BEGIN
     );
 
 
-    -- Declarar la consulta dinámica para cargar los datos del archivo CSV
     DECLARE @sql NVARCHAR(MAX);
     SET @sql = N'
         INSERT INTO #TempCatalogo (id, category, nombre, price, reference_price, reference_unit, fecha)
@@ -108,7 +103,6 @@ BEGIN
             ''Text;Database=' + @ruta + '\;HDR=YES'',
             ''SELECT * FROM [catalogo.csv]'')';
 
-    -- Ejecutar la consulta dinámica
     EXEC sp_executesql @sql;
 
     -- Insertar en la tabla de destino solo los registros que no existen
@@ -149,23 +143,11 @@ GO
 GO
 
 
-/*select* from ddbba.catalogo
-
-
-exec importar.CatalogoImportar
-drop procedure importar.CatalogoImportar
-
-
--- Stored procedure para importar datos de 'Ventas_registradas.csv'
-
-*/
-
-
 CREATE OR ALTER PROCEDURE importar.VentasRegistradasImportar
-    @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
+    @ruta NVARCHAR(255) 
 AS
 BEGIN
-    -- Crear la tabla temporal
+
     CREATE TABLE #TempVentas (
         IDFactura VARCHAR(50),TipoFactura CHAR(1),Ciudad VARCHAR(50),TipoCliente VARCHAR(30),Genero VARCHAR(10),
         Producto NVARCHAR(100),PrecioUnitario DECIMAL(10, 2),Cantidad INT,Fecha NVARCHAR(50),Hora TIME, MedioPago VARCHAR(20),
@@ -176,7 +158,7 @@ BEGIN
     DECLARE @rutaCompleta NVARCHAR(255);
     SET @rutaCompleta = @ruta + '\Ventas_registradas.csv';
 
-    -- Declarar la consulta dinámica para BULK INSERT
+    
     DECLARE @sql NVARCHAR(MAX);
     SET @sql = N'
         BULK INSERT #TempVentas
@@ -187,7 +169,7 @@ BEGIN
             FIRSTROW = 2               -- Omite la primera fila si es encabezado
         )';
 
-    -- Ejecutar la consulta dinámica
+    
     EXEC sp_executesql @sql;
 
     -- Insertar los datos de la tabla temporal en la tabla final, evitando duplicados en IDFactura
@@ -246,32 +228,33 @@ END;
 
 
 go
+
 /*IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
 /* IMPORTAR EMPLEADOS --> INFORMACION COMPLEMENTARIA */
 CREATE OR ALTER PROCEDURE importar.EmpleadosImportar
     @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
 AS
 BEGIN
-    -- 1. Crear la tabla temporal con la estructura que coincide con la hoja de Excel
+    -- Creacion de la tabla temporal con la estructura que coincide con la hoja de Excel
     CREATE TABLE #TempEmpleados (
-        Legajo VARCHAR(10),            -- Numero unico que representa a cada Empleado
-        Nombre NVARCHAR(50),           -- Nombre del Empleado
-        Apellido NVARCHAR(50),         -- Apellido del Empleado
-        DNI CHAR(9),				   -- DNI del Empleado
-        Direccion VARCHAR(150),       -- Direccion del Empleado
-        EmailPersonal VARCHAR(100),   -- Email Personal del Empleado
-        EmailEmpresa VARCHAR(100),    -- Email Empresarial del Empleado
-        CUIL VARCHAR(100),             -- CUIL del Empleado
-        Cargo VARCHAR(50),             -- Cargo del Empleado
-        Sucursal VARCHAR(50),          -- Sucursal del Empleado
-        Turno VARCHAR(50)              -- Turno del Empleado
+        Legajo VARCHAR(10),           
+        Nombre NVARCHAR(50),           
+        Apellido NVARCHAR(50),         
+        DNI CHAR(9),				   
+        Direccion VARCHAR(150),       
+        EmailPersonal VARCHAR(100),   
+        EmailEmpresa VARCHAR(100),    
+        CUIL VARCHAR(100),             
+        Cargo VARCHAR(50),             
+        Sucursal VARCHAR(50),         
+        Turno VARCHAR(50)              
     );
 
     -- Concatenar la ruta y el nombre del archivo Excel
     DECLARE @rutaCompleta NVARCHAR(255);
     SET @rutaCompleta = @ruta + '\Informacion_complementaria.xlsx';
 
-    -- 2. Cargar los datos de la hoja de Excel a la tabla temporal usando OPENROWSET
+
     DECLARE @sql NVARCHAR(MAX);
     SET @sql = N'
     INSERT INTO #TempEmpleados (Legajo, Nombre, Apellido, DNI, Direccion, EmailPersonal, EmailEmpresa, CUIL, Cargo, Sucursal, Turno)
@@ -292,13 +275,11 @@ BEGIN
         ''SELECT * FROM [Empleados$]'')';
 
 
-    -- Ejecutar el SQL dinámico
     EXEC sp_executesql @sql;
 
-	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'ContraseñaSegura123!';
+	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
     PRINT 'Clave simétrica abierta correctamente.';
 
-    -- 4. Insertar los datos en la tabla final ddbba.Empleados con encriptación en DNI, Direccion y CUIL
     INSERT INTO ddbba.Empleados (
         Legajo, 
         Nombre, 
@@ -347,20 +328,18 @@ GO
 
 
 CREATE OR ALTER PROCEDURE importar.ClasificacionProductosImportar
-    @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo sin el nombre del archivo
+    @ruta NVARCHAR(255)  
 AS
 BEGIN
-    -- Paso 1: Crear la tabla temporal
+   
     CREATE TABLE #TempClasificacionProductos (
         LineaDeProducto VARCHAR(30),
         Producto VARCHAR(70)
     );
 
-    -- Concatenar ruta
     DECLARE @rutaCompleta NVARCHAR(255);
     SET @rutaCompleta = @ruta + '\Informacion_complementaria.xlsx';
 
-    -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal
     DECLARE @sql NVARCHAR(MAX);
     SET @sql = N'
     INSERT INTO #TempClasificacionProductos (LineaDeProducto, Producto)
@@ -369,10 +348,8 @@ BEGIN
         ''Excel 12.0;Database=' + @rutaCompleta + ';HDR=YES'',
         ''SELECT * FROM [Clasificacion productos$]'')';
 
-    -- Ejecutar la consulta dinámica para cargar los datos
     EXEC sp_executesql @sql;
 
-    -- Paso 3: Insertar datos en la tabla final, evitando duplicados
     INSERT ddbba.ClasificacionProductos (LineaDeProducto, Producto)
     SELECT tp.LineaDeProducto, tp.Producto
     FROM #TempClasificacionProductos AS tp
@@ -404,12 +381,11 @@ GO
 
 
 CREATE OR ALTER PROCEDURE importar.ProductosImportadosImportar
-    @ruta NVARCHAR(255)  -- Parámetro para la ruta del archivo incluyendo el nombre del archivo
+    @ruta NVARCHAR(255)  
 AS
 BEGIN
-    -- Paso 1: Crear la tabla temporal
     CREATE TABLE #TempProductos (
-        IdProducto VARCHAR(10),  -- Se utiliza VARCHAR para la importación
+        IdProducto VARCHAR(10),  
         NombreProducto NVARCHAR(100),
         Proveedor NVARCHAR(100),
         Categoria VARCHAR(100),
@@ -417,7 +393,6 @@ BEGIN
         PrecioUnidad DECIMAL(10, 2)
     );
 
-    -- Paso 2: Importar datos desde el archivo de Excel a la tabla temporal usando SQL dinámico
     DECLARE @sql NVARCHAR(MAX);
 
     SET @sql = N'
@@ -429,7 +404,6 @@ BEGIN
 
     EXEC sp_executesql @sql;
 
-    -- Paso 3: Insertar datos en la tabla final, asegurando que no existan duplicados y que IdProducto no sea NULL
     INSERT INTO ddbba.productosImportados(IdProducto, NombreProducto, Proveedor, Categoria, CantidadPorUnidad, PrecioUnidad)
     SELECT CAST(tp.IdProducto AS INT), tp.NombreProducto, tp.Proveedor, tp.Categoria, tp.CantidadPorUnidad, tp.PrecioUnidad
     FROM #TempProductos AS tp
@@ -451,26 +425,26 @@ BEGIN
 	)
 	AND tp.IdProducto IS NOT NULL;  
 
-    -- Limpiar tabla temporal
     DROP TABLE #TempProductos;
 END;
 
 go
+
+
+
 --IMPORTAR SUCURSAL
 
 
 CREATE OR ALTER PROCEDURE importar.SucursalImportar
-    @ruta VARCHAR(255) -- Ruta de la carpeta donde se encuentra el archivo Excel
+    @ruta VARCHAR(255) 
 AS
 BEGIN
-    -- Declarar las variables necesarias
+
     DECLARE @RutaCompleta VARCHAR(500);
     DECLARE @sql NVARCHAR(MAX);
 
-    -- Construir la ruta completa del archivo Excel
     SET @RutaCompleta = @ruta + '\Informacion_complementaria.xlsx';
     
-    -- Crear la tabla temporal para almacenar los datos importados del archivo Excel
     CREATE TABLE #TempSucursal (
         Ciudad VARCHAR(20),
         Reemplazar_por VARCHAR(100),
@@ -479,7 +453,6 @@ BEGIN
         Telefono VARCHAR(50)
     );
 
-    -- Crear el SQL dinámico para cargar los datos del archivo Excel a la tabla temporal
     SET @sql = N'
         INSERT INTO #TempSucursal (Ciudad, Reemplazar_por, direccion, Horario, Telefono)
         SELECT 
@@ -493,10 +466,8 @@ BEGIN
                        ''Excel 12.0; Database=' + @RutaCompleta + ';'', 
                        ''SELECT * FROM [sucursal$]'')';
 
-    -- Ejecutar el SQL dinámico
     EXEC sp_executesql @sql;
 
-    -- Verificar si la ciudad ya existe en la tabla sucursal y solo insertar si no existe
     INSERT INTO ddbba.sucursal (ciudad, direccion, Horario, Telefono)
     SELECT 
         ts.Reemplazar_por,
@@ -510,7 +481,6 @@ BEGIN
         WHERE s.Ciudad = ts.Reemplazar_por 
     );
 
-    -- Eliminar la tabla temporal después de usarla
     DROP TABLE #TempSucursal;
 END;
 
