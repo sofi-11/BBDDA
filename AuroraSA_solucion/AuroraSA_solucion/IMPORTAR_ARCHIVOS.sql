@@ -4,7 +4,6 @@ USE COM2900G01
 go
 
 
-
 CREATE OR ALTER PROCEDURE importar.ElectronicAccessoriesImportar
     @ruta NVARCHAR(255) 
 AS

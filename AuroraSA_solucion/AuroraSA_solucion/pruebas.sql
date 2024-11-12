@@ -1,7 +1,7 @@
 
 --PRUEBAS INSERTAR,MODIFICAR,BORRAR Y IMPORTAR
  
-=======
+
 --*************************************************--
 --                                                 --
 --   PRUEBAS DE INSERTAR, MODIFICAR, BORRAR Y      --
@@ -69,12 +69,16 @@ CLOSE SYMMETRIC KEY ClaveEncriptacionFactura;
 
 --IMPORTAR ARCHIVOS
 select * from ddbba.productos
-exec importar.ProductosImportadosImportar @ruta = 'C:\Users\valen\OneDrive\Escritorio\Base de Datos Aplicada\TP\BBDDA'
+exec importar.ProductosImportadosImportar @ruta = 'C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA'
 
 
 
 select * from ddbba.ClasificacionProductos
 exec importar.ClasificacionProductosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
+truncate table ddbba.ClasificacionProductos
+truncate table ddbba.detalleVenta
+truncate table ddbba.productos
+truncate table ddbba.factura
 
 TRUNCATE TABLE ddbba.Empleados
 select * from ddbba.Empleados
