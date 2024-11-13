@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="DESKTOP-AUI1GUT\SQLEXPRESS:DESKTOP-CUJPENS\Joaco">
+        <ConnectionNode Name="DESKTOP-AUI1GUT\SQLEXPRESS:DESKTOP-NJ7MOBP\rafae">
           <Created>2024-11-11T21:00:29.5704474-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-AUI1GUT\SQLEXPRESS</Server>
@@ -18,7 +18,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="DESKTOP-CUJPENS\SQLEXPRESS:DESKTOP-CUJPENS\Joaco">
+        <ConnectionNode Name="DESKTOP-CUJPENS\SQLEXPRESS:DESKTOP-NJ7MOBP\rafae">
           <Created>2024-11-11T16:41:12.5853158-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-CUJPENS\SQLEXPRESS</Server>
@@ -33,7 +33,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="DESKTOP-NJ7MOBP\SQLEXPRESS:DESKTOP-CUJPENS\Joaco">
+        <ConnectionNode Name="DESKTOP-NJ7MOBP\SQLEXPRESS:DESKTOP-NJ7MOBP\rafae">
           <Created>2024-11-05T19:22:57.7622829-03:00</Created>
           <Type>SQL</Type>
           <Server>DESKTOP-NJ7MOBP\SQLEXPRESS</Server>
@@ -52,53 +52,47 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="encriptacion.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>encriptacion.sql</FullPath>
-        </FileNode>
-        <FileNode Name="IMPORTAR_ARCHIVOS.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>IMPORTAR_ARCHIVOS.sql</FullPath>
-        </FileNode>
-        <FileNode Name="MODIFICAR_INSERTAR_BORRAR.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>MODIFICAR_INSERTAR_BORRAR.sql</FullPath>
-        </FileNode>
-        <FileNode Name="pruebas.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>pruebas.sql</FullPath>
-        </FileNode>
-        <FileNode Name="reporte.sql">
+        <FileNode Name="00_Creacion_Esquemas_Tablas.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>reporte.sql</FullPath>
+          <FullPath>00_Creacion_Esquemas_Tablas.sql</FullPath>
         </FileNode>
-        <FileNode Name="roles.sql">
+        <FileNode Name="01_SP_Insertar_Modificar_Borrado_logico.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>roles.sql</FullPath>
+          <FullPath>01_SP_Insertar_Modificar_Borrado_logico.sql</FullPath>
         </FileNode>
-        <FileNode Name="SQLQuery5.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
+        <FileNode Name="02_Encriptacion.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>SQLQuery5.sql</FullPath>
+          <FullPath>02_Encriptacion.sql</FullPath>
         </FileNode>
-        <FileNode Name="Tp_3_Grupo_1.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-CUJPENS\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-CUJPENS\SQLEXPRESS</AssociatedConnSrvName>
+        <FileNode Name="03_Importar_Archivos.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>Tp_3_Grupo_1.sql</FullPath>
+          <FullPath>03_Importar_Archivos.sql</FullPath>
+        </FileNode>
+        <FileNode Name="04_Roles.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>04_Roles.sql</FullPath>
+        </FileNode>
+        <FileNode Name="05_Reportes.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>05_Reportes.sql</FullPath>
+        </FileNode>
+        <FileNode Name="06_Pruebas.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-NJ7MOBP\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-NJ7MOBP\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>06_Pruebas.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

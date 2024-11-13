@@ -25,7 +25,7 @@ BEGIN
     SET @sql = '
     SELECT 
         DATENAME(WEEKDAY, fecha) AS DiaSemana, 
-        SUM(montoTotal)
+        SUM(montoConIVA)
     FROM 
         ddbba.factura
     WHERE 
