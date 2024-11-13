@@ -372,32 +372,27 @@ GO
 --EMITIR FACTURA
 
 CREATE OR ALTER PROCEDURE facturacion.facturaEmitir
-    @numeroFactura VARCHAR(50), 
+    @idVenta int, 
     @tipoFactura VARCHAR(50),
     @tipoDeCliente VARCHAR(50),
-    @fecha DATE,
-    @hora TIME,
     @medioDePago VARCHAR(50),
     @empleado VARCHAR(100),
     @identificadorDePago VARCHAR(100),
     @montoTotal DECIMAL(10, 2),
     @puntoDeVenta VARCHAR(50),
-	@estado VARCHAR(20)
+	@estado VARCHAR(20),
+	@cuit varchar(20)
 AS
 BEGIN
-	OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1'
-	if exists(select 1 from ddbba.factura where numeroFactura=@numeroFactura)
+	if exists(select 1 from ddbba.ventaRegistrada where idVenta=@idVenta)
 		BEGIN
-			update ddbba.factura set montoTotal=montoTotal + @montoTotal where numeroFactura=@numeroFactura
+			insert ddbba.factura(idVenta,tipoFactura,tipoDeCliente,fecha,hora,medioDePago,empleado,identificadorDePago,
+			montoSinIVA,puntoDeVenta,estado,cuit,montoConIVA,IVA) values (@idVenta,@tipoFactura,@tipoDeCliente,CAST(GETDATE() AS DATE),CAST(GETDATE() AS TIME),@medioDePago,@empleado,@identificadorDePago,
+			@montoTotal,@puntoDeVenta,@estado,@cuit,@montoTotal * 1.21,@montoTotal * 0.21)
+			
 		END
 	ELSE
-		BEGIN
-			OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
-			insert ddbba.factura(numeroFactura,tipoFactura,tipoDeCliente,fecha,hora,medioDePago,empleado,identificadorDePago,
-			montoTotal,puntoDeVenta,estado) values (@numeroFactura,@tipoFactura,@tipoDeCliente,@fecha,@hora,@medioDePago,@empleado,ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionFactura'), CONVERT(NVARCHAR(500), @IdentificadorDePago)),
-			@montoTotal,@puntoDeVenta,@estado)
-		END
-		CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados
+		PRINT 'Error numero venta'
 END
 
 go
@@ -405,13 +400,13 @@ go
 --DETALLE DE VENTA
 
 CREATE OR ALTER PROCEDURE facturacion.DetalleVentaEmitir
-    @nroFactura INT,
-    @producto VARCHAR(100),
+    @idVenta INT,
+    @idProducto int,
     @cantidad INT
 AS
 BEGIN
     -- Verifica si el número de factura existe en la tabla ddbba.factura
-    IF NOT EXISTS (SELECT 1 FROM ddbba.factura WHERE numeroFactura = @nroFactura)
+    IF NOT EXISTS (SELECT 1 FROM ddbba.factura WHERE idVenta = @idVenta)
     BEGIN
         -- Si no existe la factura, muestra un mensaje de error
         PRINT 'Error: El número de factura no existe.';
@@ -424,7 +419,7 @@ BEGIN
 
         SELECT @precio_unitario = precio, @categoria = clasificacion
         FROM ddbba.productos
-        WHERE nombre = @producto;
+        WHERE idProducto = @idProducto;
 
         -- Si el producto no existe, muestra un mensaje de error
         IF @precio_unitario IS NULL
@@ -434,8 +429,8 @@ BEGIN
         ELSE
         BEGIN
             -- Si el producto existe, inserta el detalle de la venta
-            INSERT INTO ddbba.detalleVenta (nroFactura, producto, categoria, cantidad, precio_unitario, monto)
-            VALUES (@nroFactura, @producto, @categoria, @cantidad, @precio_unitario, @cantidad * @precio_unitario);
+            INSERT INTO ddbba.detalleVenta (idVenta, idProducto, categoria, cantidad, precio_unitario, monto)
+            VALUES (@idVenta, @idProducto, @categoria, @cantidad, @precio_unitario, @cantidad * @precio_unitario);
 
             PRINT 'Detalle de venta emitido exitosamente';
         END
@@ -453,7 +448,7 @@ go
 --EMITIR NOTA DE CREDITO
 
 CREATE OR ALTER PROCEDURE nota.EmitirNotaCredito
-    @idFactura INT,
+    @idVenta INT,
     @monto DECIMAL(10,2)
 AS
 BEGIN
@@ -462,14 +457,14 @@ BEGIN
     -- Comprobar el estado de la factura
     SELECT @estado = estado 
     FROM ddbba.factura 
-    WHERE numeroFactura = @idFactura;
+    WHERE idVenta = @idVenta;
 
     -- Validar si la factura existe y esta pagada
     IF @estado = 'pagada'
     BEGIN
         -- Insertar la nota de crédito
-        INSERT INTO ddbba.notaDeCredito (nroFactura, fechaEmision, monto)
-        VALUES (@idFactura, GETDATE(), @monto);
+        INSERT INTO ddbba.notaDeCredito (idVenta, fechaEmision, monto)
+        VALUES (@idVenta, GETDATE(), @monto);
 
         PRINT 'Nota de crédito emitida correctamente.';
     END
@@ -480,4 +475,18 @@ BEGIN
 END;
 
 
+GO
+--registrar una venta
+
+CREATE OR ALTER PROCEDURE facturacion.ventaEmitir
+@ciudad varchar(20),
+@tipoCliente varchar(10),
+@genero varchar(10),
+@monto decimal(10,2),
+@empleado int
+AS
+BEGIN
+	insert into ddbba.ventaRegistrada(ciudad,tipoCliente,genero,monto,fecha,hora,empleado) 
+	values (@ciudad,@tipoCliente,@genero,@monto,CAST(GETDATE() AS DATE),CAST(GETDATE() AS TIME),@empleado)
+END
 

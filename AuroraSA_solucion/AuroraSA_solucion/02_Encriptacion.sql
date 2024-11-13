@@ -2,13 +2,14 @@ USE Com2900G01
 
 GO
 
-CREATE SYMMETRIC KEY ClaveEncriptacionFactura
-WITH ALGORITHM = AES_256
-ENCRYPTION BY PASSWORD = 'factura;2024,grupo1';     
 
-CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
-WITH ALGORITHM = AES_128
-ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
+	CREATE SYMMETRIC KEY ClaveEncriptacionFactura
+	WITH ALGORITHM = AES_256
+	ENCRYPTION BY PASSWORD = 'factura;2024,grupo1';     
+
+	CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
+	WITH ALGORITHM = AES_128
+	ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
 
 
 go

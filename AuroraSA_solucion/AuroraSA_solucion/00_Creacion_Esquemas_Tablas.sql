@@ -1,7 +1,25 @@
 
+/*Luego de decidirse por un motor de base de datos relacional, llegó el momento de generar la
+base de datos.
+Deberá instalar el DMBS y documentar el proceso. No incluya capturas de pantalla. Detalle
+las configuraciones aplicadas (ubicación de archivos, memoria asignada, seguridad, puertos,
+etc.) en un documento como el que le entregaría al DBA.
+Cree la base de datos, entidades y relaciones. Incluya restricciones y claves. Deberá entregar
+un archivo .sql con el script completo de creación (debe funcionar si se lo ejecuta “tal cual” es
+entregado). Incluya comentarios para indicar qué hace cada módulo de código.
+Genere store procedures para manejar la inserción, modificado, borrado (si corresponde,
+también debe decidir si determinadas entidades solo admitirán borrado lógico) de cada tabla.
+Los nombres de los store procedures NO deben comenzar con “SP”.
+Genere esquemas para organizar de forma lógica los componentes del sistema y aplique esto
+en la creación de objetos. NO use el esquema “dbo”.
+El archivo .sql con el script debe incluir comentarios donde consten este enunciado, la fecha
+de entrega, número de grupo, nombre de la materia, nombres y DNI de los alumnos.
+Entregar todo en un zip cuyo nombre sea Grupo_XX.zip mediante la sección de prácticas de
+MIEL. Solo uno de los miembros del grupo debe hacer la entrega.*/
+
 
 -- Bases de Datos Aplicadas
--- Fecha de entrega: 14 de Noviembre de 2024
+-- Fecha de entrega: 12 de Noviembre de 2024
 -- Grupo 01
 -- 45739056 Sofia Florencia Gay
 -- 44482420	Valentino Amato
@@ -43,6 +61,8 @@ GO
 
 
 ----------------------------------------- ESQUEMAS -----------------------------------------------------
+
+--VERIFICA SI EXISTE EL ESQUEMA DDBBA, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -57,7 +77,7 @@ BEGIN
 END;
 
 GO
-
+--VERIFICA SI EXISTE EL ESQUEMA REPORTE, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -73,6 +93,7 @@ END;
 
 GO
 
+--VERIFICA SI EXISTE EL ESQUEMA SUCURSAL, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -88,6 +109,7 @@ END;
 
 GO
 
+--VERIFICA SI EXISTE EL ESQUEMA PRODUCTO, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -103,7 +125,7 @@ END;
 
 
 GO
-
+--VERIFICA SI EXISTE EL ESQUEMA FACTURACION, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -117,39 +139,9 @@ BEGIN
     PRINT 'El esquema facturacion ya existe.';
 END;
 
-go
-
-
-IF NOT EXISTS (
-    SELECT name 
-    FROM sys.schemas 
-    WHERE name = N'insertar')
-BEGIN
-    EXEC('CREATE SCHEMA insertar');
-    PRINT 'Esquema insertar creado exitosamente.';
-END
-ELSE
-BEGIN
-    PRINT 'El esquema insertar ya existe.';
-END;
-GO
-
-
-IF NOT EXISTS (
-    SELECT name 
-    FROM sys.schemas 
-    WHERE name = N'modificar')
-BEGIN
-    EXEC('CREATE SCHEMA modificar');
-    PRINT 'Esquema modificar creado exitosamente.';
-END
-ELSE
-BEGIN
-    PRINT 'El esquema modificar ya existe.';
-END;
 
 GO
-
+--VERIFICA SI EXISTE EL ESQUEMA DOLAR, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -164,7 +156,7 @@ BEGIN
 END;
 GO
 
-
+--VERIFICA SI EXISTE EL ESQUEMA BORRAR, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -179,7 +171,7 @@ BEGIN
 END;
 GO
 
-
+--VERIFICA SI EXISTE EL ESQUEMA IMPORTAR, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -195,7 +187,7 @@ END;
 GO
 
 
-
+--VERIFICA SI EXISTE EL ESQUEMA NOTA, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -210,6 +202,7 @@ BEGIN
 END;
 GO
 
+--VERIFICA SI EXISTE EL ESQUEMA EMPLEADOS, Y SINO LO CREA
 IF NOT EXISTS (
     SELECT name 
     FROM sys.schemas 
@@ -277,28 +270,7 @@ END;
 
 
 
-GO
 
-
-
-
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.factura') AND type in (N'U'))
-BEGIN
-CREATE TABLE ddbba.factura (
-    idFactura INT IDENTITY (1,1) PRIMARY KEY,
-    numeroFactura int UNIQUE, 
-    tipoFactura VARCHAR(50) CHECK (tipoFactura IN ('A', 'B', 'C')),
-    tipoDeCliente VARCHAR(50) check (tipoDeCliente in ('Normal','Member')),
-    fecha DATE,
-    hora TIME,
-    medioDePago VARCHAR(50) CHECK (medioDePago in ('Credit card','Cash','Ewallet')),
-    empleado int foreign key references ddbba.Empleados(Legajo),
-    identificadorDePago VARBINARY(256),
-    montoTotal DECIMAL(10, 2),
-    puntoDeVenta VARCHAR(50),
-	estado VARCHAR(20) CHECK (estado in ('pagada','pendiente','anulada','vencida','reembolsada'))
-);
-END
 
 
 GO
@@ -323,32 +295,9 @@ GO
 
 
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.notaDeCredito') AND type in (N'U'))
-BEGIN
-CREATE TABLE ddbba.notaDeCredito (
-    notaID int identity(1,1) primary key,
-	nroFactura int foreign key references ddbba.factura(numeroFactura),
-	fechaEmision date,
-	monto decimal(10,2)
-)
-END
 
-GO
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.detalleVenta') AND type in (N'U'))
-BEGIN
-CREATE TABLE ddbba.detalleVenta (
-    detalleID int identity(1,1) primary key,
-	nroFactura int foreign key references ddbba.factura(numeroFactura),
-	producto varchar(100) foreign key references ddbba.productos(nombre),
-	categoria varchar(100),
-	cantidad int,
-	precio_unitario decimal (10,2),
-	monto decimal(10,2)
-)
-END
 
-GO
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.cotizacionDolar') AND type in (N'U'))
 BEGIN
@@ -359,5 +308,71 @@ CREATE TABLE ddbba.cotizacionDolar (
 )
 END
 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.ventaRegistrada') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.ventaRegistrada (
+	idVenta int identity(1,1) primary key,
+	ciudad varchar(20),
+	tipoCliente varchar(10),
+	genero varchar(10),
+	monto decimal(10,2),
+	fecha date,
+	hora time,
+	empleado int
+)
+END
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.factura') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.factura (
+    idFactura INT IDENTITY (1,1) PRIMARY KEY,
+    idVenta int foreign key references ddbba.ventaRegistrada(idVenta), 
+    tipoFactura VARCHAR(50) CHECK (tipoFactura IN ('A', 'B', 'C')),
+    tipoDeCliente VARCHAR(50) check (tipoDeCliente in ('Normal','Member')),
+    fecha DATE,
+    hora TIME,
+    medioDePago VARCHAR(50) CHECK (medioDePago in ('Credit card','Cash','Ewallet')),
+    empleado int foreign key references ddbba.Empleados(Legajo),
+    identificadorDePago VARCHAR(50),
+    montoSinIVA DECIMAL(10, 2),
+	montoConIVA DECIMAL(10,2),
+	IVA DECIMAL(10,2),
+    puntoDeVenta VARCHAR(50),
+	cuit varchar(20),
+	estado VARCHAR(20) CHECK (estado in ('pagada','pendiente','anulada','vencida','reembolsada'))
+);
+END
+
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.detalleVenta') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.detalleVenta (
+    detalleID int identity(1,1) primary key,
+	idVenta int foreign key references ddbba.ventaRegistrada(idVenta),
+	idProducto int foreign key references ddbba.productos(idProducto),
+	categoria varchar(100),
+	cantidad int,
+	precio_unitario decimal (10,2),
+	monto decimal(10,2)
+)
+END
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.notaDeCredito') AND type in (N'U'))
+BEGIN
+CREATE TABLE ddbba.notaDeCredito (
+    notaID int identity(1,1) primary key,
+	idVenta int foreign key references ddbba.ventaRegistrada(idVenta),
+	fechaEmision date,
+	monto decimal(10,2)
+)
+END
 
 

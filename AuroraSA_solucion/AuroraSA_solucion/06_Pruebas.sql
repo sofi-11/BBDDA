@@ -87,7 +87,7 @@ select * from ddbba.Empleados
 exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 select * from  ddbba.factura
-select * from ddbba.detalleVenta
+select * from ddbba.ventaRegistrada
 exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 
@@ -101,7 +101,7 @@ EXEC reporte.ProductosMenosVendidosPorMes @mes = 1, @anio = 2019;
 
 EXEC reporte.ProductosMasVendidosPorSemana @mes = 1, @anio = 2019;
 
-EXEC reporte.VentasPorSucursalPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2019-06-29';
+EXEC reporte.VentasPorSucursalPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2024-11-12';
 
 EXEC reporte.VentasPorRangoFechas @fecha_inicio = '2019-01-01', @fecha_fin = '2019-06-29';
 
@@ -119,7 +119,7 @@ exec producto.ProductoInsertar @nombre = 'zapallito', @precio = -2, @clasificaci
 select*from ddbba.productos
 
 --empleado funciona
-exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI ='51014441', 
+exec empleados.EmpleadoInsertar  @Nombre= 'valeria', @Apellido = 'valeria' , @DNI ='51014441', 
 	@Direccion= 'avenida siempreviva', @EmailPersonal='milhouse@gmail.com',@EmailEmpresa='VanHouten@unlam.com',@CUIL='00-44960383-0',@Cargo='Cajero',
 	@Sucursal= 'San Justo',@Turno='TM';
 --empleado no funciona
@@ -188,14 +188,28 @@ exec borrar.SucursalBorradoLogico @Ciudad = 'BSAS';
 select*from ddbba.sucursal
 
 
-
 --FACTURACION
 
---factura
-EXEC facturacion.facturaEmitir @numeroFactura = 12300123,@tipoFactura = 'A',@tipoDeCliente = 'Member',
-	@fecha = '2024-11-11', @hora = '15:30:00',@medioDePago = 'Credit card', @empleado = '257024',
-    @identificadorDePago = '123456',@montoTotal = 5000.00, @puntoDeVenta = '1', @estado = 'pagada';
+--VARIOS PRODUCTOS
+
+select*from ddbba.ventaRegistrada
+--emite venta
+EXEC facturacion.ventaEmitir @ciudad = 'San Justo',@tipoCliente= 'Member',@genero= 'Male',@monto= '200', @empleado = 257021
+--emite factura
+EXEC facturacion.facturaEmitir @idVenta =1,@tipoFactura = 'A',@tipoDeCliente = 'Member',@medioDePago = 'Credit card', @empleado = '257024',
+    @identificadorDePago = '123456',@montoTotal = 5000.00, @puntoDeVenta = '1', @estado = 'pagada',@cuit='12-34567891-1'
+--emite detalle
+EXEC facturacion.DetalleVentaEmitir @idVenta = 1, @idProducto = 2,@cantidad = 2;
+EXEC facturacion.DetalleVentaEmitir @idVenta = 1, @idProducto = 3,@cantidad = 4;
+
 select*from ddbba.factura
+select*from ddbba.detalleVenta
+
+
+--detalle
+
+EXEC facturacion.DetalleVentaEmitir @nroFactura = 12300123, @producto = 3,
+@cantidad = 1;
 
 
 --detalle venta factura existe
@@ -213,4 +227,4 @@ exec nota.EmitirNotaCredito @idFactura = 750678428,@monto=10;
 
 revert
 execute as login= 'rafael'
-exec nota.EmitirNotaCredito @idFactura = 226313081, @monto=10;
+exec nota.EmitirNotaCredito @idVenta = 2, @monto=10;

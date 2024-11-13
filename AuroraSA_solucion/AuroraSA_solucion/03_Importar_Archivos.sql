@@ -163,47 +163,20 @@ BEGIN
 
 	OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
 
-	INSERT INTO ddbba.factura (
-	numeroFactura, tipoFactura, tipoDeCliente,fecha, hora,
-    medioDePago,empleado ,identificadorDePago,montoTotal ,puntoDeVenta ,estado)
+	INSERT INTO ddbba.ventaRegistrada (
+	ciudad, tipoCliente,genero ,monto ,fecha,hora,empleado)
 	SELECT 
-		CAST(REPLACE(tv.idfactura, '-', '') AS INT) AS idfactura_num, 
-        tv.TipoFactura, 
+		tv.Ciudad, 
         tv.TipoCliente,
+		tv.Genero,
+		tv.Cantidad*tv.PrecioUnitario,
         CONVERT(DATE, tv.Fecha, 101), 
         tv.Hora, 
-        tv.MedioPago, 
-        tv.Empleado, 
-        ENCRYPTBYKEY(KEY_GUID('ClaveEncriptacionFactura'), CONVERT(NVARCHAR(500), tv.IdentificadorPago)) ,
-		tv.Cantidad*tv.PrecioUnitario*d.valor,
-		'1',
-		'pagada'
+        tv.Empleado
     FROM #TempVentas AS tv
-	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
-    WHERE NOT EXISTS (
-        SELECT 1 
-        FROM ddbba.factura AS f
-        WHERE f.numeroFactura = CAST(REPLACE(tv.idfactura, '-', '') AS INT) 
-    ) AND tv.idfactura IS NOT NULL
 
-	INSERT ddbba.detalleVenta (nroFactura, producto, categoria, cantidad, precio_unitario, monto)
-SELECT 
-    CAST(REPLACE(tv.idfactura, '-', '') AS INT) AS idfactura_num, 
-    tv.Producto, 
-    p.clasificacion, 
-    tv.Cantidad, 
-    tv.PrecioUnitario * d.valor, 
-    tv.Cantidad * tv.PrecioUnitario*d.valor AS Monto
-FROM #TempVentas AS tv
-JOIN ddbba.productos AS p
-    ON tv.Producto = p.nombre collate Modern_Spanish_CI_AS
-	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
-WHERE NOT EXISTS (
-    SELECT 1 
-    FROM ddbba.detalleVenta AS d
-    WHERE d.nroFactura = CAST(REPLACE(tv.idfactura, '-', '') AS INT) 
-)
-AND tv.idfactura IS NOT NULL;
+
+	
 
     -- Eliminar la tabla temporal
     DROP TABLE #TempVentas;
@@ -465,6 +438,5 @@ BEGIN
 
     DROP TABLE #TempSucursal;
 END;
-
 
 
