@@ -375,4 +375,16 @@ CREATE TABLE ddbba.notaDeCredito (
 )
 END
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.pago') AND type in (N'U'))
+BEGIN
+	CREATE TABLE ddbba.pago (
+    idPago INT IDENTITY(1,1) PRIMARY KEY,       -- Identificador único del pago
+    idFactura INT,                               -- Identificador de la factura asociada (FK)
+    fecha DATETIME NOT NULL,                 -- Fecha y hora del pago
+    monto DECIMAL(10, 2) NOT NULL,                -- Monto pagado
+    metodoPago VARCHAR(50) NOT NULL,  
+	CONSTRAINT fk_factura FOREIGN KEY (idFactura) REFERENCES ddbba.factura(idFactura) 
+)
+END
+
 

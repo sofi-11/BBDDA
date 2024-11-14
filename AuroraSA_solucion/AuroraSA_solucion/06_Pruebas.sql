@@ -17,10 +17,6 @@ exec dolar.cotizacionDolarInsertar @tipo= 'dolarBlue',@valor=1100
 
 go
 
-CREATE SYMMETRIC KEY ClaveEncriptacionFactura
-WITH ALGORITHM = AES_256
-ENCRYPTION BY PASSWORD = 'factura;2024,grupo1';     
-
 CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
 WITH ALGORITHM = AES_128
 ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
@@ -191,16 +187,38 @@ select*from ddbba.sucursal
 --FACTURACION
 
 --VARIOS PRODUCTOS
+/*
+EXEC RegistrarVentaConCadena2 
+    @ciudad = 'San Justo',
+    @tipoCliente = 'Normal',
+    @genero = 'Male',
+    @empleado = 257019,
+    @fecha = '2019-01-05',
+    @hora = '13:08:00.0000000',
+    @cadenaProductos = 'Café de Malasia x2, Tallarines de Singapur x1';*/
 
-select*from ddbba.ventaRegistrada
---emite venta
-EXEC facturacion.ventaEmitir @ciudad = 'San Justo',@tipoCliente= 'Member',@genero= 'Male',@monto= '200', @empleado = 257021
---emite factura
-EXEC facturacion.facturaEmitir @idVenta =1,@tipoFactura = 'A',@tipoDeCliente = 'Member',@medioDePago = 'Credit card', @empleado = '257024',
-    @identificadorDePago = '123456',@montoTotal = 5000.00, @puntoDeVenta = '1', @estado = 'pagada',@cuit='12-34567891-1'
---emite detalle
-EXEC facturacion.DetalleVentaEmitir @idVenta = 1, @idProducto = 2,@cantidad = 2;
-EXEC facturacion.DetalleVentaEmitir @idVenta = 1, @idProducto = 3,@cantidad = 4;
+EXEC RegistrarVentaConCadena3
+    @ciudad = 'San Justo',
+    @tipoCliente = 'Normal',
+    @genero = 'Male',
+    @empleado = 257019,
+    @fecha = '2019-01-05',
+    @hora = '13:08:00.0000000',
+    @cadenaProductos = 'Café de Malasia x2, Tallarines de Singapur x1',
+	@metodoPago = 'Cash'
+
+
+
+	select*from ddbba.ventaRegistrada
+	select*from ddbba.detalleVenta
+	select*from ddbba.factura
+	select*from ddbba.pago
+
+	truncate table ddbba.detalleVenta
+	select*from ddbba.productos
+
+	select*from ddbba.detalleVenta d join ddbba.productos p on d.idProducto=p.idProducto
+
 
 select*from ddbba.factura
 select*from ddbba.detalleVenta

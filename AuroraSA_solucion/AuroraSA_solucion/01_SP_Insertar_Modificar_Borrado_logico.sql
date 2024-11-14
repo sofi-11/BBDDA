@@ -490,3 +490,246 @@ BEGIN
 	values (@ciudad,@tipoCliente,@genero,@monto,CAST(GETDATE() AS DATE),CAST(GETDATE() AS TIME),@empleado)
 END
 
+
+
+
+
+------------------------
+
+CREATE FUNCTION SplitString (@string NVARCHAR(MAX), @delimiter CHAR(1))
+RETURNS @output TABLE (data NVARCHAR(MAX))
+AS
+BEGIN
+    DECLARE @start INT, @end INT
+    SET @start = 1
+    SET @end = CHARINDEX(@delimiter, @string)
+
+    WHILE @end > 0
+    BEGIN
+        INSERT INTO @output (data) VALUES(SUBSTRING(@string, @start, @end - @start))
+        SET @start = @end + 1
+        SET @end = CHARINDEX(@delimiter, @string, @start)
+    END
+
+    INSERT INTO @output (data) VALUES(SUBSTRING(@string, @start, LEN(@string) - @start + 1))
+    RETURN
+END;
+
+/*
+CREATE OR ALTER PROCEDURE RegistrarVentaConCadena
+    @ciudad VARCHAR(20),
+    @tipoCliente VARCHAR(10),
+    @genero VARCHAR(10),
+    @empleado INT,
+    @fecha DATE,
+    @hora TIME,
+    @cadenaProductos NVARCHAR(MAX) -- Cadena con productos y cantidades
+AS
+BEGIN
+    DECLARE @idVenta INT, @montoTotal DECIMAL(10, 2) = 0;
+
+    -- 1. Crear la venta con monto inicial en cero
+    INSERT INTO ddbba.ventaRegistrada (ciudad, tipoCliente, genero, monto, fecha, hora, empleado)
+    VALUES (@ciudad, @tipoCliente, @genero, 0, @fecha, @hora, @empleado);
+
+    SET @idVenta = SCOPE_IDENTITY();
+
+    -- 2. Dividir la cadena de productos en partes
+    DECLARE @productoDetalle TABLE (nombreProducto NVARCHAR(100), cantidad INT);
+
+    INSERT INTO @productoDetalle (nombreProducto, cantidad)
+    SELECT 
+        LEFT(data, CHARINDEX('x', data) - 2) AS nombreProducto, 
+        CAST(RIGHT(data, LEN(data) - CHARINDEX('x', data)) AS INT) AS cantidad
+    FROM 
+        dbo.SplitString(@cadenaProductos, ',');
+
+    -- 3. Insertar en detalleVenta usando la tabla temporal y calculando el monto de cada producto
+    INSERT INTO ddbba.detalleVenta (idVenta, idProducto, categoria, cantidad, precio_unitario, monto)
+    SELECT 
+        @idVenta,
+        p.idProducto,
+        p.clasificacion AS categoria,
+        pd.cantidad,
+        p.precio AS precio_unitario,
+        pd.cantidad * p.precio AS monto
+    FROM 
+        @productoDetalle AS pd
+    INNER JOIN 
+        ddbba.productos AS p ON pd.nombreProducto = p.nombre;
+
+    -- 4. Calcular el monto total de la venta
+    SELECT @montoTotal = SUM(pd.cantidad * p.precio)
+    FROM 
+        @productoDetalle AS pd
+    INNER JOIN 
+        ddbba.productos AS p ON pd.nombreProducto = p.nombre;
+
+    -- Actualizar el monto total en la tabla ventasRegistradas
+    UPDATE ddbba.ventaRegistrada
+    SET monto = @montoTotal
+    WHERE idVenta = @idVenta;
+
+    -- 5. Generar la factura para la venta
+    DECLARE @tipoFactura VARCHAR(50) = 'A', @medioDePago VARCHAR(50) = 'Cash', @estado VARCHAR(20) = 'pendiente';
+    DECLARE @montoConIVA DECIMAL(10, 2), @IVA DECIMAL(10, 2) = 0.21;
+
+    SET @montoConIVA = @montoTotal * (1 + @IVA);
+
+    INSERT INTO ddbba.factura (idVenta, tipoFactura, tipoDeCliente, fecha, hora, medioDePago, empleado, 
+                               montoSinIVA, montoConIVA, IVA, estado)
+    VALUES (@idVenta, @tipoFactura, @tipoCliente, @fecha, @hora, @medioDePago, @empleado, 
+            @montoTotal, @montoConIVA, @montoTotal * @IVA, @estado);
+END;
+*/
+
+
+/*
+CREATE PROCEDURE RegistrarVentaConCadena2
+    @ciudad VARCHAR(20),
+    @tipoCliente VARCHAR(10),
+    @genero VARCHAR(10),
+    @empleado INT,
+    @fecha DATE,
+    @hora TIME,
+    @cadenaProductos NVARCHAR(MAX) -- Cadena con productos y cantidades
+AS
+BEGIN
+    DECLARE @idVenta INT, @montoTotal DECIMAL(10, 2) = 0;
+
+    -- 1. Crear la venta con monto inicial en cero
+    INSERT INTO ddbba.ventaRegistrada (ciudad, tipoCliente, genero, monto, fecha, hora, empleado)
+    VALUES (@ciudad, @tipoCliente, @genero, 0, @fecha, @hora, @empleado);
+
+    SET @idVenta = SCOPE_IDENTITY();
+
+    -- 2. Dividir la cadena de productos en partes
+    DECLARE @productoDetalle TABLE (nombreProducto NVARCHAR(100), cantidad INT);
+
+    -- Insertar cada producto y su cantidad en la tabla temporal @productoDetalle
+    INSERT INTO @productoDetalle (nombreProducto, cantidad)
+    SELECT 
+        RTRIM(LTRIM(SUBSTRING(data, 1, CHARINDEX('x', data) - 2))) AS nombreProducto,
+        CAST(RTRIM(LTRIM(SUBSTRING(data, CHARINDEX('x', data) + 1, LEN(data)))) AS INT) AS cantidad
+    FROM 
+        dbo.SplitString(@cadenaProductos, ',');
+
+    -- 3. Insertar en detalleVenta usando la tabla temporal y calculando el monto de cada producto
+    INSERT INTO ddbba.detalleVenta (idVenta, idProducto, categoria, cantidad, precio_unitario, monto)
+    SELECT 
+        @idVenta,
+        p.idProducto,
+        p.clasificacion AS categoria,
+        pd.cantidad,
+        p.precio AS precio_unitario,
+        pd.cantidad * p.precio AS monto
+    FROM 
+        @productoDetalle AS pd
+    INNER JOIN 
+        ddbba.productos AS p ON pd.nombreProducto = p.nombre;
+
+    -- 4. Calcular el monto total de la venta
+    SELECT @montoTotal = SUM(pd.cantidad * p.precio)
+    FROM 
+        @productoDetalle AS pd
+    INNER JOIN 
+        ddbba.productos AS p ON pd.nombreProducto = p.nombre;
+
+    -- Actualizar el monto total en la tabla ventasRegistradas
+    UPDATE ddbba.ventaRegistrada
+    SET monto = @montoTotal
+    WHERE idVenta = @idVenta;
+
+    -- 5. Generar la factura para la venta
+    DECLARE @tipoFactura VARCHAR(50) = 'A', @medioDePago VARCHAR(50) = 'Cash', @estado VARCHAR(20) = 'pendiente';
+    DECLARE @montoConIVA DECIMAL(10, 2), @IVA DECIMAL(10, 2) = 0.21;
+
+    SET @montoConIVA = @montoTotal * (1 + @IVA);
+
+    INSERT INTO ddbba.factura (idVenta, tipoFactura, tipoDeCliente, fecha, hora, medioDePago, empleado, 
+                               montoSinIVA, montoConIVA, IVA, estado)
+    VALUES (@idVenta, @tipoFactura, @tipoCliente, @fecha, @hora, @medioDePago, @empleado, 
+            @montoTotal, @montoConIVA, @montoTotal * @IVA, @estado);
+END;
+*/
+
+CREATE PROCEDURE RegistrarVentaConCadena3
+    @ciudad VARCHAR(20),
+    @tipoCliente VARCHAR(10),
+    @genero VARCHAR(10),
+    @empleado INT,
+    @fecha DATE,
+    @hora TIME,
+    @cadenaProductos NVARCHAR(MAX), -- Cadena con productos y cantidades
+    @metodoPago VARCHAR(50) -- Método de pago para registrar el pago
+AS
+BEGIN
+    DECLARE @idVenta INT, @montoTotal DECIMAL(10, 2) = 0;
+    DECLARE @idFactura INT, @idPago INT;
+    DECLARE @montoConIVA DECIMAL(10, 2), @IVA DECIMAL(10, 2) = 0.21;
+
+    -- 1. Crear la venta con monto inicial en cero
+    INSERT INTO ddbba.ventaRegistrada (ciudad, tipoCliente, genero, monto, fecha, hora, empleado)
+    VALUES (@ciudad, @tipoCliente, @genero, 0, @fecha, @hora, @empleado);
+
+    SET @idVenta = SCOPE_IDENTITY();
+
+    -- 2. Dividir la cadena de productos en partes
+    DECLARE @productoDetalle TABLE (nombreProducto NVARCHAR(100), cantidad INT);
+
+    -- Insertar cada producto y su cantidad en la tabla temporal @productoDetalle
+    INSERT INTO @productoDetalle (nombreProducto, cantidad)
+    SELECT 
+        RTRIM(LTRIM(SUBSTRING(data, 1, CHARINDEX('x', data) - 2))) AS nombreProducto,
+        CAST(RTRIM(LTRIM(SUBSTRING(data, CHARINDEX('x', data) + 1, LEN(data)))) AS INT) AS cantidad
+    FROM 
+        dbo.SplitString(@cadenaProductos, ',');
+
+    -- 3. Insertar en detalleVenta usando la tabla temporal y calculando el monto de cada producto
+    INSERT INTO ddbba.detalleVenta (idVenta, idProducto, categoria, cantidad, precio_unitario, monto)
+    SELECT 
+        @idVenta,
+        p.idProducto,
+        p.clasificacion AS categoria,
+        pd.cantidad,
+        p.precio AS precio_unitario,
+        pd.cantidad * p.precio AS monto
+    FROM 
+        @productoDetalle AS pd
+    INNER JOIN 
+        ddbba.productos AS p ON pd.nombreProducto = p.nombre;
+
+    -- 4. Calcular el monto total de la venta
+    SELECT @montoTotal = SUM(pd.cantidad * p.precio)
+    FROM 
+        @productoDetalle AS pd
+    INNER JOIN 
+        ddbba.productos AS p ON pd.nombreProducto = p.nombre;
+
+    -- Actualizar el monto total en la tabla ventasRegistradas
+    UPDATE ddbba.ventaRegistrada
+    SET monto = @montoTotal
+    WHERE idVenta = @idVenta;
+
+    -- 5. Generar la factura para la venta
+    DECLARE @tipoFactura VARCHAR(50) = 'A', @estadoFactura VARCHAR(20) = 'pendiente';
+    SET @montoConIVA = @montoTotal * (1 + @IVA);
+
+    INSERT INTO ddbba.factura (idVenta, tipoFactura, tipoDeCliente, fecha, hora, medioDePago, empleado, 
+                               montoSinIVA, montoConIVA, IVA, estado)
+    VALUES (@idVenta, @tipoFactura, @tipoCliente, @fecha, @hora, 'Cash', @empleado, 
+            @montoTotal, @montoConIVA, @montoTotal * @IVA, @estadoFactura);
+
+    SET @idFactura = SCOPE_IDENTITY();
+
+    -- 6. Registrar el pago
+    INSERT INTO ddbba.pago (idFactura, fecha, monto, metodoPago)
+    VALUES (@idFactura, GETDATE(), @montoConIVA, @metodoPago);
+
+    SET @idPago = SCOPE_IDENTITY();
+
+    -- 7. Actualizar el estado de la factura a "pagada" y el identificadorDePago
+    UPDATE ddbba.factura
+    SET estado = 'pagada', identificadorDePago = @idPago
+    WHERE idFactura = @idFactura;
+END;

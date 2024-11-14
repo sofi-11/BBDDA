@@ -25,9 +25,9 @@ BEGIN
     SET @sql = '
     SELECT 
         DATENAME(WEEKDAY, fecha) AS DiaSemana, 
-        SUM(montoConIVA)
+        SUM(monto)
     FROM 
-        ddbba.factura
+        ddbba.ventaRegistrada
     WHERE 
         MONTH(fecha) = @mes AND YEAR(fecha) = @anio
     GROUP BY 
@@ -67,13 +67,13 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-            SUM(montoTotal) AS TotalFacturacion,
+            SUM(monto) AS TotalFacturacion,
             CASE 
                 WHEN DATEPART(HOUR, hora) BETWEEN 8 AND 13 THEN ''Mañana''
                 WHEN DATEPART(HOUR, hora) BETWEEN 14 AND 23 THEN ''Tarde''
             END AS Turno,
             MONTH(fecha) AS Mes
-        FROM ddbba.factura
+        FROM ddbba.ventaRegistrada
         WHERE 
             YEAR(fecha) = @anio 
             AND ( 
@@ -125,9 +125,7 @@ BEGIN
             dv.producto, 
             SUM(dv.cantidad) AS CantidadVendida
         FROM 
-            ddbba.detalleVenta AS dv
-        INNER JOIN 
-            ddbba.factura AS f ON dv.nroFactura = f.numeroFactura
+            ddbba.ventaRegistrada AS dv
         WHERE 
             f.fecha BETWEEN @fecha_inicio AND @fecha_fin
         GROUP BY 

@@ -161,7 +161,6 @@ BEGIN
 
     -- Insertar los datos de la tabla temporal en la tabla final, evitando duplicados en IDFactura
 
-	OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
 
 	INSERT INTO ddbba.ventaRegistrada (
 	ciudad, tipoCliente,genero ,monto ,fecha,hora,empleado)
@@ -175,14 +174,12 @@ BEGIN
         tv.Empleado
     FROM #TempVentas AS tv
 
-
 	
 
     -- Eliminar la tabla temporal
     DROP TABLE #TempVentas;
 
-	CLOSE SYMMETRIC KEY ClaveEncriptacionFactura;
-
+	
     PRINT 'Datos importados exitosamente desde Ventas_registradas.csv';
 END;
 
