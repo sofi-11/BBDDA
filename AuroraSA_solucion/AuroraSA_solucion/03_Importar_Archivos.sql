@@ -161,18 +161,47 @@ BEGIN
 
     -- Insertar los datos de la tabla temporal en la tabla final, evitando duplicados en IDFactura
 
-
 	INSERT INTO ddbba.ventaRegistrada (
-	ciudad, tipoCliente,genero ,monto ,fecha,hora,empleado)
+    ciudad, 
+    tipoCliente, 
+    genero, 
+    monto, 
+    fecha, 
+    hora, 
+    empleado
+)
+SELECT 
+    CASE 
+        WHEN tv.Ciudad = 'Yangon' THEN 'San Justo'
+        WHEN tv.Ciudad = 'Naypyitaw' THEN 'Ramos Mejia'
+        WHEN tv.Ciudad = 'Mandalay' THEN 'Lomas del Mirador'
+        ELSE tv.Ciudad -- Si no coincide, se mantiene el valor original
+    END AS Ciudad,
+    tv.TipoCliente,
+    tv.Genero,
+    tv.Cantidad * tv.PrecioUnitario AS Monto,
+    CONVERT(DATE, tv.Fecha, 101) AS Fecha, 
+    tv.Hora, 
+    tv.Empleado
+FROM 
+    #TempVentas AS tv;
+
+
+	DECLARE @p INT;
+	SELECT @p = ISNULL(MAX(idVenta), 0) FROM ddbba.detalleVenta;
+
+	INSERT INTO ddbba.detalleVenta (
+	idVenta,idProducto,categoria,cantidad,precio_unitario,monto)
 	SELECT 
-		tv.Ciudad, 
-        tv.TipoCliente,
-		tv.Genero,
-		tv.Cantidad*tv.PrecioUnitario,
-        CONVERT(DATE, tv.Fecha, 101), 
-        tv.Hora, 
-        tv.Empleado
-    FROM #TempVentas AS tv
+		ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) + @p, 
+        pr.idProducto,
+		pr.clasificacion,
+		tv.Cantidad,
+        tv.PrecioUnitario, 
+        tv.Cantidad*tv.PrecioUnitario
+    FROM #TempVentas AS tv join ddbba.productos pr on pr.nombre=tv.Producto collate Modern_Spanish_CI_AI
+	where not exists (select 1 from ddbba.detalleVenta d where d.idVenta=@p)
+
 
 	
 

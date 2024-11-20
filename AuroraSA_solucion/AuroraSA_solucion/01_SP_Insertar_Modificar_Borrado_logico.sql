@@ -490,7 +490,7 @@ BEGIN
 	values (@ciudad,@tipoCliente,@genero,@monto,CAST(GETDATE() AS DATE),CAST(GETDATE() AS TIME),@empleado)
 END
 
-
+go
 
 
 
@@ -652,18 +652,22 @@ BEGIN
             @montoTotal, @montoConIVA, @montoTotal * @IVA, @estado);
 END;
 */
+go
 
-CREATE PROCEDURE RegistrarVentaConCadena3
+CREATE OR ALTER PROCEDURE RegistrarVentaConCadena3
     @ciudad VARCHAR(20),
     @tipoCliente VARCHAR(10),
     @genero VARCHAR(10),
     @empleado INT,
-    @fecha DATE,
-    @hora TIME,
     @cadenaProductos NVARCHAR(MAX), -- Cadena con productos y cantidades
-    @metodoPago VARCHAR(50) -- Método de pago para registrar el pago
+    @metodoPago VARCHAR(50), -- Método de pago para registrar el pago
+	@puntoVenta VARCHAR(50)
 AS
 BEGIN
+	DECLARE @fecha DATE ;
+	set @fecha = CONVERT(DATE, GETDATE());
+	DECLARE @hora TIME;
+	SET @hora = CONVERT(TIME, GETDATE());
     DECLARE @idVenta INT, @montoTotal DECIMAL(10, 2) = 0;
     DECLARE @idFactura INT, @idPago INT;
     DECLARE @montoConIVA DECIMAL(10, 2), @IVA DECIMAL(10, 2) = 0.21;
@@ -716,9 +720,9 @@ BEGIN
     SET @montoConIVA = @montoTotal * (1 + @IVA);
 
     INSERT INTO ddbba.factura (idVenta, tipoFactura, tipoDeCliente, fecha, hora, medioDePago, empleado, 
-                               montoSinIVA, montoConIVA, IVA, estado)
+                               montoSinIVA, montoConIVA, IVA, estado,puntoDeVenta)
     VALUES (@idVenta, @tipoFactura, @tipoCliente, @fecha, @hora, 'Cash', @empleado, 
-            @montoTotal, @montoConIVA, @montoTotal * @IVA, @estadoFactura);
+            @montoTotal, @montoConIVA, @montoTotal * @IVA, @estadoFactura,@puntoVenta);
 
     SET @idFactura = SCOPE_IDENTITY();
 

@@ -84,6 +84,7 @@ exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\
 
 select * from  ddbba.factura
 select * from ddbba.ventaRegistrada
+select*from ddbba.detalleVenta
 exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 
@@ -105,8 +106,8 @@ EXEC reporte.FacturacionTrimestralPorTurnosPorMes @turno = 'Mañana', @trimestre 
 
 EXEC reporte.FacturacionMensualPorDiaDeSemana @mes = 1, @anio = 2019;
 
---INSERTAR
 
+--INSERTAR
 
 --producto funciona
 exec producto.ProductoInsertar @nombre = 'zanahoria', @precio = 500, @clasificacion = 'verdura' ;
@@ -186,26 +187,15 @@ select*from ddbba.sucursal
 
 --FACTURACION
 
---VARIOS PRODUCTOS
-/*
-EXEC RegistrarVentaConCadena2 
-    @ciudad = 'San Justo',
-    @tipoCliente = 'Normal',
-    @genero = 'Male',
-    @empleado = 257019,
-    @fecha = '2019-01-05',
-    @hora = '13:08:00.0000000',
-    @cadenaProductos = 'Café de Malasia x2, Tallarines de Singapur x1';*/
 
 EXEC RegistrarVentaConCadena3
     @ciudad = 'San Justo',
     @tipoCliente = 'Normal',
     @genero = 'Male',
     @empleado = 257019,
-    @fecha = '2019-01-05',
-    @hora = '13:08:00.0000000',
     @cadenaProductos = 'Café de Malasia x2, Tallarines de Singapur x1',
-	@metodoPago = 'Cash'
+	@metodoPago = 'Cash',
+	@puntoVenta = 'caja 1'
 
 
 

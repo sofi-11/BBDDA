@@ -110,7 +110,6 @@ GO
 -- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder mostrar
 --la cantidad de productos vendidos en ese rango, ordenado de mayor a menor.
 
-
 CREATE OR ALTER PROCEDURE reporte.VentasPorRangoFechas
     @fecha_inicio DATE,  -- Fecha de inicio del rango
     @fecha_fin DATE      -- Fecha de fin del rango
@@ -122,14 +121,18 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-            dv.producto, 
+            p.nombre AS Producto, 
             SUM(dv.cantidad) AS CantidadVendida
         FROM 
-            ddbba.ventaRegistrada AS dv
+            ddbba.detalleVenta dv
+        INNER JOIN 
+            ddbba.ventaRegistrada vr ON dv.idVenta = vr.idVenta
+        INNER JOIN 
+            ddbba.productos p ON dv.idProducto = p.idProducto
         WHERE 
-            f.fecha BETWEEN @fecha_inicio AND @fecha_fin
+            vr.fecha BETWEEN @fecha_inicio AND @fecha_fin
         GROUP BY 
-            dv.producto
+            p.nombre
         ORDER BY 
             CantidadVendida DESC
         FOR XML PATH(''ReportePorFechas'')
@@ -144,12 +147,12 @@ END;
 
 
 
+
 GO
 
 -- Por rango de fechas: ingresando un rango de fechas a demanda, debe poder 
 --mostrar la cantidad de productos vendidos en ese rango por sucursal, ordenado 
 --de mayor a menor.
-
 
 CREATE OR ALTER PROCEDURE reporte.VentasPorSucursalPorRangoFechas
     @fecha_inicio DATE,  -- Fecha de inicio del rango
@@ -162,19 +165,19 @@ BEGIN
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         SELECT 
-            dv.producto, 
-            SUM(dv.cantidad) AS CantidadVendida,
-            e.Sucursal
+            vr.ciudad AS Sucursal,
+            p.nombre AS Producto,
+            SUM(dv.cantidad) AS CantidadVendida
         FROM 
-            ddbba.detalleVenta AS dv
+            ddbba.detalleVenta dv
         INNER JOIN 
-            ddbba.factura AS f ON dv.nroFactura = f.numeroFactura
+            ddbba.ventaRegistrada vr ON dv.idVenta = vr.idVenta
         INNER JOIN 
-            ddbba.Empleados AS e ON e.Legajo = f.empleado
+            ddbba.productos p ON dv.idProducto = p.idProducto
         WHERE 
-            f.fecha BETWEEN @fecha_inicio AND @fecha_fin
+            vr.fecha BETWEEN @fecha_inicio AND @fecha_fin
         GROUP BY 
-            dv.producto, e.Sucursal
+            vr.ciudad, p.nombre
         ORDER BY 
             CantidadVendida DESC
         FOR XML PATH(''ReportePorFechasPorSucursal'')
@@ -188,10 +191,10 @@ BEGIN
 END;
 
 
+
 GO
 
 -- Mostrar los 5 productos más vendidos en un mes, por semana 
-
 
 CREATE OR ALTER PROCEDURE reporte.ProductosMasVendidosPorSemana
     @mes INT,  -- Mes para el reporte (1 a 12)
@@ -200,33 +203,36 @@ AS
 BEGIN
     -- Declaramos una variable para el SQL dinámico
     DECLARE @sql NVARCHAR(MAX);
-    
+
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         WITH ProductosConRanking AS (
             SELECT 
-                DATEPART(WEEK, f.fecha) AS Semana,  -- Calcula la semana de la factura
-                dv.producto,
+                DATEPART(WEEK, vr.fecha) AS Semana, -- Calcula la semana de la venta
+                p.nombre AS Producto,
                 SUM(dv.cantidad) AS CantidadVendida,
-                ROW_NUMBER() OVER (PARTITION BY DATEPART(WEEK, f.fecha) ORDER BY SUM(dv.cantidad) DESC) AS Ranking
+                ROW_NUMBER() OVER (PARTITION BY DATEPART(WEEK, vr.fecha), vr.ciudad ORDER BY SUM(dv.cantidad) DESC) AS Ranking
             FROM 
-                ddbba.factura f
-            INNER JOIN ddbba.detalleVenta dv ON f.numeroFactura = dv.nroFactura
+                ddbba.ventaRegistrada vr
+            INNER JOIN 
+                ddbba.detalleVenta dv ON vr.idVenta = dv.idVenta
+            INNER JOIN 
+                ddbba.productos p ON dv.idProducto = p.idProducto
             WHERE 
-                MONTH(f.fecha) = @mes AND YEAR(f.fecha) = @anio  -- Filtra por mes y año
+                MONTH(vr.fecha) = @mes AND YEAR(vr.fecha) = @anio -- Filtra por mes y año
             GROUP BY 
-                DATEPART(WEEK, f.fecha), dv.producto
+                DATEPART(WEEK, vr.fecha), p.nombre, vr.ciudad
         )
         SELECT 
             Semana,
-            producto,
+            Producto,
             CantidadVendida
         FROM 
             ProductosConRanking
         WHERE 
-            Ranking <= 5  -- Solo los 5 productos más vendidos
+            Ranking <= 5 -- Solo los 5 productos más vendidos
         ORDER BY 
-            Semana, Ranking
+            Semana,  Ranking
         FOR XML PATH(''Reporte5ProductosPorSemana'');
     ';
 
@@ -236,10 +242,10 @@ END;
 
 
 
+
 GO
 
 --Mostrar los 5 productos menos vendidos en el mes.
-
 
 CREATE OR ALTER PROCEDURE reporte.ProductosMenosVendidosPorMes
     @mes INT,  -- Mes para el reporte (1 a 12)
@@ -248,24 +254,25 @@ AS
 BEGIN
     -- Declaramos una variable para el SQL dinámico
     DECLARE @sql NVARCHAR(MAX);
-    
+
     -- Construimos la consulta dinámica en la variable @sql
     SET @sql = '
         WITH ProductosConRanking AS (
             SELECT 
-                dv.producto,
+                p.nombre AS Producto,  -- Nombre del producto
                 SUM(dv.cantidad) AS CantidadVendida,
                 ROW_NUMBER() OVER (ORDER BY SUM(dv.cantidad) ASC) AS Ranking  -- Ordenamos de menor a mayor por cantidad vendida
             FROM 
-                ddbba.factura f
-            INNER JOIN ddbba.detalleVenta dv ON f.numeroFactura = dv.nroFactura
+                ddbba.ventaRegistrada vr
+            INNER JOIN ddbba.detalleVenta dv ON vr.idVenta = dv.idVenta
+            INNER JOIN ddbba.productos p ON dv.idProducto = p.idProducto
             WHERE 
-                MONTH(f.fecha) = @mes AND YEAR(f.fecha) = @anio  -- Filtra por mes y año
+                MONTH(vr.fecha) = @mes AND YEAR(vr.fecha) = @anio  -- Filtra por mes y año
             GROUP BY 
-                dv.producto
+                p.nombre  -- Agrupamos por nombre de producto
         )
         SELECT 
-            producto,
+            Producto,
             CantidadVendida
         FROM 
             ProductosConRanking
@@ -283,40 +290,40 @@ END;
 
 
 
+
 GO
 
 -- Mostrar total acumulado de ventas (o sea tambien mostrar el detalle) para una 
 --fecha y sucursal particulares
-
-
 CREATE OR ALTER PROCEDURE reporte.TotalAcumuladoPorFechaYSucursal
     @fecha DATE,  -- Fecha para el reporte
-    @sucursal VARCHAR(50)  -- Sucursal para el reporte
+    @sucursal VARCHAR(50)  -- Sucursal para el reporte (que es la ciudad)
 AS
 BEGIN
     -- Crear una consulta para obtener el total acumulado de ventas por fecha y sucursal en formato XML
     DECLARE @sql NVARCHAR(MAX);
-    
+
     SET @sql = '
     SELECT 
-        v.producto,
-        SUM(v.cantidad) AS CantidadVendida,
-        SUM(v.precio_unitario * v.cantidad) AS TotalFacturado,
-        e.Sucursal,
+        p.nombre AS Producto,  -- Nombre del producto desde la tabla productos
+        SUM(dv.cantidad) AS CantidadVendida,
+        SUM(dv.precio_unitario * dv.cantidad) AS TotalFacturado,
+        f.ciudad AS Sucursal,
         f.fecha
     FROM 
-        ddbba.detalleVenta v
-    INNER JOIN ddbba.factura f
-        ON f.numeroFactura = v.nroFactura
-	INNER JOIN ddbba.Empleados e
-        ON f.empleado = e.Legajo
+        ddbba.detalleVenta dv
+    INNER JOIN ddbba.ventaRegistrada f
+        ON f.idVenta = dv.idVenta
+    INNER JOIN ddbba.productos p
+        ON p.idProducto = dv.idProducto
     WHERE 
-        f.fecha = @fecha AND e.Sucursal = @sucursal
+        f.fecha = @fecha AND f.ciudad = @sucursal
     GROUP BY 
-        v.producto, e.Sucursal, f.fecha
+        p.nombre, f.ciudad, f.fecha
     ORDER BY 
         TotalFacturado DESC
-    FOR XML PATH(''ReporteTotalAcumuladoVentas'')';
+    FOR XML PATH(''ReporteTotalAcumuladoVentas'')
+    ';
 
     -- Ejecutar la consulta dinámica y devolver el resultado como XML
     EXEC sp_executesql @sql, N'@fecha DATE, @sucursal VARCHAR(50)', @fecha, @sucursal;
