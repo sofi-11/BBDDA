@@ -46,9 +46,8 @@ BEGIN
     -- Insertar los datos de la tabla temporal en la tabla de destino
 
 	 INSERT INTO ddbba.productos (nombre, precio, clasificacion)
-    SELECT u.Product, u.[Precio Unitario en dolares]*d.valor, 'Electronica'
+    SELECT u.Product, u.[Precio Unitario en dolares], 'Electronica'
     FROM #UniqueElectronicAccessories u
-	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
     WHERE NOT EXISTS (
         SELECT 1
         FROM ddbba.productos p
@@ -99,9 +98,8 @@ BEGIN
     )
     INSERT INTO ddbba.productos(nombre, precio, clasificacion)
     SELECT REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.nombre,'Ã±','ñ'), 'Ã¡', 'á'), 'Ã©', 'é'), 'Ã­', 'í'), 'Ã³', 'ó'), 'Ãº', 'ú') AS texto_corregido, 
-	u.price * d.valor , u.category
+	u.price , u.category
     FROM UniqueProductos u
-	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
     WHERE RowNum = 1
       AND u.nombre IS NOT NULL
       AND NOT EXISTS (
@@ -398,7 +396,7 @@ BEGIN
 	INSERT INTO ddbba.productos(nombre,precio,clasificacion)
 	select tp.NombreProducto,tp.PrecioUnidad * d.valor , 'Importado'
 	from #TempProductos AS tp
-	JOIN ddbba.cotizacionDolar d on d.tipo='dolarBlue'
+	JOIN ddbba.cotizacionDolar d on d.tipo='dolarOficial'
 	WHERE NOT EXISTS (
 		SELECT 1
 		FROM ddbba.productos as p

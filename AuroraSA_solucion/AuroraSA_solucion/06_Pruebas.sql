@@ -11,17 +11,10 @@
 
 USE Com2900G01
 
-GO
-
-exec dolar.cotizacionDolarInsertar @tipo= 'dolarBlue',@valor=1100
 
 go
 
-CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
-WITH ALGORITHM = AES_128
-ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
-
-go
+--PARA VER LOS CAMPOS DESCIFRADOS (primero ejecutar el procedure para importar los archivos)
 
 OPEN SYMMETRIC KEY ClaveEncriptacionEmpleados DECRYPTION BY PASSWORD = 'empleado;2024,grupo1';
 SELECT 
@@ -40,25 +33,6 @@ FROM ddbba.Empleados;
 
 -- Cerrar la clave simétrica
 CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
-
-OPEN SYMMETRIC KEY ClaveEncriptacionFactura DECRYPTION BY PASSWORD = 'factura;2024,grupo1';
--- Desencriptar los valores
-SELECT 
-    numeroFactura , 
-    tipoFactura ,
-    tipoDeCliente ,
-    fecha ,
-    hora ,
-    medioDePago,
-    empleado,
-    CONVERT(NVARCHAR(500), DECRYPTBYKEY(identificadorDePago)) AS identificadorDePago ,
-    montoTotal ,
-    puntoDeVenta ,
-	estado
-FROM ddbba.factura;
-
--- Cerrar la clave simétrica
-CLOSE SYMMETRIC KEY ClaveEncriptacionFactura;
 
 
 
@@ -187,8 +161,10 @@ select*from ddbba.sucursal
 
 --FACTURACION
 
+---------------------------------------------------REGISTRAR UNA VENTA-----------------------------------------------------------
+--procedure explicado en 01_SP_Insertar_Modificar_Borrado_Logico.sql
 
-EXEC RegistrarVentaConCadena3
+EXEC facturacion.RegistrarVentaConCadena
     @ciudad = 'San Justo',
     @tipoCliente = 'Normal',
     @genero = 'Male',
@@ -210,29 +186,18 @@ EXEC RegistrarVentaConCadena3
 	select*from ddbba.detalleVenta d join ddbba.productos p on d.idProducto=p.idProducto
 
 
-select*from ddbba.factura
-select*from ddbba.detalleVenta
-
-
---detalle
-
-EXEC facturacion.DetalleVentaEmitir @nroFactura = 12300123, @producto = 3,
-@cantidad = 1;
-
-
---detalle venta factura existe
-EXEC facturacion.DetalleVentaEmitir @nroFactura = 750678428, @producto = 'Regaliz',
-@cantidad = 2;
---detalle venta factura no existe
-EXEC facturacion.DetalleVentaEmitir @nroFactura = 750678, @producto = 'Regaliz',
-@cantidad = 2;
-select*from ddbba.detalleVenta
 
 --nota de credito
+--procedure explicado en 01_SP_Insertar_Modificar_Borrado_Logico.sql
 
+--en este caso el rol "cajero" no tiene permiso
 execute as login= 'sofia'
-exec nota.EmitirNotaCredito @idFactura = 750678428,@monto=10;
+exec nota.EmitirNotaCredito @detalleIDs =  '7'
 
 revert
+--el rol "supervisor" si
 execute as login= 'rafael'
-exec nota.EmitirNotaCredito @idVenta = 2, @monto=10;
+exec nota.EmitirNotaCredito @detalleIDs =  '7'
+select*from ddbba.detalleVenta
+
+select * from ddbba.notaDeCredito

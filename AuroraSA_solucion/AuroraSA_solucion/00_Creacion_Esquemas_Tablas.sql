@@ -215,10 +215,16 @@ ELSE
 BEGIN
     PRINT 'El esquema empleados ya existe.';
 END;
+GO
 
+--------------CLAVE PARA CIFRAR EMPLEADOS
+CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
+WITH ALGORITHM = AES_128
+ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
 
 GO
 
+---------------------------------------------CREACION DE TABLAS
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'ddbba.sucursal') AND type in (N'U'))
 BEGIN
@@ -290,11 +296,6 @@ END
 
 
 GO
-
-
-
-
-
 
 
 
@@ -371,6 +372,8 @@ CREATE TABLE ddbba.notaDeCredito (
     notaID int identity(1,1) primary key,
 	idVenta int foreign key references ddbba.ventaRegistrada(idVenta),
 	fechaEmision date,
+	producto varchar(100),
+	cantidad int,
 	monto decimal(10,2)
 )
 END
