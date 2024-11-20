@@ -550,9 +550,9 @@ BEGIN
     SET @montoConIVA = @montoTotal * (1 + @IVA);
 
     INSERT INTO ddbba.factura (idVenta, tipoFactura, tipoDeCliente, fecha, hora, medioDePago, empleado, 
-                               montoSinIVA, montoConIVA, IVA, estado,puntoDeVenta)
+                               montoSinIVA, montoConIVA, IVA, estado,puntoDeVenta,cuit)
     VALUES (@idVenta, @tipoFactura, @tipoCliente, @fecha, @hora, 'Cash', @empleado, 
-            @montoTotal, @montoConIVA, @montoTotal * @IVA, @estadoFactura,@puntoVenta);
+            @montoTotal, @montoConIVA, @montoTotal * @IVA, @estadoFactura,@puntoVenta,'20-22222222-3');
 
     SET @idFactura = SCOPE_IDENTITY();
 
