@@ -1,4 +1,16 @@
 
+-- Bases de Datos Aplicadas
+-- Fecha de entrega: 12 de Noviembre de 2024
+-- Grupo 01
+-- Comision 2900
+-- 45739056 Sofia Florencia Gay
+-- 44482420	Valentino Amato
+-- 44396900 Joaquin Barcella
+-- 44960383 Rafael David Nazareno Ruiz
+
+--Lotes de prueba para todos los store procedures
+
+
 --PRUEBAS INSERTAR,MODIFICAR,BORRAR Y IMPORTAR
  
 
@@ -21,11 +33,11 @@ SELECT
     Legajo, 
     Nombre, 
     Apellido, 
-    CONVERT(NVARCHAR(500), DECRYPTBYKEY(DNI)) AS DNI,  -- Desencriptar DNI como NVARCHAR
-    CONVERT(NVARCHAR(500), DECRYPTBYKEY(Direccion)) AS Direccion ,  -- Desencriptar Direccion como NVARCHAR
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(DNI)) AS DNI,  
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(Direccion)) AS Direccion ,  
     EmailPersonal, 
     EmailEmpresa,  
-    CONVERT(NVARCHAR(500), DECRYPTBYKEY(CUIL)) AS CUIL,  -- Desencriptar CUIL como NVARCHAR
+    CONVERT(NVARCHAR(500), DECRYPTBYKEY(CUIL)) AS CUIL,  
     Cargo, 
     Sucursal, 
     Turno
@@ -35,8 +47,7 @@ FROM ddbba.Empleados;
 CLOSE SYMMETRIC KEY ClaveEncriptacionEmpleados;
 
 
-
-
+select*from ddbba.Empleados
 
 
 --IMPORTAR ARCHIVOS
@@ -56,9 +67,7 @@ exec importar.SucursalImportar @ruta= 'C:\Users\rafae\OneDrive\Escritorio\unlam\
 select * from ddbba.Empleados
 exec importar.EmpleadosImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
-select * from  ddbba.factura
 select * from ddbba.ventaRegistrada
-select*from ddbba.detalleVenta
 exec importar.VentasRegistradasImportar @ruta='C:\Users\rafae\OneDrive\Escritorio\unlam\6 sexto cuatrimestre\BASES DE DATOS APLICADAS\TP\entrega 3\TP_3\BBDDA';
 
 
@@ -99,9 +108,11 @@ exec empleados.EmpleadoInsertar  @Nombre= 'rafa', @Apellido = 'ruiz' , @DNI ='51
 	@Sucursal= 'San Justo',@Turno='TM';
 select*from ddbba.Empleados
 
+--clasificacion de productos
 exec producto.ClasificacionProductoInsertar @LineaDeProducto= 'Almacen',@Producto= 'choclo_cremoso';
 select *from ddbba.ClasificacionProductos
 
+--sucursal
 exec sucursal.SucursalInsertar @Ciudad= 'Cañuelas',@Direccion='av siempreviva',@Horario='9 a 13', @Telefono='2226090901';
 select*from ddbba.sucursal
 
@@ -164,16 +175,16 @@ select*from ddbba.sucursal
 ---------------------------------------------------REGISTRAR UNA VENTA-----------------------------------------------------------
 --procedure explicado en 01_SP_Insertar_Modificar_Borrado_Logico.sql
 
-EXEC facturacion.RegistrarVentaConCadena
+
+
+EXEC facturacion.RegistrarVentaConCodigos
     @ciudad = 'San Justo',
     @tipoCliente = 'Normal',
     @genero = 'Male',
-    @empleado = 257019,
-    @cadenaProductos = 'Café de Malasia x2, Tallarines de Singapur x1',
+    @empleado = 257020,
+    @cadenaProductos = '5531 x2,5332 x1',
 	@metodoPago = 'Cash',
 	@puntoVenta = 'caja 1'
-
-
 
 	select*from ddbba.ventaRegistrada
 	select*from ddbba.detalleVenta
@@ -200,4 +211,5 @@ execute as login= 'rafael'
 exec nota.EmitirNotaCredito @detalleIDs =  '7'
 select*from ddbba.detalleVenta
 
+revert
 select * from ddbba.notaDeCredito

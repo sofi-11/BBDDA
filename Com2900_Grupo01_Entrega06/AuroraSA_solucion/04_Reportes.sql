@@ -1,4 +1,15 @@
---REPORTES
+
+-- Bases de Datos Aplicadas
+-- Fecha de entrega: 12 de Noviembre de 2024
+-- Grupo 01
+-- Comision 2900
+-- 45739056 Sofia Florencia Gay
+-- 44482420	Valentino Amato
+-- 44396900 Joaquin Barcella
+-- 44960383 Rafael David Nazareno Ruiz
+
+--Creacion de reportes
+
 use Com2900G01
 
 go

@@ -21,12 +21,13 @@ MIEL. Solo uno de los miembros del grupo debe hacer la entrega.*/
 -- Bases de Datos Aplicadas
 -- Fecha de entrega: 12 de Noviembre de 2024
 -- Grupo 01
+-- Comision 2900
 -- 45739056 Sofia Florencia Gay
 -- 44482420	Valentino Amato
 -- 44396900 Joaquin Barcella
 -- 44960383 Rafael David Nazareno Ruiz
---
----------------ENTREGA 3
+
+---------------Creacion de esquemas y tablas
 
 
 ----------------------------------------- BASE DE DATOS -----------------------------------------------------
@@ -218,9 +219,15 @@ END;
 GO
 
 --------------CLAVE PARA CIFRAR EMPLEADOS
-CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
-WITH ALGORITHM = AES_128
-ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
+IF NOT EXISTS (SELECT * FROM sys.symmetric_keys WHERE name = 'ClaveEncriptacionEmpleados')
+BEGIN
+    CREATE SYMMETRIC KEY ClaveEncriptacionEmpleados
+    WITH ALGORITHM = AES_128
+    ENCRYPTION BY PASSWORD = 'empleado;2024,grupo1';
+END;
+
+
+
 
 GO
 
@@ -338,7 +345,6 @@ CREATE TABLE ddbba.factura (
     hora TIME,
     medioDePago VARCHAR(50) CHECK (medioDePago in ('Credit card','Cash','Ewallet')),
     empleado int foreign key references ddbba.Empleados(Legajo),
-    identificadorDePago VARCHAR(50),
     montoSinIVA DECIMAL(10, 2),
 	montoConIVA DECIMAL(10,2),
 	IVA DECIMAL(10,2),
@@ -389,5 +395,7 @@ BEGIN
 	CONSTRAINT fk_factura FOREIGN KEY (idFactura) REFERENCES ddbba.factura(idFactura) 
 )
 END
+
+
 
 
